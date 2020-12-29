@@ -1,6 +1,5 @@
 package it.engsoft.risiko.model;
 
-
 public class CartaTerritorio {
     private Stato statoRappresentato = null;
     private Figura figura;
