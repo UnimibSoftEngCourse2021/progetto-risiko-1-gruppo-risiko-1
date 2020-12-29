@@ -44,7 +44,7 @@ public class ConqContinenti extends Obiettivo {
             throw new RuntimeException("Giocatore non valido");
 
         for (Continente continente : targetContinenti) {
-            if (continente.getProprietario() != giocatore)
+            if (continente.getProprietario().equals(giocatore))
                 return false;
         }
 
@@ -63,7 +63,7 @@ public class ConqContinenti extends Obiettivo {
         int count = 0;
 
         for (Continente continente : mappa.getContinenti()) {
-            if (!targetContinenti.contains(continente) && continente.getProprietario() == giocatore) {
+            if (!targetContinenti.contains(continente) && continente.getProprietario().equals(giocatore)) {
                 count++;
             }
         }

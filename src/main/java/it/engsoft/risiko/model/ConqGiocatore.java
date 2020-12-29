@@ -33,7 +33,7 @@ public class ConqGiocatore {
             throw new RuntimeException("Giocatore non valido");
 
         if (target.isEliminato()) {
-            if (target.getUccisore() == giocatore)
+            if (target.getUccisore().equals(giocatore))
                 return true;
             else
                 return obSecondario.raggiunto(giocatore);
