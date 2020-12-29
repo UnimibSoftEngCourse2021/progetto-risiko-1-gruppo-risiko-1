@@ -1,20 +1,8 @@
 package it.engsoft.risiko.model;
 
 public class ConqGiocatore {
-    private Giocatore giocatore;
     private Giocatore target;
     private ConqTerritori obSecondario;
-
-    public Giocatore getGiocatore() {
-        return giocatore;
-    }
-
-    public void setGiocatore(Giocatore giocatore) {
-        if (giocatore == null)
-            throw new RuntimeException();
-
-        this.giocatore = giocatore;
-    }
 
     public Giocatore getTarget() {
         return target;
@@ -40,12 +28,15 @@ public class ConqGiocatore {
     public ConqGiocatore() {
     }
 
-    public boolean raggiunto() {
+    public boolean raggiunto(Giocatore giocatore) {
+        if(giocatore == null)
+            throw new RuntimeException("Giocatore non valido");
+
         if (target.isEliminato()) {
-            if (target.getUccisore() == this.giocatore)
+            if (target.getUccisore() == giocatore)
                 return true;
             else
-                return obSecondario.raggiunto();
+                return obSecondario.raggiunto(giocatore);
         }
 
         return false;

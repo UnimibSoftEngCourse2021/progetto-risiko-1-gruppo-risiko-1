@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Giocatore {
-    private String nome;
     private final ArrayList<Stato> stati = new ArrayList<Stato>();
+    private String nome;
     private ArrayList<CartaTerritorio> carteTerritorio = new ArrayList<CartaTerritorio>();
     private Obiettivo obiettivo;
     private Giocatore uccisore;
@@ -26,35 +26,37 @@ public class Giocatore {
         return stati;
     }
 
-//    public void setStati(ArrayList<Stato> stati) {
-//        if (stati == null)
-//            throw new RuntimeException();
-//
-//        this.stati = stati;
-//    }
-
     public void aggiungiStato(Stato stato) {
+        if (stato == null)
+            throw new RuntimeException("Stato non valido");
+
         stati.add(stato);
     }
 
     public void rimuoviStato(Stato stato) {
-        boolean ris = stati.remove(stato);
-//        if (!ris)
-//            throw new RuntimeException("Non c'era lo stato");
+        if(stato == null || !stati.contains(stato))
+            throw new RuntimeException("Stato non valido");
+
+        stati.remove(stato);
     }
 
     public ArrayList<CartaTerritorio> getCarteTerritorio() {
         return carteTerritorio;
     }
 
-    public void setCarteTerritorio(ArrayList<CartaTerritorio> carteTerritorio) {
-        if (carteTerritorio == null)
-            throw new RuntimeException();
+    public void aggiungiCartaTerritorio(CartaTerritorio cartaTerritorio) {
+        if (cartaTerritorio == null)
+            throw new RuntimeException("Carta territorio non valida");
 
-        this.carteTerritorio = carteTerritorio;
+        carteTerritorio.add(cartaTerritorio);
     }
 
-    // TODO: metodi aggiungi/rimuovi sulle carte territorio anziche set su tutto l'array
+    public void rimuoviCartaTerritorio(CartaTerritorio cartaTerritorio) {
+        if(cartaTerritorio == null || !carteTerritorio.contains(cartaTerritorio))
+            throw new RuntimeException("Carta territorio non valida");
+
+        carteTerritorio.remove(cartaTerritorio);
+    }
 
     public Obiettivo getObiettivo() {
         return obiettivo;
@@ -67,10 +69,6 @@ public class Giocatore {
         this.obiettivo = obiettivo;
     }
 
-    public boolean isEliminato() {
-        return stati.size() == 0;
-    }
-
     public Giocatore getUccisore() {
         return uccisore;
     }
@@ -80,6 +78,14 @@ public class Giocatore {
             throw new RuntimeException();
 
         this.uccisore = uccisore;
+    }
+
+    public boolean isEliminato() {
+        return stati.size() == 0;
+    }
+
+    public boolean obRaggiunto() {
+        return obiettivo.raggiunto(this);
     }
 
     @Override
