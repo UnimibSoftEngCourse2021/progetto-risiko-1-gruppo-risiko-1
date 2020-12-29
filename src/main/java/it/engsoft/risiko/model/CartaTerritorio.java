@@ -9,9 +9,7 @@ public class CartaTerritorio {
         FANTE,
         CAVALLO,
         JOLLY
-    }
-
-    ;
+    };
 
     // stato rappresentato
     public Stato getStatoRappresentato() {

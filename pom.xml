@@ -16,6 +16,9 @@
 
     <properties>
         <java.version>15</java.version>
+        <sonar.organization>unimibsoftengcourse2021</sonar.organization>
+        <sonar.projectKey>UnimibSoftEngCourse2021_progetto-risiko-1-gruppo-risiko-1</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
@@ -53,7 +56,14 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.7.0.1746</version>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>

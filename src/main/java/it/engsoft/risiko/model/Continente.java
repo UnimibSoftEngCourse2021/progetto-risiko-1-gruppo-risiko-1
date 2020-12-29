@@ -7,22 +7,20 @@ import java.util.List;
 @Entity(name = "continenti")
 public class Continente {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String nome;
     private int armateBonus;
+    @ManyToOne
+    @JoinColumn(name = "mappa_id", nullable = false)
+    private Mappa mappa;
+    @OneToMany(mappedBy = "continente")
+    private List<Stato> stati;
 
     public Long getId() {
         return id;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "mappa_id", nullable = false)
-    private Mappa mappa;
-
-    @OneToMany(mappedBy = "continente")
-    private List<Stato> stati;
 
     // nome
     public String getNome() {
@@ -51,6 +49,12 @@ public class Continente {
         return stati;
     }
 
+    public void setStati(ArrayList<Stato> stati) {
+        if (stati == null)
+            throw new RuntimeException("Stati apparteneti al continente nulli");
+        this.stati = stati;
+    }
+
     public void aggiungiStato(Stato stato) {
         stati.add(stato);
     }
@@ -59,12 +63,6 @@ public class Continente {
         boolean ris = stati.remove(stato);
         if (!ris)
             throw new RuntimeException("Stato rimosso non esiste");
-    }
-
-    public void setStati(ArrayList<Stato> stati) {
-        if (stati == null)
-            throw new RuntimeException("Stati apparteneti al continente nulli");
-        this.stati = stati;
     }
 
     // il metodo ritorna il giocatore che possiede tutti gli stati che compongono un continente.
