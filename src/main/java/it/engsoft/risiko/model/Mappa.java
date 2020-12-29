@@ -9,8 +9,6 @@ public class Mappa {
     private int numMaxGiocatori;
     private ArrayList<Continente> continenti = new ArrayList<Continente>();
 
-    // TODO: metodi add/remove per lista continenti
-
     // nome
     public String getNome() {
         return nome;
@@ -38,7 +36,7 @@ public class Mappa {
         this.descrizione = descrizione;
     }
 
-    //numero minimo giocatori
+    // numero minimo giocatori
     public int getNumMinGiocatori() {
         return numMinGiocatori;
     }
@@ -49,7 +47,7 @@ public class Mappa {
         this.numMinGiocatori = numMinGiocatori;
     }
 
-    //numero massimo giocatore
+    // numero massimo giocatore
     public int getNumMaxGiocatori() {
         return numMaxGiocatori;
     }
@@ -60,9 +58,19 @@ public class Mappa {
         this.numMaxGiocatori = numMaxGiocatori;
     }
 
-    //continenti
+    // continenti
     public ArrayList<Continente> getContinenti() {
         return continenti;
+    }
+
+    public void aggiungiContinente(Continente continente) {
+        continenti.add(continente);
+    }
+
+    public void rimuoviContinente(Continente continente) {
+        boolean ris = continenti.remove(continente);
+        if (!ris)
+            throw new RuntimeException("Continente rimosso non esiste");
     }
 
     public void setContinenti(ArrayList<Continente> continenti) {

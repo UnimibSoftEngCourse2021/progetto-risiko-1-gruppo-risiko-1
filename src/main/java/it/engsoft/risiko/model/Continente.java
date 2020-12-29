@@ -7,9 +7,7 @@ public class Continente {
     private int armateBonus;
     private ArrayList<Stato> stati = new ArrayList<Stato>();
 
-    // TODO: metodi add/remove per stati anziché setter
-
-    //nome
+    // nome
     public String getNome() {
         return nome;
     }
@@ -20,7 +18,7 @@ public class Continente {
         this.nome = nome;
     }
 
-    //armate bonus
+    // armate bonus
     public int getArmateBonus() {
         return armateBonus;
     }
@@ -31,9 +29,19 @@ public class Continente {
         this.armateBonus = armateBonus;
     }
 
-    //stati
+    // stati
     public ArrayList<Stato> getStati() {
         return stati;
+    }
+
+    public void aggiungiStato(Stato stato) {
+        stati.add(stato);
+    }
+
+    public void rimuoviStato(Stato stato) {
+        boolean ris = stati.remove(stato);
+        if (!ris)
+            throw new RuntimeException("Stato rimosso non esiste");
     }
 
     public void setStati(ArrayList<Stato> stati) {
