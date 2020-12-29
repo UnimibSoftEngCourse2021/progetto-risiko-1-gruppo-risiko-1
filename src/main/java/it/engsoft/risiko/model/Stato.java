@@ -1,15 +1,37 @@
 package it.engsoft.risiko.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity(name = "stati")
 public class Stato {
-    private int id;
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
     private String nome;
-    private int armate = 0;
-    private ArrayList<Stato> confinanti = new ArrayList<Stato>();
+
+    @ManyToMany
+    @JoinTable(name = "adiacenza",
+            joinColumns = @JoinColumn(name = "stato1"),
+            inverseJoinColumns = @JoinColumn(name = "stato2")
+    )
+    private List<Stato> confinanti;
+
+    @ManyToOne
+    @JoinColumn(name = "continente_id", nullable = false)
+    private Continente continente;
+
+    @Transient
+    private int armate;
+
+    @Transient
     private Giocatore proprietario;
 
-    public int getId() {
+    // TODO: anziché set armate metodi aggiungiArmate() e rimuoviArmate() (con controllo che non vada in negativo)
+    // TODO: aggiungere metodo aggiungiConfinante()
+
+    public Long getId() {
         return id;
     }
 
@@ -42,14 +64,9 @@ public class Stato {
         armate = armate - n;
     }
 
-//    public void setArmate(int armate) {
-//        if (armate <= 0)
-//            throw new RuntimeException("Armate sullo stato nulle o invalide");
-//        this.armate = armate;
-//    }
 
-    // stati confinanti
-    public ArrayList<Stato> getConfinanti() {
+    //stati confinanti
+    public List<Stato> getConfinanti() {
         return confinanti;
     }
 
@@ -85,6 +102,7 @@ public class Stato {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Stato stato = (Stato) o;
-        return id == stato.id;
+        return id.equals(stato.id);
     }
+
 }

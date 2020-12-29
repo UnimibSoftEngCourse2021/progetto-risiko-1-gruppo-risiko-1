@@ -1,13 +1,26 @@
 package it.engsoft.risiko.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity(name = "mappe")
 public class Mappa {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
+
     private String nome;
     private String descrizione;
     private int numMinGiocatori;
     private int numMaxGiocatori;
-    private ArrayList<Continente> continenti = new ArrayList<Continente>();
+
+    public Long getId() {
+        return id;
+    }
+
+    @OneToMany(mappedBy = "mappa")
+    private List<Continente> continenti;
 
     // nome
     public String getNome() {
@@ -59,7 +72,7 @@ public class Mappa {
     }
 
     // continenti
-    public ArrayList<Continente> getContinenti() {
+    public List<Continente> getContinenti() {
         return continenti;
     }
 

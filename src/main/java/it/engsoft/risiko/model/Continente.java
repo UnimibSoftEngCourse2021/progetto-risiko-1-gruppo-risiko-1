@@ -1,11 +1,28 @@
 package it.engsoft.risiko.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity(name = "continenti")
 public class Continente {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
+
     private String nome;
     private int armateBonus;
-    private ArrayList<Stato> stati = new ArrayList<Stato>();
+
+    public Long getId() {
+        return id;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "mappa_id", nullable = false)
+    private Mappa mappa;
+
+    @OneToMany(mappedBy = "continente")
+    private List<Stato> stati;
 
     // nome
     public String getNome() {
@@ -30,7 +47,7 @@ public class Continente {
     }
 
     // stati
-    public ArrayList<Stato> getStati() {
+    public List<Stato> getStati() {
         return stati;
     }
 
@@ -48,5 +65,9 @@ public class Continente {
         if (stati == null)
             throw new RuntimeException("Stati apparteneti al continente nulli");
         this.stati = stati;
+    }
+
+    public Giocatore getProprietario() {
+        return null;
     }
 }
