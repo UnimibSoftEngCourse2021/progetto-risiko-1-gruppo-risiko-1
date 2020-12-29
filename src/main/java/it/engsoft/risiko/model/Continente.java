@@ -70,7 +70,9 @@ public class Continente {
     // il metodo ritorna il giocatore che possiede tutti gli stati che compongono un continente.
     // se il continente non appartiene ad un solo giocatore ritorna null.
     public Giocatore getProprietario(Continente continente) {
-        for (int i = 0; i < continente.getStati().size(); i++) {
+        for (int i = 0; i < continente.getStati().size() - 2; i++) {
+            if (continente.getStati().size() == 1)
+                return continente.getStati().get(0).getProprietario();
             if (continente.getStati().get(i).getProprietario() != continente.getStati().get(i + 1).getProprietario())
                 return null;
         }
