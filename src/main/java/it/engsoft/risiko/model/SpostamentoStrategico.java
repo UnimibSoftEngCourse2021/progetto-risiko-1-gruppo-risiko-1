@@ -6,7 +6,11 @@ public class SpostamentoStrategico {
     private boolean eseguito;
 
     public SpostamentoStrategico(final Stato partenza, final Stato destinazione, final int quantita) {
-        if (partenza == null || destinazione == null || quantita < 1) {
+        if (partenza == null
+                || destinazione == null
+                || quantita < 1
+                || partenza.equals(destinazione)
+                || !partenza.isConfinante(destinazione)) {
             throw new RuntimeException("Constructor parameters not valid (SpostamentoStrategico)");
         }
 
@@ -25,11 +29,12 @@ public class SpostamentoStrategico {
             throw new RuntimeException("Si è tentato uno spostamento tra due stati di giocatori diversi!");
         }
 
-        if (armate >= partenza.getArmate()) {
+        if (quantita >= partenza.getArmate()) {
             throw new RuntimeException("Si è tentato uno spostamento non legale (troppe armate)");
         }
 
-        partenza.rimuoviArmate(armate);
-        destinazione.aggiungiArmate(armate);
+        partenza.rimuoviArmate(quantita);
+        destinazione.aggiungiArmate(quantita);
+        eseguito = true;
     }
 }

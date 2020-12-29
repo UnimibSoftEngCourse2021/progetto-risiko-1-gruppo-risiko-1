@@ -3,26 +3,30 @@ package it.engsoft.risiko.model;
 import java.util.ArrayList;
 
 public class Continente {
-    private String Nome;
+    private String nome;
     private int armateBonus;
     private ArrayList<Stato> stati = new ArrayList<Stato>();
 
+    // TODO: metodi add/remove per stati anziché setter
+
     //nome
     public String getNome() {
-        return Nome;
+        return nome;
     }
+
     public void setNome(String nome) {
-        if (nome==null || nome.length()==0 )
+        if (nome == null || nome.trim().isEmpty())
             throw new RuntimeException("Nome continente nullo o mancante");
-        Nome = nome;
+        this.nome = nome;
     }
 
     //armate bonus
     public int getArmateBonus() {
         return armateBonus;
     }
+
     public void setArmateBonus(int armateBonus) {
-        if(armateBonus<=0)
+        if (armateBonus <= 0)
             throw new RuntimeException("Armate bonus zero o negative");
         this.armateBonus = armateBonus;
     }

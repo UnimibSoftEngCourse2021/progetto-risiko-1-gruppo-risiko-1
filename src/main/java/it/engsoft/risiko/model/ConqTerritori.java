@@ -31,4 +31,6 @@ public class ConqTerritori extends Obiettivo {
     public boolean raggiunto() {
         return true;
     }
+
+    // TODO: implementare raggiunto()
 }

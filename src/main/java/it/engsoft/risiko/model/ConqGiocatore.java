@@ -10,10 +10,20 @@ public class ConqGiocatore {
     }
 
     public void setGiocatore(Giocatore giocatore) {
-        if(giocatore == null)
+        if (giocatore == null)
             throw new RuntimeException();
 
         this.giocatore = giocatore;
+    }
+
+    public Giocatore getTarget() {
+        return target;
+    }
+
+    public void setTarget(Giocatore target) {
+        if (target == null)
+            throw new RuntimeException();
+        this.target = target;
     }
 
     public ConqTerritori getObSecondario() {
@@ -21,17 +31,18 @@ public class ConqGiocatore {
     }
 
     public void setObSecondario(ConqTerritori obSecondario) {
-        if(obSecondario == null)
+        if (obSecondario == null)
             throw new RuntimeException();
 
         this.obSecondario = obSecondario;
     }
 
-    public ConqGiocatore() {}
+    public ConqGiocatore() {
+    }
 
     public boolean raggiunto() {
-        if(target.isEliminato()) {
-            if(target.getUccisore() == this.giocatore)
+        if (target.isEliminato()) {
+            if (target.getUccisore() == this.giocatore)
                 return true;
             else
                 return obSecondario.raggiunto();

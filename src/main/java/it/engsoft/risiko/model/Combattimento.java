@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Combattimento {
-    private final Stato attaccante, difensore;
+    private final Stato statoAttaccante, statoDifensore;
     private final int armateAttaccante;
     private int armateDifensore;
 
@@ -16,42 +16,41 @@ public class Combattimento {
 
     private final ArrayList<Integer> tiriAttaccante, tiriDifensore;
 
-    public Combattimento(Stato attaccante, Stato difensore, int armateAttaccante) {
-        if (statiCompatibili(attaccante, difensore) && armateAttaccanteValide(attaccante, armateAttaccante)) {
+    public Combattimento(Stato statoAttaccante, Stato statoDifensore, int armateAttaccante) {
+        if (!statiCompatibili(statoAttaccante, statoDifensore) || !armateAttaccanteValide(statoAttaccante, armateAttaccante)) {
             throw new RuntimeException("Combattimento constructor: not valid parameters!");
         }
 
-        this.attaccante = attaccante;
-        this.difensore = difensore;
+        this.statoAttaccante = statoAttaccante;
+        this.statoDifensore = statoDifensore;
         this.armateAttaccante = armateAttaccante;
         randomGenerator = new Random();
         tiriAttaccante = new ArrayList<>();
         tiriDifensore = new ArrayList<>();
     }
 
-    private boolean statiCompatibili(Stato attaccante, Stato difensore) {
-        return attaccante != null
-                && difensore != null
-                && !attaccante.getProprietario().equals(difensore.getProprietario());
+    private boolean statiCompatibili(Stato statoAttaccante, Stato statoDifensore) {
+        return statoAttaccante != null
+                && statoDifensore != null
+                && !statoAttaccante.getProprietario().equals(statoDifensore.getProprietario())
+                && statoAttaccante.isConfinante(statoDifensore);
     }
 
-    private boolean armateAttaccanteValide(Stato attaccante, int nArmate) {
-        return attaccante != null && attaccante.getArmate() > nArmate && nArmate >= 1 && nArmate <= 3;
+    private boolean armateAttaccanteValide(Stato statoAttaccante, int nArmate) {
+        return statoAttaccante != null && statoAttaccante.getArmate() > nArmate && nArmate >= 1 && nArmate <= 3;
     }
 
-    private boolean armateDifensoreValide(Stato difensore, int nArmate) {
-        return difensore != null && nArmate >= 1 && nArmate <= difensore.getArmate() && nArmate <= 3;
+    private boolean armateDifensoreValide(Stato statoDifensore, int nArmate) {
+        return statoDifensore != null && nArmate >= 1 && nArmate <= statoDifensore.getArmate() && nArmate <= 3;
     }
 
     public void simulaCombattimento(final int armateDifensore) {
-        if (!statiCompatibili(attaccante, difensore)
-                || !armateAttaccanteValide(attaccante, armateAttaccante)
-                || !armateDifensoreValide(difensore, armateDifensore)) {
+        if (!statiCompatibili(statoAttaccante, statoDifensore)
+                || !armateAttaccanteValide(statoAttaccante, armateAttaccante)
+                || !armateDifensoreValide(statoDifensore, armateDifensore)) {
             throw new RuntimeException("Impostazioni combattimento non valide");
         }
 
-        ArrayList<Integer> tiriAttaccante = new ArrayList<>();
-        ArrayList<Integer> tiriDifensore = new ArrayList<>();
 
         for (int i = 0; i < armateAttaccante; i++) {
             tiriAttaccante.add(lanciaDado());
@@ -62,6 +61,7 @@ public class Combattimento {
 
         Collections.sort(tiriAttaccante);
         Collections.reverse(tiriAttaccante);
+
         Collections.sort(tiriDifensore);
         Collections.reverse(tiriDifensore);
 
@@ -75,7 +75,7 @@ public class Combattimento {
                 vittimeAttaccante++;
             }
         }
-        this.conquista = vittimeDifensore == difensore.getArmate();
+        this.conquista = (vittimeDifensore == statoDifensore.getArmate());
     }
 
     private Integer lanciaDado() {
