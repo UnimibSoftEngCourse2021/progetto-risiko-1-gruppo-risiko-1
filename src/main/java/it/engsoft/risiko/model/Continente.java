@@ -67,7 +67,13 @@ public class Continente {
         this.stati = stati;
     }
 
-    public Giocatore getProprietario() {
-        return null;
+    // il metodo ritorna il giocatore che possiede tutti gli stati che compongono un continente.
+    // se il continente non appartiene ad un solo giocatore ritorna null.
+    public Giocatore getProprietario(Continente continente) {
+        for (int i = 0; i < continente.getStati().size(); i++) {
+            if (continente.getStati().get(i).getProprietario() != continente.getStati().get(i + 1).getProprietario())
+                return null;
+        }
+        return continente.getStati().get(0).getProprietario();
     }
 }
