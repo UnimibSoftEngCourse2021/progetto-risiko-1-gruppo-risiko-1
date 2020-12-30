@@ -3,24 +3,24 @@ package it.engsoft.risiko.model;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "mappe")
 public class Mappa {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String nome;
     private String descrizione;
     private int numMinGiocatori;
     private int numMaxGiocatori;
+    @OneToMany(mappedBy = "mappa")
+    private List<Continente> continenti;
 
     public Long getId() {
         return id;
     }
-
-    @OneToMany(mappedBy = "mappa")
-    private List<Continente> continenti;
 
     // nome
     public String getNome() {
@@ -76,6 +76,12 @@ public class Mappa {
         return continenti;
     }
 
+    public void setContinenti(ArrayList<Continente> continenti) {
+        if (continenti == null)
+            throw new RuntimeException("Continenti appartenenti alla mappa nulli");
+        this.continenti = continenti;
+    }
+
     public void aggiungiContinente(Continente continente) {
         continenti.add(continente);
     }
@@ -86,9 +92,12 @@ public class Mappa {
             throw new RuntimeException("Continente rimosso non esiste");
     }
 
-    public void setContinenti(ArrayList<Continente> continenti) {
-        if (continenti == null)
-            throw new RuntimeException("Continenti appartenenti alla mappa nulli");
-        this.continenti = continenti;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mappa mappa = (Mappa) o;
+        return Objects.equals(id, mappa.id);
     }
+
 }
