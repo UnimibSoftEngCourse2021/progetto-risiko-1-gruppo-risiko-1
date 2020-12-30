@@ -3,8 +3,15 @@ package it.engsoft.risiko.model;
 import java.util.ArrayList;
 
 public class Partita {
-    private ArrayList<Giocatore> giocatori = new ArrayList<>();
-    private Giocatore giocatoreAttivo;
-    private Turno turno;
-    private Mappa mappa;
+    public ArrayList<Giocatore> giocatori = new ArrayList<>();
+    public Giocatore giocatoreAttivo;
+    public Turno turno;
+    public Mappa mappa;
+    public Modalita modalita;
+
+    public enum Modalita{
+        VELOCE,
+        NORMALE,
+        LENTA
+    };
 }

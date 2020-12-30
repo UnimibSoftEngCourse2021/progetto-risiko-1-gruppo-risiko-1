@@ -9,6 +9,7 @@ public class Giocatore {
     private ArrayList<CartaTerritorio> carteTerritorio = new ArrayList<CartaTerritorio>();
     private Obiettivo obiettivo;
     private Giocatore uccisore;
+    private int truppeDisponibili = 0;
 
 
     public String getNome() {
@@ -78,6 +79,22 @@ public class Giocatore {
             throw new RuntimeException();
 
         this.uccisore = uccisore;
+    }
+
+    public int getTruppeDisponibili() {
+        return truppeDisponibili;
+    }
+
+    public void setTruppeDisponibili(int truppeDisponibili) {
+        if(truppeDisponibili < 0)
+            throw new RuntimeException("Truppe disponibili giocatore è negativo");
+        this.truppeDisponibili = truppeDisponibili;
+    }
+
+    public void addTruppeDisponibili(int truppeDisponibili) {
+        if(this.truppeDisponibili + truppeDisponibili < 0)
+            throw new RuntimeException("Truppe disponibili giocatore è negativo");
+        this.truppeDisponibili = this.truppeDisponibili + truppeDisponibili;
     }
 
     public boolean isEliminato() {

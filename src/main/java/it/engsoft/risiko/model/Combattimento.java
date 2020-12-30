@@ -16,6 +16,8 @@ public class Combattimento {
 
     private final ArrayList<Integer> tiriAttaccante, tiriDifensore;
 
+    private SpostamentoStrategico spostamentoAttacco;
+
     public Combattimento(Stato statoAttaccante, Stato statoDifensore, int armateAttaccante) {
         if (!statiCompatibili(statoAttaccante, statoDifensore) || !armateAttaccanteValide(statoAttaccante, armateAttaccante)) {
             throw new RuntimeException("Combattimento constructor: not valid parameters!");
@@ -100,5 +102,11 @@ public class Combattimento {
 
     public ArrayList<Integer> getTiriDifensore() {
         return tiriDifensore;
+    }
+
+    public SpostamentoStrategico getSpostamentoAttacco() { return spostamentoAttacco; }
+
+    public void setSpostamentoAttacco(SpostamentoStrategico spostamentoAttacco) {
+        this.spostamentoAttacco = spostamentoAttacco;
     }
 }
