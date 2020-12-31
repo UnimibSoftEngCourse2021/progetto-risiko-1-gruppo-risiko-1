@@ -16,9 +16,13 @@
 
     <properties>
         <java.version>15</java.version>
+
         <sonar.organization>unimibsoftengcourse2021</sonar.organization>
         <sonar.projectKey>UnimibSoftEngCourse2021_progetto-risiko-1-gruppo-risiko-1</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <!-- include all code, also javascript -->
+        <sonar.sources>src/main</sonar.sources>
     </properties>
 
     <dependencies>
