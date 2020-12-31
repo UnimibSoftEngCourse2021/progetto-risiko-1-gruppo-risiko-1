@@ -22,7 +22,8 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
         <!-- include all code, also javascript -->
-        <sonar.sources>src/main</sonar.sources>
+        <sonar.sources>src/main/**</sonar.sources>
+<!--        <sonar.inclusions>src/main</sonar.inclusions>-->
     </properties>
 
     <dependencies>
