@@ -11,7 +11,9 @@ public class Giocatore {
     private Giocatore uccisore;
     private int truppeDisponibili = 0;
 
-
+    public Giocatore(String nome){
+        this.nome = nome;
+    }
     public String getNome() {
         return nome;
     }
