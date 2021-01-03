@@ -23,14 +23,16 @@ public class PartitaService {
     @Autowired
     private MappaRepository mappaRepository;
 
+
     // @Autowired in questa posizione da problemi con i parametri in ingresso
-    public NuovoGiocoDAO nuovoGioco(List<String> giocatori, Long id, String modalita) {
+    public NuovoGiocoDAO nuovoGioco(List<String> giocatori, Long mappaId, String modalita) {
         this.partita = new Partita();
         this.partita.setGiocatori(giocatori
                 .stream()
                 .map(Giocatore::new)
                 .collect(Collectors.toList()));
-        this.partita.mappa = mappaRepository.findById(id);
+        this.partita.setMappa(mappaRepository.findById(mappaId));
+
         if (modalita.equalsIgnoreCase(Partita.Modalita.LENTA.toString()))
             this.partita.setModalita(Partita.Modalita.LENTA);
         if (modalita.equalsIgnoreCase(Partita.Modalita.NORMALE.toString()))
@@ -130,6 +132,7 @@ public class PartitaService {
         }
         if (stato == null)
             throw new RuntimeException("Stato non esiste");
+
         return stato;
     }
 

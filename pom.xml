@@ -16,9 +16,14 @@
 
     <properties>
         <java.version>15</java.version>
+
         <sonar.organization>unimibsoftengcourse2021</sonar.organization>
         <sonar.projectKey>UnimibSoftEngCourse2021_progetto-risiko-1-gruppo-risiko-1</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <!-- include all code, also javascript -->
+        <sonar.sources>src/main/java,src/main/javascript</sonar.sources>
+<!--        <sonar.inclusions>src/main</sonar.inclusions>-->
     </properties>
 
     <dependencies>
@@ -55,6 +60,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- Include the frontend build output as part of the project -->
+                    <folders>
+                        <folder>{project.build.directory}/frontend</folder>
+                    </folders>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -62,8 +73,57 @@
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.7.0.1746</version>
             </plugin>
+
+            <!-- this plugin includes the frontend build as part of the main maven build lifecycle -->
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.7.5</version>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v14.15.3</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <workingDirectory>${project.basedir}/src/main/javascript/risiko-frontend</workingDirectory>
+
+                    <!-- node modules directory -->
+                    <installDirectory>${project.build.directory}/node</installDirectory>
+                </configuration>
+            </plugin>
         </plugins>
 
+        <!-- include the static html/css/js files produced by the frontend build as resources -->
+        <resources>
+            <resource>
+                <directory>${project.build.directory}/frontend</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>
