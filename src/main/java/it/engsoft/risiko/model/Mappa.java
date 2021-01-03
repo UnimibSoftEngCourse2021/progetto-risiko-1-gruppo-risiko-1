@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity(name = "mappe")
 public class Mappa {
@@ -98,6 +99,16 @@ public class Mappa {
         if (o == null || getClass() != o.getClass()) return false;
         Mappa mappa = (Mappa) o;
         return Objects.equals(id, mappa.id);
+    }
+
+    /**
+     * Ritorna un elenco di tutti gli stati compresi nella mappa.
+     * @return la lista degli stati
+     */
+    public List<Stato> getStati() {
+        return continenti.stream()
+                .flatMap(continente -> continente.getStati().stream())
+                .collect(Collectors.toList());
     }
 
 }

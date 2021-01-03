@@ -1,35 +1,27 @@
 package it.engsoft.risiko.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ConqContinenti extends Obiettivo {
     private Mappa mappa;
-    private ArrayList<Continente> targetContinenti;
-    private int continentiExtra = 0;
+    private final List<Continente> targetContinenti;
+    private final int continentiExtra;
 
-    public ConqContinenti() {
+    public ConqContinenti(List<Continente> targetContinenti) {
+        this(targetContinenti, 0);
     }
 
-    public ArrayList<Continente> getTargetContinenti() {
-        return targetContinenti;
-    }
-
-    public void setTargetContinenti(ArrayList<Continente> targetContinenti) {
-        if (targetContinenti == null)
-            throw new RuntimeException("Parametro non valido (setContinenti).");
-
+    public ConqContinenti(List<Continente> targetContinenti, int continentiExtra) {
         this.targetContinenti = targetContinenti;
+        this.continentiExtra = continentiExtra;
+    }
+
+    public List<Continente> getTargetContinenti() {
+        return targetContinenti;
     }
 
     public int getContinentiExtra() {
         return continentiExtra;
-    }
-
-    public void setContinentiExtra(int continentiExtra) {
-        if (continentiExtra < 0)
-            throw new RuntimeException("Numero continenti extra non valido.");
-
-        this.continentiExtra = continentiExtra;
     }
 
     public void setMappa(Mappa mappa) {

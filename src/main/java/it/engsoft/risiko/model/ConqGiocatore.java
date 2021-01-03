@@ -1,31 +1,20 @@
 package it.engsoft.risiko.model;
 
-public class ConqGiocatore {
-    private Giocatore target;
-    private ConqTerritori obSecondario;
+public class ConqGiocatore extends Obiettivo {
+    private final Giocatore target;
+    private final ConqTerritori obSecondario;
+
+    public ConqGiocatore(Giocatore target, ConqTerritori obSecondario) {
+        this.target = target;
+        this.obSecondario = obSecondario;
+    }
 
     public Giocatore getTarget() {
         return target;
     }
 
-    public void setTarget(Giocatore target) {
-        if (target == null)
-            throw new RuntimeException();
-        this.target = target;
-    }
-
     public ConqTerritori getObSecondario() {
         return obSecondario;
-    }
-
-    public void setObSecondario(ConqTerritori obSecondario) {
-        if (obSecondario == null)
-            throw new RuntimeException();
-
-        this.obSecondario = obSecondario;
-    }
-
-    public ConqGiocatore() {
     }
 
     public boolean raggiunto(Giocatore giocatore) {
