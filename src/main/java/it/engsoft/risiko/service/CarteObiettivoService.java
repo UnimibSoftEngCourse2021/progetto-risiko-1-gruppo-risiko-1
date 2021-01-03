@@ -8,11 +8,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class CarteObiettivoService {
-    private final Random random;
-
-    public CarteObiettivoService() {
-        this.random = new Random();
-    }
 
     /**
      * Imposta l'obiettivo dei giocatori nella lista fornita.
@@ -48,6 +43,7 @@ public class CarteObiettivoService {
         }
     }
 
+
     private ConqTerritori generaObiettivoConquistaTerritori(Mappa mappa) {
         int target = mappa.getStati().size() * 24 / 42; // mantiene la stessa proporzione della mappa reale del Risiko
         return new ConqTerritori(target, 1);
@@ -74,8 +70,8 @@ public class CarteObiettivoService {
             for (Continente secondoContinente: mappa.getContinenti()) {
                 if (!primoContinente.equals(secondoContinente)) {
                     int statiContinenti = primoContinente.getStati().size() + secondoContinente.getStati().size();
-                    int extra = statiContinenti < totaleStati * soglia ? 1 : 0;
-                    candidati.add(new ConqContinenti(Arrays.asList(primoContinente, secondoContinente), extra));
+                    int extra = statiContinenti < (totaleStati * soglia) ? 1 : 0;
+                    candidati.add(new ConqContinenti(Arrays.asList(primoContinente, secondoContinente), extra, mappa));
                 }
             }
         }
