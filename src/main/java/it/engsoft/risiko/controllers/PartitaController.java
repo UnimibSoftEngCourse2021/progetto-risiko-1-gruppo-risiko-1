@@ -1,6 +1,6 @@
 package it.engsoft.risiko.controllers;
 
-import it.engsoft.risiko.service.*;
+import it.engsoft.risiko.service.PartitaService;
 import it.engsoft.risiko.dto.*;
 import it.engsoft.risiko.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +21,7 @@ public class PartitaController {
         this.partitaService = partitaService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/mappe")
-    public List<MappaDAO> mappe() {
-        return partitaService.mappe();
-    }
-
-    @RequestMapping(method = RequestMethod.GET, path = "/mappa/{id}")
-    public MappaDAO getUsername(@PathVariable("id") Long id) {
-        return partitaService.mappa(id);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, path = "/nuovoGioco")
+    @RequestMapping(method = RequestMethod.POST, path = "/gioco")
     public NuovoGiocoDAO nuovoGioco(@RequestBody NuovoGiocoDTO nuovoGiocoDTO) {
         // TODO: NuovoGiocoDAO
         return partitaService.nuovoGioco(nuovoGiocoDTO);
@@ -42,7 +32,7 @@ public class PartitaController {
         partitaService.rinforzo(rinforzoDTO);
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/inizia_turno")
+    @RequestMapping(method = RequestMethod.GET, path = "/inizia-turno")
     public IniziaTurnoDAO iniziaTurno() {
         return partitaService.iniziaTurno();
     }
@@ -67,7 +57,7 @@ public class PartitaController {
         partitaService.spostamentoStrategico(spostamentoDTO);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/fine_turno")
+    @RequestMapping(method = RequestMethod.POST, path = "/fine-turno")
     public CartaTerritorioDAO fineTurno() {
         // TODO: CartaTerritorioDAO
         return partitaService.fineTurno();
