@@ -57,6 +57,8 @@ public class PartitaService {
         // distribuisci le carte territorio
         this.carteTerritorioService.distribuisciCarte(partita);
 
+        partita.assegnaArmateIniziali();
+
         // metti un armata su ogni territorio e aggiorna quelle dei giocatori rispettivamente
         partita.getGiocatori().forEach(giocatore -> {
             giocatore.getStati().forEach(stato -> {
