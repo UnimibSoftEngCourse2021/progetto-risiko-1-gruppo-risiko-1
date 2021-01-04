@@ -38,8 +38,8 @@ public class PartitaController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/tris")
-    public int giocaTris(@RequestBody TrisDTO TrisDTO) {
-        return partitaService.giocaTris(requestTrisDTO);
+    public int giocaTris(@RequestBody TrisDTO trisDTO) {
+        return partitaService.giocaTris(trisDTO);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/attacco")
@@ -50,6 +50,7 @@ public class PartitaController {
     @RequestMapping(method = RequestMethod.POST, path = "/difesa")
     public DifesaDAO difesa(@RequestBody DifesaDTO difesaDTO) {
         // TODO: DifesaDAO
+        return null;
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/spostamento")

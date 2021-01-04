@@ -5,6 +5,7 @@ public class Turno {
     private Fase fase;
     private final Giocatore giocatoreAttivo;
     private Combattimento combattimentoInCorso;
+    private boolean conquista;
 
     public enum Fase {RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
 
@@ -15,6 +16,7 @@ public class Turno {
         this.giocatoreAttivo = giocatore;
         this.combattimentoInCorso = null;
         this.fase = Fase.RINFORZI;
+        conquista = false;
     }
 
     // getter e setter
@@ -41,6 +43,15 @@ public class Turno {
     public Giocatore getGiocatoreAttivo() {
         return giocatoreAttivo;
     }
+
+    public void registraConquista() {
+        conquista = true;
+    }
+
+    public boolean conquistaAvvenuta() {
+        return conquista;
+    }
+
 
     //public Rinforzo getRinforzo() {
         //return rinforzo;

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 public class NuovoGiocoDAO {
     public List<GiocatoreDAO> giocatori;
     public String giocatoreAttivo;
-    public int turno;
     public MappaDAO mappa;
     public String modalita;
 
@@ -17,7 +16,6 @@ public class NuovoGiocoDAO {
                 .map(GiocatoreDAO::new)
                 .collect(Collectors.toList());
         this.giocatoreAttivo = partita.getGiocatoreAttivo().getNome();
-        this.turno = partita.getTurno().getNumero();
         this.mappa = new MappaDAO(partita.getMappa());
         this.modalita = partita.getModalita().toString();
     }
@@ -28,10 +26,6 @@ public class NuovoGiocoDAO {
 
     public String getGiocatoreAttivo() {
         return giocatoreAttivo;
-    }
-
-    public int getTurno() {
-        return turno;
     }
 
     public MappaDAO getMappa() {

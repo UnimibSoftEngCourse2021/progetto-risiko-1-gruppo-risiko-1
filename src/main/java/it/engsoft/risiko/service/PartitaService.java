@@ -1,5 +1,6 @@
 package it.engsoft.risiko.service;
 
+import it.engsoft.risiko.dao.CartaTerritorioDAO;
 import it.engsoft.risiko.dao.DifesaDAO;
 import it.engsoft.risiko.dao.IniziaTurnoDAO;
 import it.engsoft.risiko.dao.NuovoGiocoDAO;
@@ -12,20 +13,27 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
 @Scope(value = WebApplicationContext.SCOPE_SESSION)
 public class PartitaService {
-    int statiIniziali;
     private Partita partita;
     private Boolean fasePreparazione;
-    @Autowired
-    private MappaRepository mappaRepository;
+    private final MappaRepository mappaRepository;
+    private final CarteTerritorioService carteTerritorioService;
+    private final CarteObiettivoService carteObiettivoService;
 
-    // @Autowired in questa posizione da problemi con i parametri in ingresso
+    @Autowired
+    public PartitaService(MappaRepository mappaRepository, CarteObiettivoService carteObiettivoService,
+                          CarteTerritorioService carteTerritorioService) {
+        this.mappaRepository = mappaRepository;
+        this.carteTerritorioService = carteTerritorioService;
+        this.carteObiettivoService = carteObiettivoService;
+    }
+
     public NuovoGiocoDAO nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
         this.partita = new Partita();
 
@@ -43,6 +51,20 @@ public class PartitaService {
                 .map(Giocatore::new)
                 .collect(Collectors.toList()));
 
+        // assegna gli obiettivi
+        this.carteObiettivoService.setObiettiviGiocatori(partita.getMappa(), partita.getGiocatori());
+
+        // distribuisci le carte territorio
+        this.carteTerritorioService.distribuisciCarte(partita);
+
+        // metti un armata su ogni territorio e aggiorna quelle dei giocatori rispettivamente
+        partita.getGiocatori().forEach(giocatore -> {
+            giocatore.getStati().forEach(stato -> {
+                stato.aggiungiArmate(1);
+                giocatore.setTruppeDisponibili(giocatore.getTruppeDisponibili() - 1);
+            });
+        });
+
         // setta la modalità
         if (nuovoGiocoDTO.getMod().equalsIgnoreCase(Partita.Modalita.LENTA.toString()))
             this.partita.setModalita(Partita.Modalita.LENTA);
@@ -51,33 +73,41 @@ public class PartitaService {
         if (nuovoGiocoDTO.getMod().equalsIgnoreCase(Partita.Modalita.VELOCE.toString()))
             this.partita.setModalita(Partita.Modalita.VELOCE);
 
-
         fasePreparazione = true;
+
+        // scegliamo casualmente un ordine di giocatori
+        Collections.shuffle(partita.getGiocatori());
+
+        // viene impostato manualmente solo la prima volta, il primo della lista randomizzata
+        partita.setGiocatoreAttivo(partita.getGiocatori().get(0));
 
         return new NuovoGiocoDAO(this.partita);
     }
 
     public IniziaTurnoDAO iniziaTurno() {
+        // TODO: calcolare le armate bonus per questo turno e ritornarle
         return new IniziaTurnoDAO(this.partita.getTurno());
     }
 
     public void rinforzo(RinforzoDTO rinforzoDTO) {
         // gestione rinforzi iniziali, credo convenga aggiungere dei controlli sul numero di armate in input da lato client
+        Giocatore giocatore = toGiocatore(rinforzoDTO.getGiocatore());
+        if (!partita.getGiocatoreAttivo().equals(giocatore))
+            throw new MossaIllegaleException();
+
         if (fasePreparazione) {
-            int counter = 0;
-            while (this.partita.getGiocatori().get(this.partita.getGiocatori().size()).getTruppeDisponibili() > 0) {
-                for (int i = 0; i < this.partita.getGiocatori().size(); i++) {
-                    for (Long key : rinforzoDTO.getRinforzi().keySet()) {
-                        counter = counter + rinforzoDTO.getRinforzi().get(key);
-                        Rinforzo rinforzo = new Rinforzo(toStato(key), rinforzoDTO.getRinforzi().get(key));
-                        rinforzo.esegui();
-                    }
-                    if (counter > 3)
-                        throw new MossaIllegaleException();
-                }
+            int armateDaPiazzare = Math.min(3, giocatore.getTruppeDisponibili());
+            eseguiRinforzo(rinforzoDTO, armateDaPiazzare);
+
+            // imposta il prossimo giocatore attivo
+            partita.setProssimoGiocatoreAttivo();
+
+            // se il prossimo giocatore non ha armate da piazzare allora la preparazione è finita: inizia la partita
+            if (partita.getGiocatoreAttivo().getTruppeDisponibili() == 0) {
+                fasePreparazione = false;
+                partita.iniziaPrimoTurno();
             }
-            fasePreparazione = false;
-        } else {
+        } else { // è un rinforzo di inizio turno
             // blocca il rinforzo se non si è in fase di rinforzi
             if (!this.partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
                 throw new MossaIllegaleException();
@@ -86,16 +116,37 @@ public class PartitaService {
             if (!this.partita.getGiocatoreAttivo().equals(toGiocatore(rinforzoDTO.getGiocatore())))
                 throw new MossaIllegaleException();
 
-            // crea ed esegue un nuovo rinforzo per ogni coppia idStato-numeroArmate della mappa in ingresso
-            for (Long key : rinforzoDTO.getRinforzi().keySet()) {
-                Rinforzo rinforzo = new Rinforzo(toStato(key), rinforzoDTO.getRinforzi().get(key));
-                rinforzo.esegui();
-            }
+            // blocca il rinforzo se non ha armate da piazzare ( cioè è già stato fatto )
+            if (giocatore.getTruppeDisponibili() == 0)
+                throw new MossaIllegaleException();
+
+            eseguiRinforzo(rinforzoDTO, partita.getGiocatoreAttivo().getTruppeDisponibili());
         }
     }
 
+    private void eseguiRinforzo(RinforzoDTO rinforzoDTO, int armateDaPiazzare) {
+        int totale = 0;
+        // controlla che i rinforzi totali siano quanto richiesto
+        for (Long key : rinforzoDTO.getRinforzi().keySet()) {
+            totale = totale + rinforzoDTO.getRinforzi().get(key);
+
+            // controlla che ogni stato sia del giocatore attivo
+            if (!toStato(key).getProprietario().equals(partita.getGiocatoreAttivo()))
+                throw new MossaIllegaleException();
+        }
+        if (totale != armateDaPiazzare)
+            throw new MossaIllegaleException();
+        // crea ed esegue un nuovo rinforzo per ogni coppia idStato-numeroArmate della mappa in ingresso
+        for (Long key : rinforzoDTO.getRinforzi().keySet()) {
+            Rinforzo rinforzo = new Rinforzo(toStato(key), rinforzoDTO.getRinforzi().get(key));
+            rinforzo.esegui();
+        }
+
+        partita.getGiocatoreAttivo().setTruppeDisponibili(0);
+    }
+
     // TODO:: carte territorio
-    public void giocaTris(TrisDTO trisDTO) {
+    public int giocaTris(TrisDTO trisDTO) {
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
             throw new MossaIllegaleException();
@@ -108,7 +159,14 @@ public class PartitaService {
         if (!this.partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
             throw new MossaIllegaleException();
 
+        // TODO: bisogna passare dall'id degli stati alle carte territorio ( e i jolly ?) e fare i dovuti controlli
+        // int nArmateBonus = carteTerritorioService.valutaTris();
+        // carteTerritorio.rimettiNelMazzo (.... )
+        int nArmateBonus = 1;
         this.partita.getTurno().getGiocatoreAttivo().addTruppeDisponibili(1);
+
+        // TODO: rivedere il tipo ritornato
+        return nArmateBonus;
     }
 
     public void attacco(AttaccoDTO attaccoDTO) {
@@ -156,11 +214,7 @@ public class PartitaService {
         if (!this.partita.getTurno().getFase().equals(Turno.Fase.COMBATTIMENTI))
             throw new MossaIllegaleException();
 
-        // blocca la difesa se chiamata dal giocatore attivo in quel turno
-        if (this.partita.getTurno().getGiocatoreAttivo().equals(toGiocatore(difesaDTO.getGiocatore())))
-            throw new MossaIllegaleException();
-
-        // blocca la difesa se chiamata da n giocatore non coinvolto nell'attuale combattimento
+        // blocca la difesa se chiamata da un giocatore non coinvolto come difensore nell'attuale combattimento
         if (!this.partita.getTurno().getCombattimentoInCorso().getStatoDifensore().getProprietario().equals(
                 toGiocatore(difesaDTO.getGiocatore())))
             throw new MossaIllegaleException();
@@ -199,52 +253,21 @@ public class PartitaService {
         }
     }
 
-    public void fineTurno() {
+    public CartaTerritorioDAO fineTurno() {
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
             throw new MossaIllegaleException();
 
-        // TODO:: ritorna al giocatore una carta territorio (se ha conquistato almeno uno stato)
-
-        // inizializza primo turno
-        if (this.partita.getTurno() == null) {
-            // set giocatoreAttivo passandogli la lista dei giocatori e selezionandone uno randomicamente
-            Random r = new Random();
-            this.partita.setGiocatoreAttivo(partita.getGiocatori().get(r.nextInt(partita.getGiocatori().size())));
-
-            // creazione del primo turno
-            this.partita.setTurno(new Turno(this.partita.getGiocatoreAttivo(), 1));
-        } else {
-            // setta come giocatore attivo il giocatore successivo della lista giocatori
-            for (int i = 0; i < this.partita.getGiocatori().size(); i++) {
-                if (this.partita.getGiocatoreAttivo().equals(this.partita.getGiocatori().get(i))) {
-                    if (i == this.partita.getGiocatori().size() - 1)
-                        this.partita.setGiocatoreAttivo(this.partita.getGiocatori().get(0));
-                    this.partita.setGiocatoreAttivo(this.partita.getGiocatori().get(i + 1));
-                }
-            }
-
-            // istanzia un nuovo turno passandogli il nuovo giocatoreAttivo e il numero del turno precedente incrementato di 1
-            this.partita.setTurno(
-                    new Turno(this.partita.getGiocatoreAttivo(),
-                            this.partita.getTurno().getNumero() + 1)
-            );
+        CartaTerritorio cartaTerritorio = null;
+        if (partita.getTurno().conquistaAvvenuta()) {
+            cartaTerritorio = carteTerritorioService.pescaCarta(partita.getGiocatoreAttivo());
         }
+
+        partita.nuovoTurno();
+
+        return cartaTerritorio != null ? new CartaTerritorioDAO(cartaTerritorio): null;
     }
 
-
-    // TODO:: alla fine rimuovere i metodi non utilizzati
-    public Stato toStato(String nomeStato) {
-        Stato stato = null;
-        for (int i = 0; i < this.partita.getTurno().getGiocatoreAttivo().getStati().size(); i++) {
-            if (nomeStato.equalsIgnoreCase(this.partita.getTurno().getGiocatoreAttivo().getStati().get(i).getNome()))
-                stato = this.partita.getTurno().getGiocatoreAttivo().getStati().get(i);
-        }
-        if (stato == null)
-            throw new RuntimeException("Stato non esiste");
-
-        return stato;
-    }
 
     public Stato toStato(Long idStato) {
         List<Stato> stato;

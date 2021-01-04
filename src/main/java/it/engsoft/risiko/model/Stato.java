@@ -92,8 +92,6 @@ public class Stato {
         this.proprietario = proprietario;
     }
 
-
-
     // ritorna vero se lo stato è confinante, falso altimenti
     public boolean isConfinante(Stato stato) {
         return confinanti.contains(stato);
