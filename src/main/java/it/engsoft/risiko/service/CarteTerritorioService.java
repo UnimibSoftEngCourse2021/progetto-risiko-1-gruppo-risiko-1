@@ -18,20 +18,20 @@ public class CarteTerritorioService {
      * Se il mazzo è già stato generato causa MossaIllegaleException.
      */
     public void distribuisciCarte(Partita partita) {
-        if(mazzo == null)
+        if(mazzo != null)
             throw new MossaIllegaleException();
 
-        // generazione mazzo
+        // Generazione mazzo
         generaMazzo(partita.getMappa());
 
-        // distribuzione carte ai giocatori
+        // Distribuzione carte ai giocatori
         Collections.shuffle(mazzo);
 
         int g = 0; // indice giocatori
 
-        // la carta 'c' viene assegnata al giocatore 'g'
+        // La carta 'c' viene assegnata al giocatore 'g'
         for (CartaTerritorio cartaTerritorio : mazzo) {
-            // se la carta è un jolly passa alla carta successiva
+            // Se la carta è un jolly passa alla carta successiva
             if (cartaTerritorio.getFigura() == CartaTerritorio.Figura.JOLLY)
                 continue;
 
