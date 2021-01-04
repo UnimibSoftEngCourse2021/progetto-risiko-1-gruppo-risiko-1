@@ -13,13 +13,13 @@ public class NuovoGiocoDAO {
     public String modalita;
 
     public NuovoGiocoDAO(Partita partita) {
-        this.giocatori = partita.giocatori.stream()
+        this.giocatori = partita.getGiocatori().stream()
                 .map(GiocatoreDAO::new)
                 .collect(Collectors.toList());
-        this.giocatoreAttivo = partita.giocatoreAttivo.getNome();
-        this.turno = partita.turno.getNumero();
-        this.mappa = new MappaDAO(partita.mappa);
-        this.modalita = partita.modalita.toString();
+        this.giocatoreAttivo = partita.getGiocatoreAttivo().getNome();
+        this.turno = partita.getTurno().getNumero();
+        this.mappa = new MappaDAO(partita.getMappa());
+        this.modalita = partita.getModalita().toString();
     }
 
     public List<GiocatoreDAO> getGiocatori() {

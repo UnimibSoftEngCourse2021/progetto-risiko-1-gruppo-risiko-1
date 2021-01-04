@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Partita {
-    public List<Giocatore> giocatori = new ArrayList<>();
-    public Giocatore giocatoreAttivo;
-    public Turno turno;
-    public Mappa mappa;
-    public Modalita modalita;
+    private List<Giocatore> giocatori = new ArrayList<>();
+    private Giocatore giocatoreAttivo;
+    private Turno turno;
+    private Mappa mappa;
+    private Modalita modalita;
 
     public enum Modalita{
         VELOCE,

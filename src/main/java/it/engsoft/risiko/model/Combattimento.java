@@ -96,6 +96,10 @@ public class Combattimento {
         return vittimeDifensore;
     }
 
+    public int getArmateAttaccante() { return armateAttaccante; }
+
+    public int getArmateDifensore() { return armateDifensore; }
+
     public ArrayList<Integer> getTiriAttaccante() {
         return tiriAttaccante;
     }
@@ -103,6 +107,10 @@ public class Combattimento {
     public ArrayList<Integer> getTiriDifensore() {
         return tiriDifensore;
     }
+
+    public Stato getStatoAttaccante() { return statoAttaccante; }
+
+    public Stato getStatoDifensore() { return statoDifensore; }
 
     public SpostamentoStrategico getSpostamentoAttacco() { return spostamentoAttacco; }
 

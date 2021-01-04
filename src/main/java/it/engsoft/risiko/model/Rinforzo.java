@@ -1,6 +1,7 @@
 package it.engsoft.risiko.model;
 
-public class Rinforzo {
+public class
+Rinforzo {
     private final int numeroArmate;
     private final Stato target;
     private boolean eseguito;

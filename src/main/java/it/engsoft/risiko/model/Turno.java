@@ -4,9 +4,7 @@ public class Turno {
     private final int numero;
     private Fase fase;
     private final Giocatore giocatoreAttivo;
-    private Rinforzo rinforzo;
     private Combattimento combattimentoInCorso;
-    private SpostamentoStrategico spostamentoStrategico;
 
     public enum Fase {RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
 
@@ -44,19 +42,19 @@ public class Turno {
         return giocatoreAttivo;
     }
 
-    public Rinforzo getRinforzo() {
-        return rinforzo;
-    }
+    //public Rinforzo getRinforzo() {
+        //return rinforzo;
+    //}
 
-    public void setRinforzo(Rinforzo rinforzo) {
-        this.rinforzo = rinforzo;
-    }
+    //public void setRinforzo(Rinforzo rinforzo) {
+       // this.rinforzo = rinforzo;
+    //}
 
-    public SpostamentoStrategico getSpostamentoStrategico() {
-        return spostamentoStrategico;
-    }
+    //public SpostamentoStrategico getSpostamentoStrategico() {
+      //  return spostamentoStrategico;
+    //}
 
-    public void setSpostamentoStrategico(SpostamentoStrategico spostamentoStrategico) {
-        this.spostamentoStrategico = spostamentoStrategico;
-    }
+    //public void setSpostamentoStrategico(SpostamentoStrategico spostamentoStrategico) {
+      //  this.spostamentoStrategico = spostamentoStrategico;
+    //}
 }
