@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public class CarteTerritorioService {
-    private List<CartaTerritorio> mazzo = new ArrayList<>();
+    private List<CartaTerritorio> mazzo;
     private int index; // indice per gestire il mazzo
 
     /**
@@ -18,7 +18,7 @@ public class CarteTerritorioService {
      * Se il mazzo è già stato generato causa MossaIllegaleException.
      */
     public void distribuisciCarte(Partita partita) {
-        if (mazzo != null)
+        if(mazzo == null)
             throw new MossaIllegaleException();
 
         // generazione mazzo
@@ -54,6 +54,8 @@ public class CarteTerritorioService {
      * @param mappa: la mappa su cui si svolge la partita
      */
     private void generaMazzo(Mappa mappa) {
+        mazzo = new ArrayList<>();
+
         int numStati = 0;
 
         // conta degli stati e creazione le carte
@@ -66,10 +68,15 @@ public class CarteTerritorioService {
         }
 
         // aggiunta figure alle carte
-        for (int i = 0; i < mazzo.size(); i = i + 3) {
-            mazzo.get(i).setFigura(CartaTerritorio.Figura.CANNONE);
-            mazzo.get(i + 1).setFigura(CartaTerritorio.Figura.FANTE);
-            mazzo.get(i + 2).setFigura(CartaTerritorio.Figura.CAVALLO);
+        for (int i = 0; i < mazzo.size(); i++) {
+            if (i % 3 == 0)
+                mazzo.get(i).setFigura(CartaTerritorio.Figura.CANNONE);
+
+            if (i % 3 == 1)
+                mazzo.get(i).setFigura(CartaTerritorio.Figura.FANTE);
+
+            if (i % 3 == 2)
+                mazzo.get(i).setFigura(CartaTerritorio.Figura.CAVALLO);
         }
 
         int numJolly = Math.round(numStati / 20F);
@@ -143,13 +150,13 @@ public class CarteTerritorioService {
     private int truppeExtra(CartaTerritorio a, CartaTerritorio b, CartaTerritorio c, Giocatore giocatore) {
         int truppe = 0;
 
-        if (a.getStatoRappresentato() != null && giocatore.getStati().contains(a.getStatoRappresentato()))
+        if (giocatore.getStati().contains(a.getStatoRappresentato()))
             truppe += 2;
 
-        if (b.getStatoRappresentato() != null && giocatore.getStati().contains(b.getStatoRappresentato()))
+        if (giocatore.getStati().contains(b.getStatoRappresentato()))
             truppe += 2;
 
-        if (c.getStatoRappresentato() != null && giocatore.getStati().contains(c.getStatoRappresentato()))
+        if (giocatore.getStati().contains(c.getStatoRappresentato()))
             truppe += 2;
 
         return truppe;
@@ -163,16 +170,17 @@ public class CarteTerritorioService {
     }
 
     /**
-     * Controlla se due carte hanno la stessa figura e la terza ha una figura diversa.
+     * Controlla se due carte hanno la stessa figura e la terza ha una figura diversa. Le due carte uguali non devono
+     * essere dei jolly.
      */
     private boolean coppiaUguale(CartaTerritorio a, CartaTerritorio b, CartaTerritorio c) {
-        if (a.getFigura() == b.getFigura() && b.getFigura() != c.getFigura())
+        if (a.getFigura() == b.getFigura() && b.getFigura() != c.getFigura() && b.getFigura() != CartaTerritorio.Figura.JOLLY)
             return true;
 
-        if (a.getFigura() == c.getFigura() && c.getFigura() != b.getFigura())
+        if (a.getFigura() == c.getFigura() && c.getFigura() != b.getFigura() && c.getFigura() != CartaTerritorio.Figura.JOLLY)
             return true;
 
-        if (b.getFigura() == b.getFigura() && b.getFigura() != a.getFigura())
+        if (b.getFigura() == c.getFigura() && c.getFigura() != a.getFigura() && c.getFigura() != CartaTerritorio.Figura.JOLLY)
             return true;
 
         return false;
