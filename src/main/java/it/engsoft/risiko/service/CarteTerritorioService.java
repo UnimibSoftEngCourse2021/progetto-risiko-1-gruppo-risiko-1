@@ -34,6 +34,7 @@ public class CarteTerritorioService {
             // Se la carta è un jolly passa alla carta successiva
             if (cartaTerritorio.getFigura() == CartaTerritorio.Figura.JOLLY)
                 continue;
+            // TODO: togliere continue
 
             // Assegna lo stato rappresentato dalla carta al giocatore
             partita.getGiocatori().get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
@@ -203,6 +204,8 @@ public class CarteTerritorioService {
     }
 
     private void rimettiNelMazzo(CartaTerritorio a, CartaTerritorio b, CartaTerritorio c) {
+        // TODO: aggiungere equals() e ID a CartaTerritorio
+
         // Rimuove le carte dal mazzo
         mazzo.remove(a);
         mazzo.remove(b);

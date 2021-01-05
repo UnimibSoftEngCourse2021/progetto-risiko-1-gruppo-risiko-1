@@ -146,7 +146,7 @@ public class PartitaService {
         partita.getGiocatoreAttivo().setTruppeDisponibili(0);
     }
 
-    // TODO:: carte territorio
+    // TODO: carte territorio
     public int giocaTris(TrisDTO trisDTO) {
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)

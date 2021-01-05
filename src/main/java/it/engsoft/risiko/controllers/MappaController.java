@@ -20,16 +20,16 @@ public class MappaController {
         this.mappaService = mappaService;
     }
 
-//    @RequestMapping(method = RequestMethod.GET, path = "/mappe")
-//    public List<CompactMappaDAO> mappe() {
-//        return mappaService.mappe();
-//    }
-//
-//    @RequestMapping(method = RequestMethod.GET, path = "/mappe/{id}")
-//    public MappaDAO mappa(@PathVariable("id") Long mappaId) {
-//        return mappaService.mappa(mappaId);
-//    }
-//
+    @RequestMapping(method = RequestMethod.GET, path = "/mappe")
+    public List<CompactMappaDAO> mappe() {
+        return mappaService.mappe();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/mappe/{id}")
+    public MappaDAO mappa(@PathVariable("id") Long mappaId) {
+        return mappaService.mappa(mappaId);
+    }
+
 //    @RequestMapping(method = RequestMethod.POST, path = "/mappe")
 //    public void nuovaMappa(@RequestBody MappaDTO mappaDTO) {
 //        // TODO: gestire dati in ingresso

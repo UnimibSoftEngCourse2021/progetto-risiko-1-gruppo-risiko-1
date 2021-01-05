@@ -43,7 +43,6 @@ public class CarteObiettivoService {
         }
     }
 
-
     private ConqTerritori generaObiettivoConquistaTerritori(Mappa mappa) {
         int target = mappa.getStati().size() * 24 / 42; // mantiene la stessa proporzione della mappa reale del Risiko
         return new ConqTerritori(target, 1);
