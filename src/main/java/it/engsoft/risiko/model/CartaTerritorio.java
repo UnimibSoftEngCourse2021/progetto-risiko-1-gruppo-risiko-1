@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import java.util.Objects;
+
 public class CartaTerritorio {
     private final Stato statoRappresentato;
     private Figura figura;
@@ -29,5 +31,13 @@ public class CartaTerritorio {
         if (figura == null)
             throw new RuntimeException("Figura nulla");
         this.figura = figura;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartaTerritorio that = (CartaTerritorio) o;
+        return Objects.equals(statoRappresentato, that.statoRappresentato) && figura == that.figura;
     }
 }

@@ -94,6 +94,11 @@ public class CarteTerritorioService {
     public CartaTerritorio pescaCarta(Giocatore giocatore) {
         index++;
 
+        if (index == mazzo.size()){
+            index--;
+            return null;
+        }
+
         giocatore.aggiungiCartaTerritorio(mazzo.get(index));
         return mazzo.get(index);
     }

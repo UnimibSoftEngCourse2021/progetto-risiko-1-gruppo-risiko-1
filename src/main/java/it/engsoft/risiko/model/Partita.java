@@ -10,11 +10,13 @@ public class Partita {
     private Mappa mappa;
     private Modalita modalita;
 
-    public enum Modalita{
+    public enum Modalita {
         VELOCE,
         NORMALE,
         LENTA
-    };
+    }
+
+    ;
 
     public List<Giocatore> getGiocatori() {
         return giocatori;
@@ -69,8 +71,8 @@ public class Partita {
     public void setProssimoGiocatoreAttivo() {
         int index = giocatori.indexOf(giocatoreAttivo);
 
-        boolean set  = false;
-        while(!set) {
+        boolean set = false;
+        while (!set) {
             index = (index + 1) % giocatori.size();
             if (!giocatori.get(index).isEliminato()) {
                 giocatoreAttivo = giocatori.get(index);
@@ -80,8 +82,12 @@ public class Partita {
     }
 
     public void assegnaArmateIniziali() {
-        // TODO: implementare un meccanismo per stabilire quante
-        int nArmate = 30;
-        giocatori.forEach(giocatore -> giocatore.setTruppeDisponibili(nArmate));
+        int nArmate = 0;
+        for (int i = 5; i < this.mappa.getStati().size(); i = i + 5) {
+            nArmate = nArmate + 15;
+        }
+        nArmate = nArmate / giocatori.size();
+        int finalNArmate = nArmate;
+        giocatori.forEach(giocatore -> giocatore.setTruppeDisponibili(finalNArmate));
     }
 }

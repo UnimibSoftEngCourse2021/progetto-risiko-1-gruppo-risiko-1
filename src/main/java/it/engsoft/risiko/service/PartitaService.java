@@ -53,7 +53,7 @@ public class PartitaService {
         // assegna gli obiettivi
         this.carteObiettivoService.setObiettiviGiocatori(partita.getMappa(), partita.getGiocatori());
 
-        // distribuisci le carte territorio
+        // distribuisci le carte territorio, comprende assegnazione degli stati
         this.carteTerritorioService.distribuisciCarte(partita);
 
         partita.assegnaArmateIniziali();
@@ -86,8 +86,7 @@ public class PartitaService {
     }
 
     public IniziaTurnoDAO iniziaTurno() {
-        // TODO: calcolare le armate bonus per questo turno e ritornarle
-        return new IniziaTurnoDAO(this.partita.getTurno());
+        return new IniziaTurnoDAO(this.partita);
     }
 
     public void rinforzo(RinforzoDTO rinforzoDTO) {
@@ -259,6 +258,7 @@ public class PartitaService {
         if (fasePreparazione)
             throw new MossaIllegaleException();
 
+        // pesca una carta territorio se conquistato
         CartaTerritorio cartaTerritorio = null;
         if (partita.getTurno().conquistaAvvenuta()) {
             cartaTerritorio = carteTerritorioService.pescaCarta(partita.getGiocatoreAttivo());
