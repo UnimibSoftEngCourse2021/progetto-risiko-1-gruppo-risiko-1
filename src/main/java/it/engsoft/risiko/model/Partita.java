@@ -12,8 +12,8 @@ public class Partita {
 
     public enum Modalita {
         VELOCE,
-        NORMALE,
-        LENTA
+        RIDOTTA,
+        COMPLETA
     }
 
     ;

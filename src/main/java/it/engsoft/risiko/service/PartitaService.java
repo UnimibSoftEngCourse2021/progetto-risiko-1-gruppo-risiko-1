@@ -67,10 +67,10 @@ public class PartitaService {
         });
 
         // setta la modalità
-        if (nuovoGiocoDTO.getMod().equalsIgnoreCase(Partita.Modalita.LENTA.toString()))
-            this.partita.setModalita(Partita.Modalita.LENTA);
-        if (nuovoGiocoDTO.getMod().equalsIgnoreCase(Partita.Modalita.NORMALE.toString()))
-            this.partita.setModalita(Partita.Modalita.NORMALE);
+        if (nuovoGiocoDTO.getMod().equalsIgnoreCase(Partita.Modalita.COMPLETA.toString()))
+            this.partita.setModalita(Partita.Modalita.COMPLETA);
+        if (nuovoGiocoDTO.getMod().equalsIgnoreCase(Partita.Modalita.RIDOTTA.toString()))
+            this.partita.setModalita(Partita.Modalita.RIDOTTA);
         if (nuovoGiocoDTO.getMod().equalsIgnoreCase(Partita.Modalita.VELOCE.toString()))
             this.partita.setModalita(Partita.Modalita.VELOCE);
 
