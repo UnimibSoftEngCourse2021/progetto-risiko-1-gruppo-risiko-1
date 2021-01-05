@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "vis": "^4.21.0-EOL",
     "vis-data": "^7.1.1",
     "vis-network": "^8.5.6",
     "vue": "^2.6.11",

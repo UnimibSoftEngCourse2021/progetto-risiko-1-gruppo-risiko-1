@@ -2,59 +2,77 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
-      dark
+      color="white"
+      max-height="4rem"
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+      <v-img src="logo.png" max-height="3rem" max-width="10rem"></v-img>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+      <v-spacer/>
+      <v-item-group>
+        <v-btn text @click="openNewGameDialog">
+          Nuovo gioco
+        </v-btn>
 
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+        <v-btn text>
+          Inserisci mappa
+        </v-btn>
+      </v-item-group>
     </v-app-bar>
 
-    <v-main>
-      <HelloWorld/>
+    <v-main class="black-background">
+      <Game v-if="gameActive">
+
+      </Game>
     </v-main>
+
+    <v-dialog v-model="showNuovoGiocoDialog" max-width="700px">
+      <nuovo-gioco-dialog @close="showNuovoGiocoDialog = false"/>
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+
+import Game from "@/components/Game";
+import NuovoGiocoDialog from "@/components/NuovoGiocoDialog";
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    NuovoGiocoDialog,
+    Game
   },
 
-  data: () => ({
-    //
-  }),
+  data() {
+    return {
+      showNuovoGiocoDialog: false
+    }
+  },
+
+  methods: {
+    async newGame() {
+      await this.$store.dispatch("downloadMappa", 1);
+      console.log(this.$store.getters.mapNetwork)
+
+      this.$store.commit("startGame")
+    },
+    async openNewGameDialog() {
+      await this.$store.dispatch("downloadMappe");
+      this.showNuovoGiocoDialog = true
+    }
+  },
+
+  computed: {
+    gameActive() {
+      return this.$store.getters.gameActive
+    }
+  }
 };
 </script>
+
+<style>
+  .black-background {
+    background-color: #000;
+  }
+</style>
