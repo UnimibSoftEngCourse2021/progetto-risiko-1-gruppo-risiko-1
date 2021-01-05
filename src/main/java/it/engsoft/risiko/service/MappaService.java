@@ -8,9 +8,9 @@ import java.util.List;
 // TODO: MappaService
 @Service
 public class MappaService {
-    public List<CompactMappaDAO> mappe() {}
-
-    public MappaDAO mappa(Long mappaId) {}
-
-    public void nuovaMappa(MappaDTO mappaDTO) {}
+//    public List<CompactMappaDAO> mappe() {}
+//
+//    public MappaDAO mappa(Long mappaId) {}
+//
+//    public void nuovaMappa(MappaDTO mappaDTO) {}
 }
