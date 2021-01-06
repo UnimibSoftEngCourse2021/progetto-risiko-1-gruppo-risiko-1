@@ -4,14 +4,14 @@ import java.util.List;
 
 public class TrisDTO {
     private String giocatore;
-    private List<Long> tris;
+    private List<Integer> tris;
 
-    public TrisDTO(String giocatore, List<Long> tris) {
+    public TrisDTO(String giocatore, List<Integer> tris) {
         if(giocatore == null || giocatore.trim().isEmpty())
             throw new RuntimeException("Nome giocatore non valido.");
         this.giocatore = giocatore;
 
-        if(tris == null)
+        if(tris.size() != 3)
             throw new RuntimeException("Tris non valido");
         this.tris = tris;
     }
@@ -20,7 +20,7 @@ public class TrisDTO {
         return giocatore;
     }
 
-    public List<Long> getTris() {
+    public List<Integer> getTris() {
         return tris;
     }
 }
