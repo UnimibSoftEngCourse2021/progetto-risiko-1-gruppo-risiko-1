@@ -1,25 +1,20 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.Partita;
+import it.engsoft.risiko.model.Turno;
 
 public class IniziaTurnoDAO {
     private int numeroTurno;
     private String giocatore;
     private int armateStati;
-    private int armateContinenti = 0;
+    private int armateContinenti;
     private int armateTotali;
 
-    public IniziaTurnoDAO(Partita partita) {
-        this.numeroTurno = partita.getTurno().getNumero();
-        this.giocatore = partita.getTurno().getGiocatoreAttivo().getNome();
-        this.armateStati = partita.getTurno().getGiocatoreAttivo().getStati().size()/3;
-
-        for (int i=0; i< partita.getGiocatoreAttivo().getStati().size(); i++) {
-            if (partita.getGiocatoreAttivo().equals(partita.getMappa().getContinenti().get(i).getProprietario()))
-                this.armateContinenti = partita.getMappa().getContinenti().get(i).getArmateBonus();
-        }
-
-        this.armateTotali = partita.getTurno().getGiocatoreAttivo().getTruppeDisponibili();
+    public IniziaTurnoDAO(Turno turno, int armateStati, int armateContinenti, int armateTotali) {
+        this.numeroTurno = turno.getNumero();
+        this.giocatore = turno.getGiocatoreAttivo().getNome();
+        this.armateStati = armateStati;
+        this.armateContinenti = armateContinenti;
+        this.armateTotali = armateTotali;
     }
 
     public int getNumeroTurno() {

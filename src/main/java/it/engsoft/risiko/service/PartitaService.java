@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,7 +87,14 @@ public class PartitaService {
     }
 
     public IniziaTurnoDAO iniziaTurno() {
-        return new IniziaTurnoDAO(this.partita);
+        int armateContinenti = 0;
+        int armateStati = 0;
+        for (int i = 0; i < this.partita.getGiocatoreAttivo().getStati().size(); i++) {
+            if (this.partita.getGiocatoreAttivo().equals(this.partita.getMappa().getContinenti().get(i).getProprietario()))
+                armateContinenti = partita.getMappa().getContinenti().get(i).getArmateBonus();
+        }
+        armateStati = this.partita.getTurno().getGiocatoreAttivo().getStati().size() / 3;
+        return new IniziaTurnoDAO(this.partita.getTurno(), armateStati, armateContinenti, armateStati + armateContinenti);
     }
 
     public void rinforzo(RinforzoDTO rinforzoDTO) {
@@ -268,7 +276,7 @@ public class PartitaService {
 
         partita.nuovoTurno();
 
-        return cartaTerritorio != null ? new CartaTerritorioDAO(cartaTerritorio): null;
+        return cartaTerritorio != null ? new CartaTerritorioDAO(cartaTerritorio) : null;
     }
 
 
