@@ -23,7 +23,6 @@ public class PartitaController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/gioco")
     public NuovoGiocoDAO nuovoGioco(@RequestBody NuovoGiocoDTO nuovoGiocoDTO) {
-        // TODO: NuovoGiocoDAO
         return partitaService.nuovoGioco(nuovoGiocoDTO);
     }
 
@@ -44,13 +43,12 @@ public class PartitaController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/attacco")
     public void attacco(@RequestBody AttaccoDTO attaccoDTO) {
-
+        partitaService.attacco(attaccoDTO);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/difesa")
     public DifesaDAO difesa(@RequestBody DifesaDTO difesaDTO) {
-        // TODO: DifesaDAO
-        return null;
+        return partitaService.difesa(difesaDTO);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/spostamento")
