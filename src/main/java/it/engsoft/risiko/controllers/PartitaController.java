@@ -60,7 +60,6 @@ public class PartitaController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/fine-turno")
     public CartaTerritorioDAO fineTurno() {
-        // TODO: CartaTerritorioDAO
         return partitaService.fineTurno();
     }
 }

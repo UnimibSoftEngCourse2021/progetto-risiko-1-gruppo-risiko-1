@@ -18,7 +18,7 @@ public class CarteTerritorioService {
      * Se il mazzo è già stato generato causa MossaIllegaleException.
      */
     public void distribuisciCarte(Partita partita) {
-        if(mazzo != null)
+        if (mazzo != null)
             throw new MossaIllegaleException();
 
         // Generazione mazzo
@@ -31,18 +31,15 @@ public class CarteTerritorioService {
 
         // La carta 'c' viene assegnata al giocatore 'g'
         for (CartaTerritorio cartaTerritorio : mazzo) {
-            // Se la carta è un jolly passa alla carta successiva
-            if (cartaTerritorio.getFigura() == CartaTerritorio.Figura.JOLLY)
-                continue;
-            // TODO: togliere continue
+            if (cartaTerritorio.getFigura() != CartaTerritorio.Figura.JOLLY) {
+                // Assegna lo stato rappresentato dalla carta al giocatore
+                partita.getGiocatori().get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
 
-            // Assegna lo stato rappresentato dalla carta al giocatore
-            partita.getGiocatori().get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
-
-            if (g == partita.getGiocatori().size() - 1)
-                g = 0;
-            else
-                g++;
+                if (g == partita.getGiocatori().size() - 1)
+                    g = 0;
+                else
+                    g++;
+            }
         }
 
         // Posiziona index prima della prima carta
@@ -57,14 +54,14 @@ public class CarteTerritorioService {
     private void generaMazzo(Mappa mappa) {
         mazzo = new ArrayList<>();
 
-        int numStati = 0;
+        int numStati = 0; // numStati viene utilizzato per contare gli stati e come ID per inizializzare le carte
 
         // conta degli stati e creazione le carte
         for (Continente continente : mappa.getContinenti()) {
             for (Stato stato : continente.getStati()) {
                 numStati++;
 
-                mazzo.add(new CartaTerritorio(stato));
+                mazzo.add(new CartaTerritorio(numStati, stato));
             }
         }
 
@@ -84,7 +81,7 @@ public class CarteTerritorioService {
 
         // aggiunge i jolly al mazzo
         for (int i = 0; i < numJolly; i++) {
-            CartaTerritorio jolly = new CartaTerritorio(null);
+            CartaTerritorio jolly = new CartaTerritorio(numStati + i, null);
             jolly.setFigura(CartaTerritorio.Figura.JOLLY);
 
             mazzo.add(jolly);
@@ -94,7 +91,7 @@ public class CarteTerritorioService {
     public CartaTerritorio pescaCarta(Giocatore giocatore) {
         index++;
 
-        if (index == mazzo.size()){
+        if (index == mazzo.size()) {
             index--;
             return null;
         }
@@ -105,10 +102,18 @@ public class CarteTerritorioService {
 
     /**
      * Calcola il numero di armate che spettano al giocatore che gioca il tris.
+     * Le carte giocate vengono rimesse nel mazzo.
      *
-     * @param giocatore : il giocatore che gioca il tris.
+     * @param tris      : lista contenente gli id delle tre carte giocate
+     * @param giocatore : il giocatore che gioca il tris
+     * @return numero di armate che spettano al giocatore
      */
-    public int valutaTris(CartaTerritorio a, CartaTerritorio b, CartaTerritorio c, Giocatore giocatore) {
+    public int valutaTris(List<Integer> tris, Giocatore giocatore) {
+        // Seleziona dal mazzo le carte corrispondenti agli id presenti in trisDTO
+        CartaTerritorio a = mazzo.stream().filter(carta -> carta.getId() == tris.get(0)).findAny().get();
+        CartaTerritorio b = mazzo.stream().filter(carta -> carta.getId() == tris.get(1)).findAny().get();
+        CartaTerritorio c = mazzo.stream().filter(carta -> carta.getId() == tris.get(2)).findAny().get();
+
         int standard = truppeStandard(a, b, c);
 
         // Se standard = 0 il tris non è valido
@@ -209,8 +214,6 @@ public class CarteTerritorioService {
     }
 
     private void rimettiNelMazzo(CartaTerritorio a, CartaTerritorio b, CartaTerritorio c) {
-        // TODO: aggiungere equals() e ID a CartaTerritorio
-
         // Rimuove le carte dal mazzo
         mazzo.remove(a);
         mazzo.remove(b);

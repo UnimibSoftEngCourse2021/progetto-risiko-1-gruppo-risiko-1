@@ -145,27 +145,29 @@ public class PartitaService {
         partita.getGiocatoreAttivo().setTruppeDisponibili(0);
     }
 
-    // TODO: carte territorio
     public int giocaTris(TrisDTO trisDTO) {
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
-            throw new MossaIllegaleException();
-
-        // blocca gioca tris se non viene chiamata dal giocatore attivo in quel turno
-        if (!this.partita.getTurno().getGiocatoreAttivo().equals(toGiocatore(trisDTO.getGiocatore())))
             throw new MossaIllegaleException();
 
         // blocca gioca tris se il turno non è' in fase di rinforzo
         if (!this.partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
             throw new MossaIllegaleException();
 
-        // TODO: bisogna passare dall'id degli stati alle carte territorio ( e i jolly ?) e fare i dovuti controlli
-        // int nArmateBonus = carteTerritorioService.valutaTris();
-        // carteTerritorio.rimettiNelMazzo (.... )
-        int nArmateBonus = 1;
-        this.partita.getTurno().getGiocatoreAttivo().addTruppeDisponibili(1);
+        // blocca gioca tris se in trisDTO non sono contenute esattamente tre carte
+        if (trisDTO.getTris().size() != 3)
+            throw new MossaIllegaleException();
 
-        // TODO: rivedere il tipo ritornato
+        // seleziona giocatore che gioca il tris
+        Giocatore giocatore = toGiocatore(trisDTO.getGiocatore());
+
+        // blocca gioca tris se non viene chiamata dal giocatore attivo in quel turno
+        if (!this.partita.getTurno().getGiocatoreAttivo().equals(giocatore))
+            throw new MossaIllegaleException();
+
+        int nArmateBonus = carteTerritorioService.valutaTris(trisDTO.getTris(), giocatore);
+        this.partita.getTurno().getGiocatoreAttivo().addTruppeDisponibili(nArmateBonus);
+
         return nArmateBonus;
     }
 

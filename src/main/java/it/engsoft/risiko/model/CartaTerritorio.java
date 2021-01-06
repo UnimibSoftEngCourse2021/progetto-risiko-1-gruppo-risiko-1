@@ -3,6 +3,7 @@ package it.engsoft.risiko.model;
 import java.util.Objects;
 
 public class CartaTerritorio {
+    private final int id;
     private final Stato statoRappresentato;
     private Figura figura;
 
@@ -11,10 +12,18 @@ public class CartaTerritorio {
         FANTE,
         CAVALLO,
         JOLLY
-    };
+    }
 
-    public CartaTerritorio(Stato statoRappresentato) {
+    public CartaTerritorio(int id, Stato statoRappresentato) {
+        if(id < 0)
+            throw new RuntimeException("ID carta territorio non valido.");
+
+        this.id = id;
         this.statoRappresentato = statoRappresentato;
+    }
+
+    public int getId() {
+        return id;
     }
 
     // stato rappresentato
@@ -38,6 +47,11 @@ public class CartaTerritorio {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartaTerritorio that = (CartaTerritorio) o;
-        return Objects.equals(statoRappresentato, that.statoRappresentato) && figura == that.figura;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
