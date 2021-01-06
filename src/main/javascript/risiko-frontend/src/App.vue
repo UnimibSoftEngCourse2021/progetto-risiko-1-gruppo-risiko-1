@@ -8,6 +8,10 @@
       <v-img src="logo.png" max-height="3rem" max-width="10rem"></v-img>
 
       <v-spacer/>
+
+      <h3 class="text--h3" v-if="gameActive">{{gameSituation}}</h3>
+
+      <v-spacer/>
       <v-item-group>
         <v-btn text @click="openNewGameDialog">
           Nuovo gioco
@@ -53,8 +57,6 @@ export default {
   methods: {
     async newGame() {
       await this.$store.dispatch("downloadMappa", 1);
-      console.log(this.$store.getters.mapNetwork)
-
       this.$store.commit("startGame")
     },
     async openNewGameDialog() {
@@ -66,6 +68,15 @@ export default {
   computed: {
     gameActive() {
       return this.$store.getters.gameActive
+    },
+
+    gameSituation() {
+      let ris
+      if (this.$store.getters.getFasePreparazione)
+        ris = "Fase di preparazione - "
+      else
+        ris = "Turno " + this.$store.getters.getTurno + " - "
+      return ris + this.$store.getters.getActivePlayer
     }
   }
 };

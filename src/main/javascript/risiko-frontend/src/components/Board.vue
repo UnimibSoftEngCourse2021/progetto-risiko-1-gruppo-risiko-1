@@ -7,7 +7,9 @@
 <script>
 
 let network = null;
+let nodes = null
 import * as visNet from "vis-network";
+import * as visData from "vis-data";
 
 export default {
   name: "Board",
@@ -51,7 +53,10 @@ export default {
   watch: {
     networkData: {
       handler: function (value) {
-        network.setData(value);
+        value.nodes.forEach(node => {
+          let { id, label } = node
+          nodes.update({ id, label })
+        })
       },
       deep: true
     }
@@ -60,8 +65,13 @@ export default {
   mounted() {
     // create a network
     let container = document.getElementById('network');
-    network = new visNet.Network(container, this.networkData, this.options);
-
+    nodes = new visData.DataSet(this.networkData.nodes)
+    let edges = new visData.DataSet(this.networkData.edges)
+    network = new visNet.Network(container, { nodes, edges }, this.options)
+    network.on("select", (data) => {
+      if (data.nodes.length > 0)
+        this.$emit("nodeSelected", { id: data.nodes[0] })
+    })
   },
 
   computed: {
