@@ -9,7 +9,6 @@ public class NuovoGiocoDAO {
     public List<GiocatoreDAO> giocatori;
     public String giocatoreAttivo;
     public MappaDAO mappa;
-    public String modalita;
 
     public NuovoGiocoDAO(Partita partita) {
         this.giocatori = partita.getGiocatori().stream()
@@ -17,7 +16,6 @@ public class NuovoGiocoDAO {
                 .collect(Collectors.toList());
         this.giocatoreAttivo = partita.getGiocatoreAttivo().getNome();
         this.mappa = new MappaDAO(partita.getMappa());
-        this.modalita = partita.getModalita().toString();
     }
 
     public List<GiocatoreDAO> getGiocatori() {
@@ -30,9 +28,5 @@ public class NuovoGiocoDAO {
 
     public MappaDAO getMappa() {
         return mappa;
-    }
-
-    public String getModalita() {
-        return modalita;
     }
 }

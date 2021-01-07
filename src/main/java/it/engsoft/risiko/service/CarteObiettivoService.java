@@ -20,7 +20,7 @@ public class CarteObiettivoService {
         // crea gli obiettivi di vario tipo
         ConqTerritori conqTerritori = generaObiettivoConquistaTerritori(mappa);
         ConqTerritori conqTerritoriAlternativo = generaObiettivoConqTerritoriAlternativo(mappa);
-        List<ConqGiocatore> congGiocatori = generaObiettivoConquistaGiocatori(giocatori, conqTerritori);
+        List<ConqGiocatore> conqGiocatori = generaObiettivoConquistaGiocatori(giocatori, conqTerritori);
 
         /* il numero di conqContinenti deve essere massimo pari al numero di giocatori, ma può essere di meno se
             non ci sono abbastanza coppie di continenti */
@@ -30,8 +30,8 @@ public class CarteObiettivoService {
         List<ConqContinenti> conqContinenti = generaObiettivoConquistaContinenti(mappa, numObiettiviConqContinenti);
 
         // aggrega tutti gli obiettivi in un'unica lista
-        List<Obiettivo> obiettivi = Arrays.asList(conqTerritori, conqTerritoriAlternativo);
-        obiettivi.addAll(congGiocatori);
+        List<Obiettivo> obiettivi = new ArrayList<>(Arrays.asList(conqTerritori, conqTerritoriAlternativo));
+        obiettivi.addAll(conqGiocatori);
         obiettivi.addAll(conqContinenti);
 
         // disordina la lista in modo random

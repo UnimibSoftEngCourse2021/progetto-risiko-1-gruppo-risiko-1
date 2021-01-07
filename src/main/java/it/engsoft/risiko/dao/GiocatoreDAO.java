@@ -22,7 +22,7 @@ public class GiocatoreDAO {
                 .map(CartaTerritorioDAO::new)
                 .collect(Collectors.toList());
         this.obiettivo = giocatore.getObiettivo().getDescrizione();
-        this.uccisore = giocatore.getUccisore().getNome();
+        this.uccisore = giocatore.getUccisore() == null ? null : giocatore.getUccisore().getNome();
         this.truppeDisponibili = giocatore.getTruppeDisponibili();
     }
 

@@ -20,7 +20,7 @@ public class ConqGiocatore extends Obiettivo {
 
     @Override
     public String getDescrizione() {
-        return "Devi distruggere le armate del giocatore " + target + ". Se sei tu quel giocatore, o se" +
+        return "Devi distruggere le armate del giocatore " + target.getNome() + ". Se sei tu quel giocatore, o se" +
                 " è già stato sconfitto da altri: " + obSecondario.getDescrizione();
     }
 

@@ -16,8 +16,6 @@ public class Partita {
         COMPLETA
     }
 
-    ;
-
     public List<Giocatore> getGiocatori() {
         return giocatori;
     }
