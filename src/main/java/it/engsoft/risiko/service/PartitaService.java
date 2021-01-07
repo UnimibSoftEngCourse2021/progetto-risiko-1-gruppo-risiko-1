@@ -63,7 +63,7 @@ public class PartitaService {
         partita.getGiocatori().forEach(giocatore -> {
             giocatore.getStati().forEach(stato -> {
                 stato.aggiungiArmate(1);
-                giocatore.setTruppeDisponibili(giocatore.getTruppeDisponibili() - 1);
+                giocatore.modificaTruppeDisponibili(-1);
             });
         });
 
@@ -87,17 +87,25 @@ public class PartitaService {
     }
 
     public IniziaTurnoDAO iniziaTurno() {
+        if(partita == null)
+            throw new MossaIllegaleException();
+
         int armateContinenti = 0;
         int armateStati = 0;
-        for (int i = 0; i < this.partita.getGiocatoreAttivo().getStati().size(); i++) {
-            if (this.partita.getGiocatoreAttivo().equals(this.partita.getMappa().getContinenti().get(i).getProprietario()))
-                armateContinenti = partita.getMappa().getContinenti().get(i).getArmateBonus();
+
+        for (Continente continente : partita.getMappa().getContinenti()) {
+            if(partita.getGiocatoreAttivo().equals(continente.getProprietario()))
+                armateContinenti = continente.getArmateBonus();
         }
+
         armateStati = this.partita.getTurno().getGiocatoreAttivo().getStati().size() / 3;
         return new IniziaTurnoDAO(this.partita.getTurno(), armateStati, armateContinenti, armateStati + armateContinenti);
     }
 
     public void rinforzo(RinforzoDTO rinforzoDTO) {
+        if(partita == null)
+            throw new MossaIllegaleException();
+
         // gestione rinforzi iniziali, credo convenga aggiungere dei controlli sul numero di armate in input da lato client
         Giocatore giocatore = toGiocatore(rinforzoDTO.getGiocatore());
         if (!partita.getGiocatoreAttivo().equals(giocatore))
@@ -142,18 +150,23 @@ public class PartitaService {
             if (!toStato(key).getProprietario().equals(partita.getGiocatoreAttivo()))
                 throw new MossaIllegaleException();
         }
+
         if (totale != armateDaPiazzare)
             throw new MossaIllegaleException();
+
         // crea ed esegue un nuovo rinforzo per ogni coppia idStato-numeroArmate della mappa in ingresso
         for (Long key : rinforzoDTO.getRinforzi().keySet()) {
             Rinforzo rinforzo = new Rinforzo(toStato(key), rinforzoDTO.getRinforzi().get(key));
             rinforzo.esegui();
         }
 
-        partita.getGiocatoreAttivo().setTruppeDisponibili(0);
+        partita.getGiocatoreAttivo().modificaTruppeDisponibili(-armateDaPiazzare);
     }
 
     public int giocaTris(TrisDTO trisDTO) {
+        if(partita == null)
+            throw new MossaIllegaleException();
+
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
             throw new MossaIllegaleException();
@@ -174,12 +187,15 @@ public class PartitaService {
             throw new MossaIllegaleException();
 
         int nArmateBonus = carteTerritorioService.valutaTris(trisDTO.getTris(), giocatore);
-        this.partita.getTurno().getGiocatoreAttivo().addTruppeDisponibili(nArmateBonus);
+        this.partita.getTurno().getGiocatoreAttivo().modificaTruppeDisponibili(nArmateBonus);
 
         return nArmateBonus;
     }
 
     public void attacco(AttaccoDTO attaccoDTO) {
+        if(partita == null)
+            throw new MossaIllegaleException();
+
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
             throw new MossaIllegaleException();
@@ -212,6 +228,9 @@ public class PartitaService {
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO) {
+        if(partita == null)
+            throw new MossaIllegaleException();
+
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
             throw new MossaIllegaleException();
@@ -236,6 +255,9 @@ public class PartitaService {
     }
 
     public void spostamentoStrategico(SpostamentoDTO spostamentoDTO) {
+        if(partita == null)
+            throw new MossaIllegaleException();
+
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
             throw new MossaIllegaleException();
@@ -264,6 +286,9 @@ public class PartitaService {
     }
 
     public CartaTerritorioDAO fineTurno() {
+        if(partita == null)
+            throw new MossaIllegaleException();
+
         // blocca il metodo se si è in fase di preparazione
         if (fasePreparazione)
             throw new MossaIllegaleException();

@@ -93,7 +93,7 @@ public class Giocatore {
         this.truppeDisponibili = truppeDisponibili;
     }
 
-    public void addTruppeDisponibili(int truppeDisponibili) {
+    public void modificaTruppeDisponibili(int truppeDisponibili) {
         if(this.truppeDisponibili + truppeDisponibili < 0)
             throw new RuntimeException("Truppe disponibili giocatore è negativo");
         this.truppeDisponibili = this.truppeDisponibili + truppeDisponibili;

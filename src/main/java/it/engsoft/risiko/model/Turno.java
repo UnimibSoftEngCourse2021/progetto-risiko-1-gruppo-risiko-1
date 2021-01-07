@@ -9,8 +9,6 @@ public class Turno {
 
     public enum Fase {RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
 
-    ;
-
     public Turno(final Giocatore giocatore, final int numero) {
         this.numero = numero;
         this.giocatoreAttivo = giocatore;

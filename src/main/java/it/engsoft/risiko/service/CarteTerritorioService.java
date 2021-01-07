@@ -34,6 +34,7 @@ public class CarteTerritorioService {
             if (cartaTerritorio.getFigura() != CartaTerritorio.Figura.JOLLY) {
                 // Assegna lo stato rappresentato dalla carta al giocatore
                 partita.getGiocatori().get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
+                cartaTerritorio.getStatoRappresentato().setProprietario(partita.getGiocatori().get(g));
 
                 if (g == partita.getGiocatori().size() - 1)
                     g = 0;
