@@ -49,16 +49,6 @@ export default new Vuex.Store({
             state.gioco.activePlayer = data.primoGiocatore
             state.gioco.primoGiocatore = data.primoGiocatore
         },
-        // addRinforzi(state, rinforzi) {
-        //     let totale = 0
-        //     rinforzi.forEach(r => {
-        //         let i = state.gioco.mappa.stati.findIndex(s => s.id === r.id)
-        //         Vue.set(state.gioco.mappa.stati[i], "armate", state.gioco.mappa.stati[i].armate + r.quantity)
-        //         totale += r.quantity
-        //     })
-        //     let giocatore = state.gioco.giocatori.find(g => g.nome === state.gioco.activePlayer)
-        //     giocatore.armateDisponibili -= totale
-        // },
         addRinforzi(state, rinforzi) {
             let totale = 0
             let mappa = { ...state.gioco.mappa }
@@ -94,6 +84,7 @@ export default new Vuex.Store({
         },
         async startGame({ commit }, config) {
             let { data } = await giocoService.nuovoGioco(config);
+            console.log(data)
             commit("startGame", data)
         },
         async inviaRinforzi({ commit, state }, rinforzi) {

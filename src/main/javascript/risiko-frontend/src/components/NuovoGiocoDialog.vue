@@ -16,13 +16,15 @@
               :rule="[v => !!v]"
           />
 
-          <span v-if="selected">Da {{selected.numMinGiocatori}} a {{selected.numMaxGiocatori}} giocatori</span>
+          <v-card-text v-if="selected" class="text-caption">{{selected.descrizione}}</v-card-text>
+
           <v-combobox multiple small-chips
               :disabled="!selected"
               :items="giocatoriDefault"
               v-model="elencoGiocatori"
               :rules="[validaGiocatori]"
-              label="Inserisci i nomi dei giocatori"
+              :label="'Inserisci i nomi dei giocatori' + (this.selected ? ' (da ' + selected.numMinGiocatori + ' a '
+                        + selected.numMaxGiocatori + ')' : '' )"
           />
         </v-form>
       </v-card-text>
@@ -68,7 +70,7 @@ name: "NuovoGiocoDialog",
       let config = {
         giocatori: this.elencoGiocatori,
         mappaId: this.selected.id,
-        mod: "normal"
+        mod: "COMPLETA"
       }
       await this.$store.dispatch("startGame", config)
       this.$emit("close")

@@ -9,16 +9,12 @@ import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.model.*;
 import it.engsoft.risiko.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Scope(value = WebApplicationContext.SCOPE_SESSION)
 public class PartitaService {
     private Partita partita;
     private Boolean fasePreparazione;

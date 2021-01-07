@@ -4,15 +4,10 @@ import it.engsoft.risiko.service.PartitaService;
 import it.engsoft.risiko.dto.*;
 import it.engsoft.risiko.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.WebApplicationContext;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api")
-@Scope(WebApplicationContext.SCOPE_SESSION)
 public class PartitaController {
     private final PartitaService partitaService;
 
