@@ -27,8 +27,8 @@ public class PartitaController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/rinforzi")
-    public void rinforzi(@RequestBody RinforzoDTO rinforzoDTO) {
-        partitaService.rinforzo(rinforzoDTO);
+    public boolean rinforzi(@RequestBody RinforzoDTO rinforzoDTO) {
+        return partitaService.rinforzo(rinforzoDTO);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/inizia-turno")

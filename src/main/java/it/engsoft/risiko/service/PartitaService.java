@@ -35,6 +35,9 @@ public class PartitaService {
     }
 
     public NuovoGiocoDAO nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
+        if(partita != null)
+            throw new MossaIllegaleException();
+
         this.partita = new Partita();
 
         // istanzia la mappa caricandola tramite id da un repository
@@ -102,7 +105,7 @@ public class PartitaService {
         return new IniziaTurnoDAO(this.partita.getTurno(), armateStati, armateContinenti, armateStati + armateContinenti);
     }
 
-    public void rinforzo(RinforzoDTO rinforzoDTO) {
+    public boolean rinforzo(RinforzoDTO rinforzoDTO) {
         if(partita == null)
             throw new MossaIllegaleException();
 
@@ -138,6 +141,8 @@ public class PartitaService {
 
             eseguiRinforzo(rinforzoDTO, partita.getGiocatoreAttivo().getTruppeDisponibili());
         }
+
+        return fasePreparazione;
     }
 
     private void eseguiRinforzo(RinforzoDTO rinforzoDTO, int armateDaPiazzare) {
