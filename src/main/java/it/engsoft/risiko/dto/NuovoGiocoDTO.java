@@ -1,5 +1,7 @@
 package it.engsoft.risiko.dto;
 
+import it.engsoft.risiko.exceptions.DatiErratiException;
+
 import java.util.ArrayList;
 
 public final class NuovoGiocoDTO {
@@ -9,15 +11,15 @@ public final class NuovoGiocoDTO {
 
     public NuovoGiocoDTO(ArrayList<String> giocatori, Long mappaId, String mod) {
         if(giocatori == null)
-            throw new RuntimeException("Elenco giocatori non valido.");
+            throw new DatiErratiException();
         this.giocatori = giocatori;
 
         if(mappaId < 0L)
-            throw new RuntimeException("Id mappa non valido");
+            throw new DatiErratiException();
         this.mappaId = mappaId;
 
         if(mod == null || mod.trim().isEmpty())
-            throw new RuntimeException("Modalità non valida.");
+            throw new DatiErratiException();
         this.mod = mod;
     }
 

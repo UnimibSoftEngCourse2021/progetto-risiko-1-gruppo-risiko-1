@@ -1,5 +1,7 @@
 package it.engsoft.risiko.dto;
 
+import it.engsoft.risiko.exceptions.DatiErratiException;
+
 public final class SpostamentoDTO {
     private final String giocatore;
     private final long statoPartenza;
@@ -8,19 +10,19 @@ public final class SpostamentoDTO {
 
     public SpostamentoDTO(String giocatore, Long statoPartenza, Long statoArrivo, int armate) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new RuntimeException("Nome giocatore non valido.");
+            throw new DatiErratiException();
         this.giocatore = giocatore;
 
         if(statoPartenza < 0L)
-            throw new RuntimeException("Stato partenza non valido.");
+            throw new DatiErratiException();
         this.statoPartenza = statoPartenza;
 
         if(statoArrivo < 0L)
-            throw new RuntimeException("Stato arrivo non valido.");
+            throw new DatiErratiException();
         this.statoArrivo = statoArrivo;
 
         if(armate <= 0)
-            throw new RuntimeException("Numero armate non valido.");
+            throw new DatiErratiException();
         this.armate = armate;
     }
 

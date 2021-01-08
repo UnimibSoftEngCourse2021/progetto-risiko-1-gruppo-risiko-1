@@ -1,5 +1,7 @@
 package it.engsoft.risiko.dto;
 
+import it.engsoft.risiko.exceptions.DatiErratiException;
+
 import java.util.List;
 
 public class TrisDTO {
@@ -8,11 +10,11 @@ public class TrisDTO {
 
     public TrisDTO(String giocatore, List<Integer> tris) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new RuntimeException("Nome giocatore non valido.");
+            throw new DatiErratiException();
         this.giocatore = giocatore;
 
         if(tris.size() != 3)
-            throw new RuntimeException("Tris non valido");
+            throw new DatiErratiException();
         this.tris = tris;
     }
 

@@ -1,5 +1,7 @@
 package it.engsoft.risiko.dto;
 
+import it.engsoft.risiko.exceptions.DatiErratiException;
+
 public final class AttaccoDTO {
     private final String giocatore;
     private final long attaccante;
@@ -8,19 +10,19 @@ public final class AttaccoDTO {
 
     public AttaccoDTO(String giocatore, Long attaccante, Long difensore, int armate) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new RuntimeException("Nome giocatore non valido");
+            throw new DatiErratiException();
         this.giocatore = giocatore;
 
         if(attaccante < 0L)
-            throw new RuntimeException("Id attaccante non valido");
+            throw new DatiErratiException();
         this.attaccante = attaccante;
 
         if(difensore < 0L)
-            throw new RuntimeException("Id difensore non valido");
+            throw new DatiErratiException();
         this.difensore = difensore;
 
         if(armate <= 0)
-            throw new RuntimeException("numero armate non valido");
+            throw new DatiErratiException();
         this.armate = armate;
     }
 
