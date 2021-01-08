@@ -9,12 +9,26 @@ public class Partita {
     private Turno turno;
     private Mappa mappa;
     private Modalita modalita;
+    private boolean fasePreparazione;
 
     public enum Modalita {
         VELOCE,
         RIDOTTA,
-        COMPLETA
+        COMPLETA;
+
+        public static Modalita valutaModalita(String modalita) {
+            if (modalita.equalsIgnoreCase(Partita.Modalita.COMPLETA.toString())) {
+                return Partita.Modalita.COMPLETA;
+            } else if (modalita.equalsIgnoreCase(Partita.Modalita.RIDOTTA.toString())) {
+                return Partita.Modalita.RIDOTTA;
+            } else if (modalita.equalsIgnoreCase(Partita.Modalita.VELOCE.toString())) {
+                return Partita.Modalita.VELOCE;
+            }
+
+            return Modalita.COMPLETA;
+        }
     }
+
 
     public List<Giocatore> getGiocatori() {
         return giocatori;
@@ -55,6 +69,10 @@ public class Partita {
     public void setModalita(Modalita modalita) {
         this.modalita = modalita;
     }
+
+    public boolean isFasePreparazione() { return fasePreparazione; }
+
+    public void setFasePreparazione(boolean fasePreparazione) { this.fasePreparazione = fasePreparazione; }
 
     public void iniziaPrimoTurno() {
         setGiocatoreAttivo(giocatori.get(0));

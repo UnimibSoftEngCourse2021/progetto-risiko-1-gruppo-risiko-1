@@ -43,7 +43,8 @@ public class PartitaController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/tris")
     public int giocaTris(@RequestBody TrisDTO trisDTO, HttpSession httpSession) {
-        return partitaService.giocaTris(trisDTO, httpSession);
+        Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        return partitaService.giocaTris(trisDTO, partita);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/attacco")
