@@ -2,11 +2,12 @@ package it.engsoft.risiko.dao;
 
 import it.engsoft.risiko.model.Giocatore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GiocatoreDAO {
-    private final List<StatoDAO> stati;
+    private List<Long> idStati = new ArrayList<>();
     private String nome;
     private List<CartaTerritorioDAO> carteTerritorio;
     private String obiettivo;
@@ -14,9 +15,8 @@ public class GiocatoreDAO {
     private int truppeDisponibili;
 
     public GiocatoreDAO(Giocatore giocatore) {
-        this.stati = giocatore.getStati().stream()
-                .map(StatoDAO::new)
-                .collect(Collectors.toList());
+        giocatore.getStati().forEach(stato ->
+                this.idStati.add(stato.getId()));
         this.nome = giocatore.getNome();
         this.carteTerritorio = giocatore.getCarteTerritorio().stream()
                 .map(CartaTerritorioDAO::new)
@@ -26,8 +26,8 @@ public class GiocatoreDAO {
         this.truppeDisponibili = giocatore.getTruppeDisponibili();
     }
 
-    public List<StatoDAO> getStati() {
-        return stati;
+    public List<Long> getIdStati() {
+        return idStati;
     }
 
     public String getNome() {
