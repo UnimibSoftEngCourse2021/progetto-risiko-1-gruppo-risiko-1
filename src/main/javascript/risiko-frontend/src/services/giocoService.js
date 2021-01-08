@@ -13,11 +13,11 @@ function nuovoGioco(configurazione) {
 }
 
 function inviaRinforzi(rinforzi) {
-    return _axios.post("api/rinforzo", rinforzi)
+    return _axios.post("api/rinforzi", rinforzi)
 }
 
 function nuovoTurno() {
-    return _axios.get("api/turno")
+    return _axios.get("api/inizia-turno")
     // return { data: mockNuovoTurno }
 }
 //

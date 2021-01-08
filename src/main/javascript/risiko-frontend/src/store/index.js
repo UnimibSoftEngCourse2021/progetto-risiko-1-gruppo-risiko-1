@@ -34,11 +34,16 @@ export default new Vuex.Store({
         startGame(state, data) {
             state.gioco.on = true
             state.gioco.mappa = utils.formattaMappa(data.mappa)
-            state.gioco.giocatori = data.giocatori.map(giocatore => { return {
-                ...giocatore, armateDisponibili: data.nArmateIniziali, eliminato: false } })
+            state.gioco.giocatori = data.giocatori.map(giocatore => {
+                return {
+                    stati: giocatore.idStati,
+                    armateDisponibili: giocatore.truppeDisponibili,
+                    nome: giocatore.nome,
+                    obiettivo: giocatore.obiettivo,
+                    eliminato: false }
+            })
             state.gioco.giocatori.forEach(giocatore => {
                 giocatore.stati.forEach(idStato => {
-                    giocatore.armateDisponibili--
                     let stato = utils.trovaStatoId(state.gioco.mappa, idStato)
                     stato.proprietario = giocatore.nome
                     stato.armate = 1
@@ -46,8 +51,8 @@ export default new Vuex.Store({
             })
             state.gioco.preparazione = true
             state.gioco.turno = { num: 0 }
-            state.gioco.activePlayer = data.primoGiocatore
-            state.gioco.primoGiocatore = data.primoGiocatore
+            state.gioco.activePlayer = data.giocatoreAttivo
+            state.gioco.primoGiocatore = data.giocatoreAttivo
         },
         addRinforzi(state, rinforzi) {
             let totale = 0
