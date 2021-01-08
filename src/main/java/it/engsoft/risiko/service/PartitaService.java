@@ -1,9 +1,6 @@
 package it.engsoft.risiko.service;
 
-import it.engsoft.risiko.dao.CartaTerritorioDAO;
-import it.engsoft.risiko.dao.DifesaDAO;
-import it.engsoft.risiko.dao.IniziaTurnoDAO;
-import it.engsoft.risiko.dao.NuovoGiocoDAO;
+import it.engsoft.risiko.dao.*;
 import it.engsoft.risiko.dto.*;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.model.*;
@@ -30,7 +27,7 @@ public class PartitaService {
         this.carteObiettivoService = carteObiettivoService;
     }
 
-    public NuovoGiocoDAO nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
+    public Partita nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
         if(partita != null)
             throw new MossaIllegaleException();
 
@@ -82,7 +79,7 @@ public class PartitaService {
         // viene impostato manualmente solo la prima volta, il primo della lista randomizzata
         partita.setGiocatoreAttivo(partita.getGiocatori().get(0));
 
-        return new NuovoGiocoDAO(this.partita);
+        return this.partita;
     }
 
     public IniziaTurnoDAO iniziaTurno() {
