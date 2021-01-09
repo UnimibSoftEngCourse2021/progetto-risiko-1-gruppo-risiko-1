@@ -2,7 +2,7 @@ package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.dao.*;
 import it.engsoft.risiko.dto.*;
-import it.engsoft.risiko.exceptions.MossaIllegaleException;
+import it.engsoft.risiko.exceptions.*;
 import it.engsoft.risiko.model.*;
 import it.engsoft.risiko.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,7 +175,7 @@ public class PartitaService {
         if (!partita.getTurno().getGiocatoreAttivo().equals(giocatore))
             throw new MossaIllegaleException();
 
-        int nArmateBonus = carteTerritorioService.valutaTris(trisDTO.getTris(), giocatore);
+        int nArmateBonus = carteTerritorioService.valutaTris(partita.getMazzo(), trisDTO.getTris(), giocatore);
         partita.getTurno().getGiocatoreAttivo().modificaTruppeDisponibili(nArmateBonus);
 
         return nArmateBonus;
@@ -285,7 +285,7 @@ public class PartitaService {
         // pesca una carta territorio se conquistato
         CartaTerritorio cartaTerritorio = null;
         if (partita.getTurno().conquistaAvvenuta()) {
-            cartaTerritorio = carteTerritorioService.pescaCarta(partita.getGiocatoreAttivo());
+            cartaTerritorio = carteTerritorioService.pescaCarta(partita.getMazzo(), partita.getGiocatoreAttivo());
         }
 
         partita.nuovoTurno();
@@ -311,7 +311,7 @@ public class PartitaService {
                 giocatore = partita.getGiocatori().get(i);
         }
         if (giocatore == null)
-            throw new RuntimeException("Giocatore non esiste");
+            throw new DatiErratiException();
         return giocatore;
     }
 }

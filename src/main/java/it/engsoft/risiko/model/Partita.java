@@ -9,6 +9,7 @@ public class Partita {
     private Turno turno;
     private Mappa mappa;
     private Modalita modalita;
+    private List<CartaTerritorio> mazzo = new ArrayList<>();
     private boolean fasePreparazione;
 
     public enum Modalita {
@@ -70,6 +71,10 @@ public class Partita {
         this.modalita = modalita;
     }
 
+    public List<CartaTerritorio> getMazzo() {
+        return mazzo;
+    }
+
     public boolean isFasePreparazione() { return fasePreparazione; }
 
     public void setFasePreparazione(boolean fasePreparazione) { this.fasePreparazione = fasePreparazione; }
@@ -98,12 +103,12 @@ public class Partita {
     }
 
     public void assegnaArmateIniziali() {
-        int nArmate = 0;
+        /*int nArmate = 0;
         for (int i = 5; i < this.mappa.getStati().size(); i = i + 5) {
             nArmate = nArmate + 15;
         }
         nArmate = nArmate / giocatori.size();
-        int finalNArmate = nArmate;
-        giocatori.forEach(giocatore -> giocatore.setTruppeDisponibili(finalNArmate));
+        int finalNArmate = nArmate;*/
+        giocatori.forEach(giocatore -> giocatore.setTruppeDisponibili(14));
     }
 }

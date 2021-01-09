@@ -4,25 +4,21 @@ import it.engsoft.risiko.model.*;
 import it.engsoft.risiko.exceptions.*;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CarteTerritorioService {
-    private List<CartaTerritorio> mazzo;
-    private int index; // indice per gestire il mazzo
-
     /**
      * Genera il mazzo e distribuisce le carte ai giocatori.
      * Se il mazzo è già stato generato causa MossaIllegaleException.
      */
     public void distribuisciCarte(Partita partita) {
-        if (mazzo != null)
-            throw new MossaIllegaleException();
+        List<CartaTerritorio> mazzo = partita.getMazzo();
 
         // Generazione mazzo
-        generaMazzo(partita.getMappa());
+        generaMazzo(mazzo, partita.getMappa());
 
         // Distribuzione carte ai giocatori
         Collections.shuffle(mazzo);
@@ -42,9 +38,6 @@ public class CarteTerritorioService {
                     g++;
             }
         }
-
-        // Posiziona index prima della prima carta
-        index = -1;
     }
 
     /**
@@ -52,10 +45,9 @@ public class CarteTerritorioService {
      *
      * @param mappa: la mappa su cui si svolge la partita
      */
-    private void generaMazzo(Mappa mappa) {
-        mazzo = new ArrayList<>();
-
-        int numStati = 0; // numStati viene utilizzato per contare gli stati e come ID per inizializzare le carte
+    private void generaMazzo(List<CartaTerritorio> mazzo, Mappa mappa) {
+        // numStati viene utilizzato per contare gli stati e come ID per inizializzare le carte
+        int numStati = 0;
 
         // conta degli stati e creazione le carte
         for (Continente continente : mappa.getContinenti()) {
@@ -89,16 +81,14 @@ public class CarteTerritorioService {
         }
     }
 
-    public CartaTerritorio pescaCarta(Giocatore giocatore) {
-        index++;
-
-        if (index == mazzo.size()) {
-            index--;
+    public CartaTerritorio pescaCarta(List<CartaTerritorio> mazzo, Giocatore giocatore) {
+        if(mazzo.size() == 0)
             return null;
-        }
 
-        giocatore.aggiungiCartaTerritorio(mazzo.get(index));
-        return mazzo.get(index);
+        CartaTerritorio carta = mazzo.remove(0);
+        giocatore.aggiungiCartaTerritorio(carta);
+
+        return carta;
     }
 
     /**
@@ -109,11 +99,18 @@ public class CarteTerritorioService {
      * @param giocatore : il giocatore che gioca il tris
      * @return numero di armate che spettano al giocatore
      */
-    public int valutaTris(List<Integer> tris, Giocatore giocatore) {
-        // Seleziona dal mazzo le carte corrispondenti agli id presenti in trisDTO
-        CartaTerritorio a = mazzo.stream().filter(carta -> carta.getId() == tris.get(0)).findAny().get();
-        CartaTerritorio b = mazzo.stream().filter(carta -> carta.getId() == tris.get(1)).findAny().get();
-        CartaTerritorio c = mazzo.stream().filter(carta -> carta.getId() == tris.get(2)).findAny().get();
+    public int valutaTris(List<CartaTerritorio> mazzo, List<Integer> tris, Giocatore giocatore) {
+        CartaTerritorio a;
+        CartaTerritorio b;
+        CartaTerritorio c;
+
+        try {
+            a = giocatore.getCarteTerritorio().stream().filter(carta -> carta.getId() == tris.get(0)).findAny().get();
+            b = giocatore.getCarteTerritorio().stream().filter(carta -> carta.getId() == tris.get(1)).findAny().get();
+            c = giocatore.getCarteTerritorio().stream().filter(carta -> carta.getId() == tris.get(2)).findAny().get();
+        } catch (NoSuchElementException e) {
+            throw new MossaIllegaleException();
+        }
 
         int standard = truppeStandard(a, b, c);
 
@@ -122,7 +119,7 @@ public class CarteTerritorioService {
             throw new MossaIllegaleException();
 
         // Rimette le carte usate nel mazzo
-        rimettiNelMazzo(a, b, c);
+        rimettiNelMazzo(mazzo, a, b, c);
 
         return standard + truppeExtra(a, b, c, giocatore);
     }
@@ -214,18 +211,10 @@ public class CarteTerritorioService {
         return false;
     }
 
-    private void rimettiNelMazzo(CartaTerritorio a, CartaTerritorio b, CartaTerritorio c) {
-        // Rimuove le carte dal mazzo
-        mazzo.remove(a);
-        mazzo.remove(b);
-        mazzo.remove(c);
-
+    private void rimettiNelMazzo(List<CartaTerritorio> mazzo, CartaTerritorio a, CartaTerritorio b, CartaTerritorio c) {
         // Reinserisce le carte in fondo al mazzo
         mazzo.add(a);
         mazzo.add(b);
         mazzo.add(c);
-
-        // Riduce index per rispettare le operazioni eseguite
-        index -= 3;
     }
 }
