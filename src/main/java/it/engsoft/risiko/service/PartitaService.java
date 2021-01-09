@@ -74,7 +74,7 @@ public class PartitaService {
     }
 
     public IniziaTurnoDAO iniziaTurno(Partita partita) {
-        if(partita == null)
+        if(partita == null || partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
         int armateContinenti = 0;
@@ -153,7 +153,7 @@ public class PartitaService {
     }
 
     public int giocaTris(TrisDTO trisDTO, Partita partita) {
-        if(partita == null)
+        if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca il metodo se si è in fase di preparazione
@@ -182,7 +182,7 @@ public class PartitaService {
     }
 
     public void attacco(AttaccoDTO attaccoDTO, Partita partita) {
-        if(partita == null)
+        if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca il metodo se si è in fase di preparazione
@@ -217,7 +217,7 @@ public class PartitaService {
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
-        if(partita == null)
+        if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca il metodo se si è in fase di preparazione
@@ -244,7 +244,7 @@ public class PartitaService {
     }
 
     public void spostamentoStrategico(SpostamentoDTO spostamentoDTO, Partita partita) {
-        if(partita == null)
+        if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca il metodo se si è in fase di preparazione
@@ -275,7 +275,7 @@ public class PartitaService {
     }
 
     public CartaTerritorioDAO fineTurno(Partita partita) {
-        if(partita == null)
+        if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca il metodo se si è in fase di preparazione
