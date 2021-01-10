@@ -7,7 +7,7 @@
 
     <v-divider class="my-5" />
 
-    <gestore-combattimenti v-if="!bloccaCombattimenti"/>
+    <gestore-combattimenti ref="gestoreCombattimenti" v-if="!bloccaCombattimenti"/>
   </div>
 </template>
 
@@ -27,12 +27,20 @@ export default {
     },
     bloccaCombattimenti() {
       return this.$store.getters.getBloccaCombattimenti
+    },
+    combattimentoInCorso() {
+      return this.$store.getters.getCombattimentoInCorso
+    },
+    truppeDisponibili() {
+      return this.$store.getters.getArmateDisponibili
     }
   },
   methods: {
     onNodeSelected({ id }) {
-      if (!this.bloccaRinforzi) {
+      if (!this.bloccaRinforzi && this.truppeDisponibili > 0) {
         this.$refs.gestoreRinforzi.onNodeSelected({ id })
+      } else if (!this.bloccaCombattimenti && this.combattimentoInCorso) {
+        this.$refs.gestoreCombattimenti.onNodeSelected({ id })
       }
     }
   }

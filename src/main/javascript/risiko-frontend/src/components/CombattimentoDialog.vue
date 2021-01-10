@@ -14,7 +14,7 @@
 
     </div>
     <v-card-actions v-else>
-      <v-btn color="red" text>OK</v-btn>
+      <v-btn color="red" text @click="chiudi">OK</v-btn>
     </v-card-actions>
   </v-card>
 </template>

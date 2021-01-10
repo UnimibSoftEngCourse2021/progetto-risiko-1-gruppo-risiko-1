@@ -1,33 +1,42 @@
 <template>
   <div>
     <v-subheader>RINFORZI</v-subheader>
-    <span class="text-caption">Devi piazzare {{rinforziConsentiti}} armate
+
+    <div v-if="fasePreparazione || rinforziConsentiti > 0">
+      <span class="text-caption">Devi piazzare {{rinforziConsentiti}} armate
       {{fasePreparazione ? "" : (" (" + turno.armateStati + " per bonus territori, " + turno.armateContinenti
-          + " per bonus continenti)")}}. Clicca sulla mappa i territori da rinforzare</span>
+            + " per bonus continenti)")}}. Clicca sulla mappa i territori da rinforzare</span>
 
-    <v-list>
-      <v-list-item v-for="rinf in rinforzi" :key="rinf.id">
-        <v-row>
-          <v-badge :content="rinf.quantity" color="red">
-            <v-list-item-title>{{ rinf.nome }}</v-list-item-title>
-          </v-badge>
+      <v-list>
+        <v-list-item v-for="rinf in rinforzi" :key="rinf.id">
+          <v-row>
+            <v-badge :content="rinf.quantity" color="red">
+              <v-list-item-title>{{ rinf.nome }}</v-list-item-title>
+            </v-badge>
 
-          <v-spacer/>
-          <v-list-item-action>
-            <v-row>
-              <v-btn icon :disabled="totaleRinforzi === rinforziConsentiti" @click="rinf.quantity++">
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-              <v-btn icon @click="diminuisciRinforzo(rinf)">
-                <v-icon>mdi-minus</v-icon>
-              </v-btn>
-            </v-row>
-          </v-list-item-action>
-        </v-row>
-      </v-list-item>
-    </v-list>
-    <v-btn text color="red" :disabled="rinforziConsentiti !== totaleRinforzi" @click="inviaRinforzi">Piazza rinforzi
-    </v-btn>
+            <v-spacer/>
+            <v-list-item-action>
+              <v-row>
+                <v-btn icon :disabled="totaleRinforzi === rinforziConsentiti" @click="rinf.quantity++">
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <v-btn icon @click="diminuisciRinforzo(rinf)">
+                  <v-icon>mdi-minus</v-icon>
+                </v-btn>
+              </v-row>
+            </v-list-item-action>
+          </v-row>
+        </v-list-item>
+      </v-list>
+      <v-btn text color="red" :disabled="rinforziConsentiti !== totaleRinforzi"
+             @click="inviaRinforzi">Piazza rinforzi
+      </v-btn>
+    </div>
+
+    <span class="d-block text-caption" v-else>
+      Hai già effettuato rinforzi in questo turno
+    </span>
+
   </div>
 </template>
 

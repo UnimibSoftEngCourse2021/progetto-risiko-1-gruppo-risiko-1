@@ -42,7 +42,8 @@ export default new Vuex.Store({
                     armateDisponibili: giocatore.truppeDisponibili,
                     nome: giocatore.nome,
                     obiettivo: giocatore.obiettivo,
-                    eliminato: false
+                    eliminato: false,
+                    carteTerritorio: []
                 }
             })
             gioco.giocatori.forEach(giocatore => {
@@ -80,7 +81,7 @@ export default new Vuex.Store({
                 armateContinenti: turno.armateContinenti,
                 fase: "rinforzi"
             }
-            state.gioco.giocatori[state.gioco.activePlayerIndex].armateDisponibili = turno.armateTotali
+            state.gioco.giocatori[state.gioco.activePlayerIndex].armateDisponibili = turno.armateStati + turno.armateContinenti
         },
         setActivePlayer(state, nome) {
             state.gioco.activePlayerIndex = state.gioco.giocatori.findIndex(g => g.nome === nome)
@@ -157,12 +158,12 @@ export default new Vuex.Store({
         async confermaAttacco({ commit, state }) {
             let attaccoPayload = {
                 giocatore: state.gioco.giocatori[state.gioco.activePlayerIndex].nome,
-                attaccante: state.gioco.combattimento.attaccante.id,
-                difensore: state.gioco.combattimento.difensore.id,
+                attaccante: state.gioco.combattimento.attaccante,
+                difensore: state.gioco.combattimento.difensore,
                 armate: state.gioco.combattimento.armateAttaccante
             }
             await giocoService.attacco(attaccoPayload)
-            let proprietarioDif = utils.trovaStatoId(state.gioco.combattimento.difensore).proprietario
+            let proprietarioDif = utils.trovaStatoId(state.gioco.mappa, state.gioco.combattimento.difensore).proprietario
             let difesaPayload = {
                 giocatore: proprietarioDif,
                 armate: state.gioco.combattimento.armateDifensore

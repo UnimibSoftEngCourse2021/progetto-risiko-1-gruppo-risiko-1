@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-subheader>COMBATTIMENTI</v-subheader>
-
     <v-btn v-if="!combattimentoInCorso"
            @click="iniziaAttacco"
            color="red" text>
@@ -29,7 +28,9 @@
       <v-btn color="red"
              text
              @click="confermaAttacco"
-             :disabled="!statoDifensore || !statoAttaccante">Conferma attacco</v-btn>
+             :disabled="!statoDifensore || !statoAttaccante || !$store.state.gioco.combattimento.armateAttaccante ||
+                        !$store.state.gioco.combattimento.armateDifensore">
+        Conferma attacco</v-btn>
     </div>
 
     <v-dialog v-model="showCombattimentoDialog" max-width="700px">
@@ -61,18 +62,16 @@ export default {
       this.$store.commit("iniziaAttacco")
     },
     onNodeSelected({ id }) {
-      if (this.combattimentoInCorso) {
-        let stato = utils.trovaStatoId(this.mappa, id)
-        if (this.statoAttaccante === null) {
-          if (stato.proprietario === this.activePlayer && stato.armate > 1) {
-            this.$store.commit("setStatoAttaccante", stato)
-          }
-        } else if (this.statoDifensore === null) {
-          if (stato.proprietario !== this.activePlayer && utils.confinanti(this.statoAttaccante, stato)) {
-            this.$store.commit("setStatoDifensore", stato)
-          }
-        } // else do nothing
-      }
+      let stato = utils.trovaStatoId(this.mappa, id)
+      if (this.statoAttaccante === null) {
+        if (stato.proprietario === this.activePlayer && stato.armate > 1) {
+          this.$store.commit("setStatoAttaccante", stato)
+        }
+      } else if (this.statoDifensore === null) {
+        if (stato.proprietario !== this.activePlayer && utils.confinanti(this.statoAttaccante, stato)) {
+          this.$store.commit("setStatoDifensore", stato)
+        }
+      } // else do nothing
     },
     async confermaAttacco() {
       await this.$store.dispatch("confermaAttacco")
@@ -93,14 +92,25 @@ export default {
       return this.$store.getters.getActivePlayer
     },
     possibiliArmateAttaccanti() {
+      let ris = []
       if (!this.statoAttaccante)
-        return []
-      return Math.min(3, this.statoAttaccante.armate - 1)
+        return ris
+      let max = Math.min(3, this.statoAttaccante.armate - 1)
+      for (let i = 1; i <= max; i++)
+        ris.push(i)
+      return ris
     },
     possibiliArmateDifensori() {
+      let ris = []
       if (!this.statoDifensore)
-        return []
-      return Math.min(3, this.statoDifensore.armate)
+        return ris
+      let max = Math.min(3, this.statoDifensore.armate)
+      for (let i = 1; i <= max; i++)
+        ris.push(i)
+      return ris
+    },
+    mappa() {
+      return this.$store.getters.getMappaGioco
     }
   }
 }

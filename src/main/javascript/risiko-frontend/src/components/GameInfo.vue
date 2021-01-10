@@ -4,9 +4,12 @@
       <h3 class="text-h5 text-center my-6">Informazioni sulla partita</h3>
 
       <!-- Obiettivi -->
-      <v-btn color="red" text dark @click="showObiettiviDialog = true" class="mb-5" width="wrap-content">
+      <v-btn color="red" text @click="showObiettiviDialog = true" class="mb-5" width="wrap-content">
         Mostra obiettivi
       </v-btn>
+
+      <!-- Giocatori -->
+      <v-btn color="red" text @click="showGiocatoriDialog = true">Mostra info giocatori</v-btn>
 
       <!-- Continenti -->
       <v-list class="lista-continenti">
@@ -25,19 +28,25 @@
     <v-dialog v-model="showObiettiviDialog" max-width="700px">
       <obiettivi-dialog/>
     </v-dialog>
+
+    <v-dialog v-model="showGiocatoriDialog" max-width="700px">
+      <giocatori-dialog />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 
 import ObiettiviDialog from "@/components/ObiettiviDialog";
+import GiocatoriDialog from "@/components/GiocatoriDialog";
 
 export default {
   name: "Info",
-  components: { ObiettiviDialog },
+  components: {GiocatoriDialog, ObiettiviDialog },
   data() { return {
     showObiettiviDialog: true,
-    selectedContinente: null
+    selectedContinente: null,
+    showGiocatoriDialog: false
   }},
 
   watch: {
