@@ -88,7 +88,9 @@ public class PartitaService {
         }
 
         armateStati = partita.getTurno().getGiocatoreAttivo().getStati().size() / 3;
-        return new IniziaTurnoDAO(partita.getTurno(), armateStati, armateContinenti, armateStati + armateContinenti);
+
+        partita.getGiocatoreAttivo().modificaTruppeDisponibili(armateContinenti + armateStati);
+        return new IniziaTurnoDAO(partita.getTurno(), armateStati, armateContinenti);
     }
 
     public Map<String, Object> rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
@@ -115,10 +117,6 @@ public class PartitaService {
         } else { // è un rinforzo di inizio turno
             // blocca il rinforzo se non si è in fase di rinforzi
             if (!partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
-                throw new MossaIllegaleException();
-
-            // blocca il rinforzo se non viene chiamato dal giocatore attivo in quel turno
-            if (!partita.getGiocatoreAttivo().equals(toGiocatore(rinforzoDTO.getGiocatore(), partita)))
                 throw new MossaIllegaleException();
 
             // blocca il rinforzo se non ha armate da piazzare ( cioè è già stato fatto )

@@ -7,14 +7,12 @@ public class IniziaTurnoDAO {
     private String giocatore;
     private int armateStati;
     private int armateContinenti;
-    private int armateTotali;
 
-    public IniziaTurnoDAO(Turno turno, int armateStati, int armateContinenti, int armateTotali) {
+    public IniziaTurnoDAO(Turno turno, int armateStati, int armateContinenti) {
         this.numeroTurno = turno.getNumero();
         this.giocatore = turno.getGiocatoreAttivo().getNome();
         this.armateStati = armateStati;
         this.armateContinenti = armateContinenti;
-        this.armateTotali = armateTotali;
     }
 
     public int getNumeroTurno() {
@@ -32,6 +30,4 @@ public class IniziaTurnoDAO {
     public int getArmateContinenti() {
         return armateContinenti;
     }
-
-    public int getArmateTotali() { return armateTotali; }
 }
