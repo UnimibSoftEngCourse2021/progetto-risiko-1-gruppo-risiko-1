@@ -9,6 +9,7 @@ public class DifesaDAO {
     private ArrayList<Integer> dadoDif;
     private int vittimeAtt;
     private int vittimeDif;
+    private boolean obiettivoRaggiuntoAtt;
     private boolean vittoriaAtt;
 
     public DifesaDAO(Combattimento combattimento){
@@ -16,7 +17,8 @@ public class DifesaDAO {
         this.dadoDif = combattimento.getTiriDifensore();
         this.vittimeAtt = combattimento.getVittimeAttaccante();
         this.vittimeDif = combattimento.getVittimeDifensore();
-        this.vittoriaAtt = combattimento.getStatoAttaccante().getProprietario().getObiettivo().raggiunto(
+        this.vittoriaAtt = combattimento.getConquista();
+        this.obiettivoRaggiuntoAtt = combattimento.getStatoAttaccante().getProprietario().getObiettivo().raggiunto(
                 combattimento.getStatoAttaccante().getProprietario());
     }
 
@@ -29,4 +31,5 @@ public class DifesaDAO {
     public int getVittimeDif() { return vittimeDif; }
 
     public boolean isVittoriaAtt() { return vittoriaAtt; }
+
 }

@@ -160,22 +160,22 @@ public class PartitaService {
         if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
-        // blocca il metodo se si è in fase di preparazione
+        // blocca giocaTris se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
-        // blocca gioca tris se il turno non è' in fase di rinforzo
+        // blocca giocaTris se il turno non è' in fase di rinforzo
         if (!partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
             throw new MossaIllegaleException();
 
-        // blocca gioca tris se in trisDTO non sono contenute esattamente tre carte
+        // blocca giocaTris se in trisDTO non sono contenute esattamente tre carte
         if (trisDTO.getTris().size() != 3)
             throw new MossaIllegaleException();
 
         // seleziona giocatore che gioca il tris
         Giocatore giocatore = toGiocatore(trisDTO.getGiocatore(), partita);
 
-        // blocca gioca tris se non viene chiamata dal giocatore attivo in quel turno
+        // blocca giocaTris se non viene chiamata dal giocatore attivo in quel turno
         if (!partita.getGiocatoreAttivo().equals(giocatore))
             throw new MossaIllegaleException();
 
@@ -189,7 +189,7 @@ public class PartitaService {
         if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
-        // blocca il metodo se si è in fase di preparazione
+        // blocca l'attacco se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
@@ -227,11 +227,15 @@ public class PartitaService {
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
-        if(partita == null || partita.getTurno() == null)
+        if (partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
-        // blocca il metodo se si è in fase di preparazione
+        // blocca la difesa se si è in fase di preparazione
         if (partita.isFasePreparazione())
+            throw new MossaIllegaleException();
+
+        // blocca la difesa se il giocatore attivo ha ancora truppe da posizionare
+        if (partita.getGiocatoreAttivo().getTruppeDisponibili() != 0)
             throw new MossaIllegaleException();
 
         // blocca la difesa se non c'e' un combattimento in corso
@@ -247,9 +251,14 @@ public class PartitaService {
                 toGiocatore(difesaDTO.getGiocatore(), partita)))
             throw new MossaIllegaleException();
 
+        //esecuzione combattimento
         partita.getTurno().getCombattimentoInCorso().simulaCombattimento(difesaDTO.getArmate());
+
+        //crea oggetto difesaDAO, se l'attaccante non ha conquistato il territorio il combattimento viene messo a null
         DifesaDAO difesaDAO = new DifesaDAO(partita.getTurno().getCombattimentoInCorso());
-        partita.getTurno().setCombattimentoInCorso(null);
+        if (!partita.getTurno().getCombattimentoInCorso().getConquista())
+            partita.getTurno().setCombattimentoInCorso(null);
+
         return difesaDAO;
     }
 
@@ -257,7 +266,7 @@ public class PartitaService {
         if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
-        // blocca il metodo se si è in fase di preparazione
+        // blocca lo spostamento se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
@@ -288,8 +297,16 @@ public class PartitaService {
         if(partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
-        // blocca il metodo se si è in fase di preparazione
+        // blocca fineTurno se si è in fase di preparazione
         if (partita.isFasePreparazione())
+            throw new MossaIllegaleException();
+
+        // blocca fineTurno se si è in fase di combattimento
+        if (partita.getTurno().getFase().equals(Turno.Fase.COMBATTIMENTI))
+            throw new MossaIllegaleException();
+
+        // blocca fineTurno se il giocatore attivo ha ancora truppe da posizionare
+        if (partita.getGiocatoreAttivo().getTruppeDisponibili() != 0)
             throw new MossaIllegaleException();
 
         // pesca una carta territorio se conquistato
