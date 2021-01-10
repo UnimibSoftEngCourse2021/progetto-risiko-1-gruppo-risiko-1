@@ -36,7 +36,7 @@ public class PartitaController {
         return partitaService.rinforzo(rinforzoDTO, partita);
     }
 
-    @GetMapping(path = "/inizia-turno")
+    @PostMapping(path = "/inizia-turno")
     public IniziaTurnoDAO iniziaTurno(HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         return partitaService.iniziaTurno(partita);

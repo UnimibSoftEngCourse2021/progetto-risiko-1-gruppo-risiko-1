@@ -79,17 +79,22 @@ public class PartitaService {
         if(partita == null || partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
-        int armateContinenti = 0;
-        int armateStati = 0;
+        // blocca iniziaTurno se fase diversa da NULL
+        if (!partita.getTurno().getFase().equals(Turno.Fase.NULL))
+            throw new MossaIllegaleException();
 
+        // calcolo armate bonus date al giocatore attivo dagli stati conquistati
+        int armateStati = partita.getGiocatoreAttivo().getStati().size() / 3;
+
+        // calcolo armate bonus date al giocatore attivo dai continenti conquistati
+        int armateContinenti = 0;
         for (Continente continente : partita.getMappa().getContinenti()) {
             if(partita.getGiocatoreAttivo().equals(continente.getProprietario()))
                 armateContinenti = continente.getArmateBonus();
         }
 
-        armateStati = partita.getGiocatoreAttivo().getStati().size() / 3;
-
         partita.getGiocatoreAttivo().modificaTruppeDisponibili(armateContinenti + armateStati);
+        partita.getTurno().setFase(Turno.Fase.RINFORZI);
         return new IniziaTurnoDAO(partita.getTurno().getNumero(), partita.getGiocatoreAttivo().getNome(), armateStati, armateContinenti);
     }
 

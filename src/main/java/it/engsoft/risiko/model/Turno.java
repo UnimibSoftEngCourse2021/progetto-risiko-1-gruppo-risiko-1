@@ -6,12 +6,12 @@ public class Turno {
     private Combattimento combattimentoInCorso;
     private boolean conquista;
 
-    public enum Fase {RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
+    public enum Fase {NULL, RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
 
     public Turno(final int numero) {
         this.numero = numero;
         this.combattimentoInCorso = null;
-        this.fase = Fase.RINFORZI;
+        this.fase = Fase.NULL;
         conquista = false;
     }
 
@@ -45,6 +45,7 @@ public class Turno {
     }
 
 
+    //TODO:: pulire metodi se inutili
     //public Rinforzo getRinforzo() {
         //return rinforzo;
     //}
