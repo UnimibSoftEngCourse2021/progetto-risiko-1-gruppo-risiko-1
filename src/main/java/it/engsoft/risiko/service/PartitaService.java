@@ -8,7 +8,9 @@ import it.engsoft.risiko.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,7 +91,7 @@ public class PartitaService {
         return new IniziaTurnoDAO(partita.getTurno(), armateStati, armateContinenti, armateStati + armateContinenti);
     }
 
-    public boolean rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
+    public Map<String, Object> rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
         if(partita == null)
             throw new MossaIllegaleException();
 
@@ -126,7 +128,11 @@ public class PartitaService {
             eseguiRinforzo(rinforzoDTO, partita.getGiocatoreAttivo().getTruppeDisponibili(), partita);
         }
 
-        return partita.isFasePreparazione();
+        Map<String, Object> risposta = new HashMap<>();
+        risposta.put("giocatore", partita.getGiocatoreAttivo().getNome());
+        risposta.put("preparazione", partita.isFasePreparazione());
+
+        return risposta;
     }
 
     private void eseguiRinforzo(RinforzoDTO rinforzoDTO, int armateDaPiazzare, Partita partita) {

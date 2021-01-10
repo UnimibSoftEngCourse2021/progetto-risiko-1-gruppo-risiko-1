@@ -2,8 +2,6 @@ package it.engsoft.risiko.dao;
 
 import it.engsoft.risiko.model.CartaTerritorio;
 
-import java.util.UUID;
-
 public class CartaTerritorioDAO {
     private int id;
     private String statoRappresentato;

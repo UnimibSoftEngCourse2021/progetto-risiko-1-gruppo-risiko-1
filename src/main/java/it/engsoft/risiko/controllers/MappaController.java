@@ -20,12 +20,12 @@ public class MappaController {
         this.mappaService = mappaService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/mappe")
+    @GetMapping(path = "/mappe")
     public List<CompactMappaDAO> mappe() {
         return mappaService.mappe();
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/mappe/{id}")
+    @GetMapping(path = "/mappe/{id}")
     public MappaDAO mappa(@PathVariable("id") Long mappaId) {
         return mappaService.mappa(mappaId);
     }

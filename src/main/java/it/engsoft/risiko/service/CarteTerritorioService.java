@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CarteTerritorioService {
@@ -100,17 +100,24 @@ public class CarteTerritorioService {
      * @return numero di armate che spettano al giocatore
      */
     public int valutaTris(List<CartaTerritorio> mazzo, List<Integer> tris, Giocatore giocatore) {
-        CartaTerritorio a;
-        CartaTerritorio b;
-        CartaTerritorio c;
+        // Ottiene le carte corrispondenti agli id
+        Optional<CartaTerritorio> optA = giocatore.getCarteTerritorio().stream()
+                .filter(carta -> carta.getId() == tris.get(0))
+                .findFirst();
+        Optional<CartaTerritorio> optB = giocatore.getCarteTerritorio().stream()
+                .filter(carta -> carta.getId() == tris.get(1))
+                .findFirst();
+        Optional<CartaTerritorio> optC = giocatore.getCarteTerritorio().stream()
+                .filter(carta -> carta.getId() == tris.get(2))
+                .findFirst();
 
-        try {
-            a = giocatore.getCarteTerritorio().stream().filter(carta -> carta.getId() == tris.get(0)).findAny().get();
-            b = giocatore.getCarteTerritorio().stream().filter(carta -> carta.getId() == tris.get(1)).findAny().get();
-            c = giocatore.getCarteTerritorio().stream().filter(carta -> carta.getId() == tris.get(2)).findAny().get();
-        } catch (NoSuchElementException e) {
+        // Controlla che le carte siano presenti
+        if(optA.isEmpty() || optB.isEmpty() || optC.isEmpty())
             throw new MossaIllegaleException();
-        }
+
+        CartaTerritorio a = optA.get();
+        CartaTerritorio b = optB.get();
+        CartaTerritorio c = optC.get();
 
         int standard = truppeStandard(a, b, c);
 
