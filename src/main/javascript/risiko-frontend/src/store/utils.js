@@ -19,5 +19,9 @@ export default {
 
     trovaStatoId(mappa, id) {
         return mappa.stati.find(stato => stato.id === id)
+    },
+
+    confinanti(stato1, stato2) {
+        return stato1.confinanti.findIndex(statoId => statoId === stato2.id) !== -1
     }
 }

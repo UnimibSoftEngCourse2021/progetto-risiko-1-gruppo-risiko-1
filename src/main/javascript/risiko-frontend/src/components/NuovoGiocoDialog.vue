@@ -49,7 +49,7 @@ name: "NuovoGiocoDialog",
     return {
       show: true,
       selected: null,
-      giocatoriDefault: [ "Rosso", "Verde", "Giallo", "Blu", "Viola", "Nero" ],
+      giocatoriDefault: [  ],
       elencoGiocatori: [],
       formValid: false
     }
@@ -73,7 +73,7 @@ name: "NuovoGiocoDialog",
         mod: "COMPLETA"
       }
       await this.$store.dispatch("startGame", config)
-      this.$emit("close")
+      this.$emit("gameStarted")
     }
   }
 }

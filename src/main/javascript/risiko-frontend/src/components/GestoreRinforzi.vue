@@ -1,10 +1,9 @@
 <template>
-  <div v-if="fasePreparazione">
-    <h4>
-      Rinforzi di {{ activePlayer }} ({{ rinforziConsentiti }} consentiti)
-    </h4>
-
-    <span>Clicca sulla mappa i territori da rinforzare</span>
+  <div>
+    <v-subheader>RINFORZI</v-subheader>
+    <span class="text-caption">Devi piazzare {{rinforziConsentiti}} armate
+      {{fasePreparazione ? "" : (" (" + turno.armateStati + " per bonus territori, " + turno.armateContinenti
+          + " per bonus continenti)")}}. Clicca sulla mappa i territori da rinforzare</span>
 
     <v-list>
       <v-list-item v-for="rinf in rinforzi" :key="rinf.id">
@@ -61,33 +60,35 @@ export default {
       if (this.fasePreparazione)
         return Math.min(3, this.$store.getters.getArmateDisponibili)
       return this.$store.getters.getArmateDisponibili
+    },
+    turno() {
+      return this.$store.getters.getTurno
     }
   },
   methods: {
     onNodeSelected({ id }) {
-      if (this.fasePreparazione) {
-        let stato = utils.trovaStatoId(this.mappa, id)
-        if (stato.proprietario === this.activePlayer && this.totaleRinforzi < this.rinforziConsentiti) {
-          let rinforzoIndex = this.rinforzi.findIndex(rinf => rinf.id === id)
-          if (rinforzoIndex === -1) {
-            this.rinforzi.push({ id, nome: stato.nome, quantity: 0 })
-            rinforzoIndex = this.rinforzi.length - 1
-          }
-          this.rinforzi[rinforzoIndex].quantity++
+      let stato = utils.trovaStatoId(this.mappa, id)
+      if (stato.proprietario === this.activePlayer && this.totaleRinforzi < this.rinforziConsentiti) {
+        let rinforzoIndex = this.rinforzi.findIndex(rinf => rinf.id === id)
+        if (rinforzoIndex === -1) {
+          this.rinforzi.push({ id, nome: stato.nome, quantity: 0 })
+          rinforzoIndex = this.rinforzi.length - 1
         }
+        this.rinforzi[rinforzoIndex].quantity++
       }
     },
     diminuisciRinforzo(rinf) {
       rinf.quantity--
-      if (rinf.quantity === 0) {
-        let index = this.rinforzi.indexOf(el => el.id === rinf.id)
-        this.rinforzi.splice(index)
+      if (rinf.quantity <= 0) {
+        let index = this.rinforzi.findIndex(el => {
+          return el.id === rinf.id
+        })
+        this.rinforzi.splice(index, 1)
       }
     },
     async inviaRinforzi() {
       await this.$store.dispatch("inviaRinforzi", this.rinforzi)
       this.rinforzi = []
-      await this.$store.dispatch("nuovoTurno")
     }
   }
 }

@@ -24,13 +24,13 @@
     </v-app-bar>
 
     <v-main class="black-background">
-      <Game v-if="gameActive">
+      <Game v-if="gameActive" :key="gameKey">
 
       </Game>
     </v-main>
 
     <v-dialog v-model="showNuovoGiocoDialog" max-width="700px">
-      <nuovo-gioco-dialog @close="showNuovoGiocoDialog = false"/>
+      <nuovo-gioco-dialog @gameStarted="prepareGame"/>
     </v-dialog>
   </v-app>
 </template>
@@ -50,18 +50,19 @@ export default {
 
   data() {
     return {
-      showNuovoGiocoDialog: false
+      showNuovoGiocoDialog: false,
+      gameKey: 0
     }
   },
 
   methods: {
-    async newGame() {
-      await this.$store.dispatch("downloadMappa", 1);
-      this.$store.commit("startGame")
-    },
     async openNewGameDialog() {
       await this.$store.dispatch("downloadMappe");
       this.showNuovoGiocoDialog = true
+    },
+    prepareGame() {
+      this.showNuovoGiocoDialog = false
+      this.gameKey++
     }
   },
 
@@ -75,7 +76,7 @@ export default {
       if (this.$store.getters.getFasePreparazione)
         ris = "Fase di preparazione - "
       else
-        ris = "Turno " + this.$store.getters.getTurno + " - "
+        ris = "Turno " + this.$store.getters.getTurno.num + " - "
       return ris + this.$store.getters.getActivePlayer
     }
   }

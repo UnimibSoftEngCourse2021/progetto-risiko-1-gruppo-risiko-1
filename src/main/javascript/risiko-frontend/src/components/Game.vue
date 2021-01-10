@@ -1,44 +1,36 @@
 <template>
   <v-container fluid>
     <v-row>
+      <!-- Barra con le informazioni generali sulla partita -->
       <v-col cols="3" class="white d-flex flex-column">
-        <h3 class="text-h5 text-center">Informazioni sulla partita</h3>
-
-        <v-btn color="red" dark @click="showObiettiviDialog=true" class="mb-5" width="wrap-content">
-          Mostra obiettivi
-        </v-btn>
+        <game-info @evidenziaContinente="evidenziaContinente"/>
       </v-col>
+
+      <!-- Mappa -->
       <v-col cols="6">
-        <Board @nodeSelected="onNodeSelected"/>
+        <Board ref="board" @nodeSelected="onNodeSelected"/>
       </v-col>
 
+      <!-- Azioni del giocatore -->
       <v-col cols="3" class="white">
-        <h3 class="text-h5 text-center">Azioni</h3>
-
-        <gestore-rinforzi ref="gestoreRinforzi" v-if="fasePreparazione" class="mt-5" />
-
+        <azioni-giocatore ref="azioniGiocatore"/>
       </v-col>
     </v-row>
-
-    <v-dialog v-model="showObiettiviDialog" max-width="700px">
-      <obiettivi-dialog/>
-    </v-dialog>
   </v-container>
 
 </template>
 
 <script>
 import Board from "@/components/Board";
-import ObiettiviDialog from "@/components/ObiettiviDialog";
-// import utils from "@/store/utils";
-import GestoreRinforzi from "@/components/GestoreRinforzi";
+import GameInfo from "@/components/GameInfo";
+import AzioniGiocatore from "@/components/AzioniGiocatore";
+
 export default {
   name: "Game",
-  components: {GestoreRinforzi, ObiettiviDialog, Board},
+  components: {AzioniGiocatore, Board, GameInfo},
   data() {
     return {
       showObiettiviDialog: true,
-      // rinforzi: []
     }
   },
 
@@ -49,11 +41,12 @@ export default {
   },
 
   methods: {
-    onNodeSelected({ id }) {
-      if (this.fasePreparazione) {
-        this.$refs.gestoreRinforzi.onNodeSelected({ id })
-      }
+    evidenziaContinente(id) {
+      this.$refs.board.evidenziaStatiContinente(id)
     },
+    onNodeSelected({id}) {
+      this.$refs.azioniGiocatore.onNodeSelected({id})
+    }
   }
 }
 </script>
