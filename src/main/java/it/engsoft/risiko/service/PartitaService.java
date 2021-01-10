@@ -87,10 +87,10 @@ public class PartitaService {
                 armateContinenti = continente.getArmateBonus();
         }
 
-        armateStati = partita.getTurno().getGiocatoreAttivo().getStati().size() / 3;
+        armateStati = partita.getGiocatoreAttivo().getStati().size() / 3;
 
         partita.getGiocatoreAttivo().modificaTruppeDisponibili(armateContinenti + armateStati);
-        return new IniziaTurnoDAO(partita.getTurno(), armateStati, armateContinenti);
+        return new IniziaTurnoDAO(partita.getTurno().getNumero(), partita.getGiocatoreAttivo().getNome(), armateStati, armateContinenti);
     }
 
     public Map<String, Object> rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
@@ -176,11 +176,11 @@ public class PartitaService {
         Giocatore giocatore = toGiocatore(trisDTO.getGiocatore(), partita);
 
         // blocca gioca tris se non viene chiamata dal giocatore attivo in quel turno
-        if (!partita.getTurno().getGiocatoreAttivo().equals(giocatore))
+        if (!partita.getGiocatoreAttivo().equals(giocatore))
             throw new MossaIllegaleException();
 
         int nArmateBonus = carteTerritorioService.valutaTris(partita.getMazzo(), trisDTO.getTris(), giocatore);
-        partita.getTurno().getGiocatoreAttivo().modificaTruppeDisponibili(nArmateBonus);
+        partita.getGiocatoreAttivo().modificaTruppeDisponibili(nArmateBonus);
 
         return nArmateBonus;
     }
@@ -198,26 +198,32 @@ public class PartitaService {
             throw new MossaIllegaleException();
 
         // blocca l'attacco se il giocatore attivo ha ancora truppe da posizionare
-        if (partita.getTurno().getGiocatoreAttivo().getTruppeDisponibili() != 0)
+        if (partita.getGiocatoreAttivo().getTruppeDisponibili() != 0)
             throw new MossaIllegaleException();
 
         // blocca l'attacco se c'e' un combattimento in corso
         if (partita.getTurno().getCombattimentoInCorso() != null)
             throw new MossaIllegaleException();
 
-        // blocca l'attacco se cerca di attaccare un proprio territorio
-        if (partita.getTurno().getGiocatoreAttivo().equals(toStato(attaccoDTO.getDifensore(), partita).getProprietario()))
-            throw new MossaIllegaleException();
+        Giocatore attaccante = toGiocatore(attaccoDTO.getGiocatore(), partita);
+        Stato statoAttaccante = toStato(attaccoDTO.getAttaccante(), partita);
+        Stato statoDifensore = toStato(attaccoDTO.getDifensore(), partita);
 
         // blocca l'attacco se non viene chiamato dal giocatore attivo in quel turno
-        if (partita.getTurno().getGiocatoreAttivo().equals(toStato(attaccoDTO.getAttaccante(), partita).getProprietario()))
+        if (!partita.getGiocatoreAttivo().equals(attaccante))
+            throw new MossaIllegaleException();
+
+        // blocca l'attacco se lo stato attaccante non appartiene al giocatore attivo
+        if (!attaccante.equals(statoAttaccante.getProprietario()))
+            throw new MossaIllegaleException();
+
+        // blocca l'attacco se cerca di attaccare un proprio territorio
+        if (partita.getGiocatoreAttivo().equals(statoDifensore.getProprietario()))
             throw new MossaIllegaleException();
 
         partita.getTurno().setFase(Turno.Fase.COMBATTIMENTI);
         partita.getTurno().setCombattimentoInCorso(
-                new Combattimento(toStato(attaccoDTO.getAttaccante(), partita),
-                        toStato(attaccoDTO.getDifensore(), partita),
-                        attaccoDTO.getArmate()));
+                new Combattimento(statoAttaccante, statoDifensore, attaccoDTO.getArmate()));
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
@@ -256,7 +262,7 @@ public class PartitaService {
             throw new MossaIllegaleException();
 
         // blocca lo spostamento se non viene chiamato dal giocatore attivo in quel turno
-        if (!partita.getTurno().getGiocatoreAttivo().equals(toGiocatore(spostamentoDTO.getGiocatore(), partita)))
+        if (!partita.getGiocatoreAttivo().equals(toGiocatore(spostamentoDTO.getGiocatore(), partita)))
             throw new MossaIllegaleException();
 
         if (partita.getTurno().getCombattimentoInCorso() != null) {

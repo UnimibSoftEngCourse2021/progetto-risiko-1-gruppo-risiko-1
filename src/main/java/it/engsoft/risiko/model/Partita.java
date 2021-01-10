@@ -81,12 +81,12 @@ public class Partita {
 
     public void iniziaPrimoTurno() {
         setGiocatoreAttivo(giocatori.get(0));
-        turno = new Turno(giocatoreAttivo, 1);
+        turno = new Turno(1);
     }
 
     public void nuovoTurno() {
         setProssimoGiocatoreAttivo();
-        turno = new Turno(giocatoreAttivo, turno.getNumero() + 1);
+        turno = new Turno(turno.getNumero() + 1);
     }
 
     public void setProssimoGiocatoreAttivo() {

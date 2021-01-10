@@ -3,15 +3,13 @@ package it.engsoft.risiko.model;
 public class Turno {
     private final int numero;
     private Fase fase;
-    private final Giocatore giocatoreAttivo;
     private Combattimento combattimentoInCorso;
     private boolean conquista;
 
     public enum Fase {RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
 
-    public Turno(final Giocatore giocatore, final int numero) {
+    public Turno(final int numero) {
         this.numero = numero;
-        this.giocatoreAttivo = giocatore;
         this.combattimentoInCorso = null;
         this.fase = Fase.RINFORZI;
         conquista = false;
@@ -36,10 +34,6 @@ public class Turno {
 
     public void setFase(Fase fase) {
         this.fase = fase;
-    }
-
-    public Giocatore getGiocatoreAttivo() {
-        return giocatoreAttivo;
     }
 
     public void registraConquista() {
