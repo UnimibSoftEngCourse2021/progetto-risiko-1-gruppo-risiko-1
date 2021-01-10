@@ -75,7 +75,7 @@ public class ConqContinenti extends Obiettivo {
         int count = 0;
 
         for (Continente continente : mappa.getContinenti()) {
-            if (!targetContinenti.contains(continente) && continente.getProprietario().equals(giocatore)) {
+            if (!targetContinenti.contains(continente) && giocatore.equals(continente.getProprietario())) {
                 count++;
             }
         }
