@@ -76,12 +76,7 @@ public class Giocatore {
         return uccisore;
     }
 
-    public void setUccisore(Giocatore uccisore) {
-        if (uccisore == null)
-            throw new RuntimeException();
-
-        this.uccisore = uccisore;
-    }
+    public void setUccisore(Giocatore uccisore) { this.uccisore = uccisore; }
 
     public int getTruppeDisponibili() {
         return truppeDisponibili;
@@ -99,9 +94,7 @@ public class Giocatore {
         this.truppeDisponibili = this.truppeDisponibili + truppeDisponibili;
     }
 
-    public boolean isEliminato() {
-        return stati.size() == 0;
-    }
+    public boolean isEliminato() { return stati.size() == 0; }
 
     public boolean obRaggiunto() {
         return obiettivo.raggiunto(this);

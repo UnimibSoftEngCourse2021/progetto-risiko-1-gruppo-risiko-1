@@ -7,6 +7,7 @@ import it.engsoft.risiko.model.*;
 import it.engsoft.risiko.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +77,7 @@ public class PartitaService {
     }
 
     public IniziaTurnoDAO iniziaTurno(Partita partita) {
-        if(partita == null || partita.isFasePreparazione())
+        if (partita == null || partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
         // blocca iniziaTurno se fase diversa da NULL
@@ -89,7 +90,7 @@ public class PartitaService {
         // calcolo armate bonus date al giocatore attivo dai continenti conquistati
         int armateContinenti = 0;
         for (Continente continente : partita.getMappa().getContinenti()) {
-            if(partita.getGiocatoreAttivo().equals(continente.getProprietario()))
+            if (partita.getGiocatoreAttivo().equals(continente.getProprietario()))
                 armateContinenti = continente.getArmateBonus();
         }
 
@@ -99,7 +100,7 @@ public class PartitaService {
     }
 
     public Map<String, Object> rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
-        if(partita == null)
+        if (partita == null)
             throw new MossaIllegaleException();
 
         // gestione rinforzi iniziali, credo convenga aggiungere dei controlli sul numero di armate in input da lato client
@@ -162,7 +163,7 @@ public class PartitaService {
     }
 
     public int giocaTris(TrisDTO trisDTO, Partita partita) {
-        if(partita == null || partita.getTurno() == null)
+        if (partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca giocaTris se si è in fase di preparazione
@@ -191,11 +192,15 @@ public class PartitaService {
     }
 
     public void attacco(AttaccoDTO attaccoDTO, Partita partita) {
-        if(partita == null || partita.getTurno() == null)
+        if (partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca l'attacco se si è in fase di preparazione
         if (partita.isFasePreparazione())
+            throw new MossaIllegaleException();
+
+        // blocca l'attacco se si è in afse di spostamento
+        if (partita.getTurno().getFase().equals(Turno.Fase.SPOSTAMENTO))
             throw new MossaIllegaleException();
 
         // blocca l'attacco se il giocatore attivo ha ancora truppe da posizionare
@@ -228,6 +233,11 @@ public class PartitaService {
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
+        Stato statoAtt = partita.getTurno().getCombattimentoInCorso().getStatoAttaccante();
+        Stato statoDif = partita.getTurno().getCombattimentoInCorso().getStatoDifensore();
+        Giocatore giocatoreDif = partita.getTurno().getCombattimentoInCorso().getStatoDifensore().getProprietario();
+        Giocatore giocatoreAtt = partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getProprietario();
+
         if (partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
@@ -248,95 +258,97 @@ public class PartitaService {
             throw new MossaIllegaleException();
 
         // blocca la difesa se chiamata da un giocatore non coinvolto come difensore nell'attuale combattimento
-        if (!partita.getTurno().getCombattimentoInCorso().getStatoDifensore().getProprietario().equals(
-                toGiocatore(difesaDTO.getGiocatore(), partita)))
+        if (!giocatoreDif.equals(toGiocatore(difesaDTO.getGiocatore(), partita)))
             throw new MossaIllegaleException();
 
         // esecuzione combattimento
         partita.getTurno().getCombattimentoInCorso().simulaCombattimento(difesaDTO.getArmate());
 
         // rimozione delle truppe ad attaccante e difensore in base all'esito del combattimento
-        partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().rimuoviArmate(
+        statoAtt.rimuoviArmate(
                 partita.getTurno().getCombattimentoInCorso().getVittimeAttaccante());
-        partita.getTurno().getCombattimentoInCorso().getStatoDifensore().rimuoviArmate(
+        statoDif.rimuoviArmate(
                 partita.getTurno().getCombattimentoInCorso().getVittimeDifensore());
 
+
         // se l'attaccante ha conquistato lo stato del difensore ne diventa il proprietario
-        if(partita.getTurno().getCombattimentoInCorso().getConquista()){
-            partita.getTurno().getCombattimentoInCorso().getStatoDifensore().setProprietario(
-                    partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getProprietario()
-            );
-            partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getProprietario().aggiungiStato(
-                    partita.getTurno().getCombattimentoInCorso().getStatoDifensore()
-            );
-            partita.getTurno().getCombattimentoInCorso().getStatoDifensore().getProprietario().rimuoviStato(
-                    partita.getTurno().getCombattimentoInCorso().getStatoDifensore()
-            );
+        if (partita.getTurno().getCombattimentoInCorso().getConquista()) {
+            statoDif.setProprietario(giocatoreAtt);
+            giocatoreAtt.aggiungiStato(partita.getTurno().getCombattimentoInCorso().getStatoDifensore());
+            giocatoreDif.rimuoviStato(partita.getTurno().getCombattimentoInCorso().getStatoDifensore());
+            partita.getTurno().registraConquista(); // setta true conquista avvenuta in turno
+
+            // gestione difensore eliminato
+            if (giocatoreDif.isEliminato())
+                giocatoreDif.setUccisore(giocatoreAtt);
         }
 
-        // crea oggetto difesaDAO, se l'attaccante non ha conquistato il territorio il combattimento viene messo a null
-        boolean obiettivoRaggiunto =
-                partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getProprietario().getObiettivo().raggiunto(
-                partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getProprietario());
-        DifesaDAO difesaDAO = new DifesaDAO(partita.getTurno().getCombattimentoInCorso(), obiettivoRaggiunto);
-        if (!partita.getTurno().getCombattimentoInCorso().getConquista()) {
+        // crea oggetto difesaDAO
+        DifesaDAO difesaDAO = new DifesaDAO(
+                partita.getTurno().getCombattimentoInCorso(),
+                giocatoreAtt.obRaggiunto(),
+                giocatoreDif.isEliminato());
+
+        // se l'attaccante non ha conquistato il territorio, il combattimento viene messo a null
+        if (!partita.getTurno().getCombattimentoInCorso().getConquista())
             partita.getTurno().setCombattimentoInCorso(null);
-            partita.getTurno().setFase(Turno.Fase.SPOSTAMENTO);
-        }
+
 
         return difesaDAO;
     }
 
     public void spostamentoStrategico(SpostamentoDTO spostamentoDTO, Partita partita) {
-        if(partita == null || partita.getTurno() == null)
+        Giocatore giocatore = toGiocatore(spostamentoDTO.getGiocatore(), partita);
+        Stato statoArrivo = toStato(spostamentoDTO.getStatoArrivo(), partita);
+        Stato statoPartenza = toStato(spostamentoDTO.getStatoPartenza(), partita);
+
+        if (partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca lo spostamento se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
-        Giocatore giocatore = toGiocatore(spostamentoDTO.getGiocatore(), partita);
-        Stato statoArrivo = toStato(spostamentoDTO.getStatoArrivo(), partita);
-        Stato statoPartenza = toStato(spostamentoDTO.getStatoPartenza(), partita);
-
         // blocca lo spostamento se non viene chiamato dal giocatore attivo in quel turno
         if (!partita.getGiocatoreAttivo().equals(giocatore))
             throw new MossaIllegaleException();
 
         // blocca lo spostamento se lo stato di partenza e di arrivo non appartengono allo stesso giocatore
-        if(!statoArrivo.getProprietario().equals(statoPartenza.getProprietario()))
+        if (!statoArrivo.getProprietario().equals(statoPartenza.getProprietario()))
             throw new MossaIllegaleException();
 
+        SpostamentoStrategico spostamentoAttacco = null;
+        SpostamentoStrategico spostamentoStrategico = null;
+
         if (partita.getTurno().getCombattimentoInCorso() != null) {
-            SpostamentoStrategico spostamentoAttacco = new SpostamentoStrategico(
-                    toStato(spostamentoDTO.getStatoPartenza(), partita),
-                    toStato(spostamentoDTO.getStatoArrivo(), partita),
+            spostamentoAttacco = new SpostamentoStrategico(statoPartenza, statoArrivo,
                     Integer.max(partita.getTurno().getCombattimentoInCorso().getArmateAttaccante() -
                                     partita.getTurno().getCombattimentoInCorso().getVittimeAttaccante(),
                             spostamentoDTO.getArmate()));
-            spostamentoAttacco.esegui();
             partita.getTurno().setCombattimentoInCorso(null);
-            partita.getTurno().setFase(Turno.Fase.SPOSTAMENTO);
         } else {
             partita.getTurno().setFase(Turno.Fase.SPOSTAMENTO);
-            SpostamentoStrategico spostamentoStrategico = new SpostamentoStrategico(
-                    toStato(spostamentoDTO.getStatoPartenza(), partita),
-                    toStato(spostamentoDTO.getStatoArrivo(), partita),
-                    spostamentoDTO.getArmate());
-            spostamentoStrategico.esegui();
+            spostamentoStrategico = new SpostamentoStrategico(statoPartenza, statoArrivo,
+                    Integer.min( statoPartenza.getArmate() - 1,
+                            spostamentoDTO.getArmate()));
         }
+
+        // individua ed esegue spostamento da effettuare
+        if (spostamentoAttacco != null)
+            spostamentoAttacco.esegui();
+        else spostamentoStrategico.esegui();
     }
 
     public CartaTerritorioDAO fineTurno(Partita partita) {
-        if(partita == null || partita.getTurno() == null)
+        if (partita == null || partita.getTurno() == null)
             throw new MossaIllegaleException();
 
         // blocca fineTurno se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
-        // blocca fineTurno se si è in fase di combattimento
-        if (partita.getTurno().getFase().equals(Turno.Fase.COMBATTIMENTI))
+        // blocca fineTurno se c'è un combattimento in corso
+        if (partita.getTurno().getCombattimentoInCorso() != null)
             throw new MossaIllegaleException();
 
         // blocca fineTurno se il giocatore attivo ha ancora truppe da posizionare
