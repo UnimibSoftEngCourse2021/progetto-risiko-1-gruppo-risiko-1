@@ -33,7 +33,7 @@
         Conferma attacco</v-btn>
     </div>
 
-    <v-dialog v-model="showCombattimentoDialog" max-width="700px">
+    <v-dialog v-model="showCombattimentoDialog" max-width="700px" persistent>
       <combattimento-dialog @close="showCombattimentoDialog = false"/>
     </v-dialog>
   </div>

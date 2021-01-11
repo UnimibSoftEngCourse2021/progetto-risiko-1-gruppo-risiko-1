@@ -9,16 +9,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         gioco: {
-            on: false,
-            mappa: {},
-            giocatori: [],
-            turno: {
-                num: 0
-            },
-            preparazione: false,
-            activePlayerIndex: "",
-            primoGiocatoreIndex: "",
-            combattimento: { inCorso: false, attaccante: null, difensore: null }
+            on: false
         },
         mappe: [],
         mappa: {
@@ -58,19 +49,20 @@ export default new Vuex.Store({
             gioco.activePlayerIndex = gioco.giocatori.findIndex(g => g.nome === data.giocatoreAttivo)
             gioco.primoGiocatoreIndex = gioco.activePlayerIndex
             gioco.combattimento = { inCorso: false, attaccante: null, difensore: null }
+            gioco.spostamentoInCorso = false
             state.gioco = gioco
         },
         addRinforzi(state, rinforzi) {
             let totale = 0
-            let mappa = {...state.gioco.mappa}
+            // let mappa = {...state.gioco.mappa}
             rinforzi.forEach(r => {
-                let stato = mappa.stati.find(s => s.id === r.id)
+                let stato = state.gioco.mappa.stati.find(s => s.id === r.id)
                 stato.armate += r.quantity
                 totale += r.quantity
             })
             let giocatore = state.gioco.giocatori[state.gioco.activePlayerIndex]
             giocatore.armateDisponibili -= totale
-            state.gioco.mappa = mappa
+            // state.gioco.mappa = mappa
         },
         setTurno(state, turno) {
             state.gioco.activePlayerIndex = state.gioco.giocatori.findIndex(g => g.nome === turno.giocatore)
@@ -115,10 +107,20 @@ export default new Vuex.Store({
             state.gioco.combattimento = { inCorso: false, attaccante: null, difensore: null, armateAttaccante: null, armateDifensore: null }
         },
         setSpostamento(state, spostamento) {
+            if (!state.gioco.combattimento.inCorso) {
+                state.gioco.turno.fase = "spostamento"
+            }
             let statoPartenza = utils.trovaStatoId(state.gioco.mappa, spostamento.statoPartenza)
             let statoArrivo = utils.trovaStatoId(state.gioco.mappa, spostamento.statoArrivo)
             statoPartenza.armate -= spostamento.armate
             statoArrivo.armate += spostamento.armate
+        },
+        setSpostamentoInCorso(state, inCorso) {
+            state.gioco.spostamentoInCorso = inCorso
+        },
+        aggiungiCartaTerritorio(state, carta) {
+            let giocatoreAttivo = state.gioco.giocatori[state.gioco.activePlayerIndex]
+            giocatoreAttivo.carteTerritorio.push(carta)
         }
     },
     actions: {
@@ -180,6 +182,14 @@ export default new Vuex.Store({
         async spostamento({ commit }, spostamento) {
             await giocoService.spostamento(spostamento)
             commit("setSpostamento", spostamento)
+        },
+        async terminaTurno({ commit }) {
+            let { data } = await giocoService.fineTurno()
+            if (data) {
+                commit("aggiungiCartaTerritorio", data)
+            }
+            let ris = await giocoService.nuovoTurno()
+            commit("setTurno", ris.data)
         }
     },
     getters: {
@@ -258,6 +268,14 @@ export default new Vuex.Store({
         },
         getCombattimento(state) {
             return state.gioco.on ? state.gioco.combattimento : null
+        },
+        bloccaSpostamento(state) {
+            return !state.gioco.on ||
+                state.gioco.giocatori[state.gioco.activePlayerIndex].armateDisponibili > 0 ||
+                state.gioco.combattimento.inCorso
+        },
+        spostamentoInCorso(state) {
+            return state.gioco.spostamentoInCorso
         }
     }
 })

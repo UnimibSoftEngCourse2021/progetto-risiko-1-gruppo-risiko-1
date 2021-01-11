@@ -10,9 +10,9 @@
           <v-list >
             <v-subheader>CARTE TERRITORIO</v-subheader>
             <v-list-item-group v-if="giocatore.carteTerritorio.length > 0" >
-              <v-list-item v-for="carta in giocatore.carteTerritorio" :key="carta.id" two-line>
+              <v-list-item v-for="carta in giocatore.carteTerritorio" :key="carta.id" >
                 <v-list-item-title>{{carta.figura}}</v-list-item-title>
-                <v-list-item-subtitle>{{carta.stato}}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{carta.statoRappresentato}}</v-list-item-subtitle>
               </v-list-item>
             </v-list-item-group>
             <span v-else class="d-block text-caption">Nessuna carta territorio</span>

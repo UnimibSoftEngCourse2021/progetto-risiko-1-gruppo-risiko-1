@@ -30,7 +30,7 @@
     </v-main>
 
     <v-dialog v-model="showNuovoGiocoDialog" max-width="700px">
-      <nuovo-gioco-dialog @gameStarted="prepareGame"/>
+      <nuovo-gioco-dialog @gameStarted="prepareGame" @close="showNuovoGiocoDialog = false"/>
     </v-dialog>
   </v-app>
 </template>
