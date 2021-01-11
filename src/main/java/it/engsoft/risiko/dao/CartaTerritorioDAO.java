@@ -20,4 +20,6 @@ public class CartaTerritorioDAO {
     public String getFigura() {
         return figura;
     }
+
+    public int getId() { return id; }
 }
