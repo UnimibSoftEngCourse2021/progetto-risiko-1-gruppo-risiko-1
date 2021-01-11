@@ -58,8 +58,8 @@ export default {
     networkData: {
       handler: function (value) {
         value.nodes.forEach(node => {
-          let {id, label} = node
-          nodes.update({id, label})
+          let {id, label, group, title} = node
+          nodes.update({id, label, group, title})
         })
       },
       deep: true

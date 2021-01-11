@@ -5,7 +5,8 @@ export default {
     inviaRinforzi,
     nuovoTurno,
     attacco,
-    difesa
+    difesa,
+    spostamento
 }
 
 function nuovoGioco(configurazione) {
@@ -17,7 +18,7 @@ function inviaRinforzi(rinforzi) {
 }
 
 function nuovoTurno() {
-    return _axios.get("api/inizia-turno")
+    return _axios.post("api/inizia-turno")
 }
 
 function attacco(payload) {
@@ -26,4 +27,8 @@ function attacco(payload) {
 
 function difesa(payload) {
     return _axios.post("api/difesa", payload)
+}
+
+function spostamento(payload) {
+    return _axios.post("api/spostamento", payload)
 }

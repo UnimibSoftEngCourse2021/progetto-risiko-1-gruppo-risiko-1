@@ -106,13 +106,19 @@ export default new Vuex.Store({
             let statoDifensore = utils.trovaStatoId(state.gioco.mappa, state.gioco.combattimento.difensore)
             statoDifensore.armate -= vittimeDif
             if (vittoriaAtt) {
-                statoDifensore.proprietario = statoAttaccante.proprietario
+                Vue.set(statoDifensore, "proprietario", statoAttaccante.proprietario)
             } else {
                 state.gioco.combattimento.inCorso = false
             }
         },
         clearCombattimento(state) {
             state.gioco.combattimento = { inCorso: false, attaccante: null, difensore: null, armateAttaccante: null, armateDifensore: null }
+        },
+        setSpostamento(state, spostamento) {
+            let statoPartenza = utils.trovaStatoId(state.gioco.mappa, spostamento.statoPartenza)
+            let statoArrivo = utils.trovaStatoId(state.gioco.mappa, spostamento.statoArrivo)
+            statoPartenza.armate -= spostamento.armate
+            statoArrivo.armate += spostamento.armate
         }
     },
     actions: {
@@ -170,6 +176,10 @@ export default new Vuex.Store({
             }
             let { data } = await giocoService.difesa(difesaPayload)
             commit("setEsitoCombattimento", data)
+        },
+        async spostamento({ commit }, spostamento) {
+            await giocoService.spostamento(spostamento)
+            commit("setSpostamento", spostamento)
         }
     },
     getters: {
