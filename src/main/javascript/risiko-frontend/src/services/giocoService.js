@@ -7,7 +7,8 @@ export default {
     attacco,
     difesa,
     spostamento,
-    fineTurno
+    fineTurno,
+    giocaTris
 }
 
 function nuovoGioco(configurazione) {
@@ -36,4 +37,8 @@ function spostamento(payload) {
 
 function fineTurno() {
     return _axios.post("api/fine-turno")
+}
+
+function giocaTris(payload) {
+    return _axios.post("api/tris", payload)
 }

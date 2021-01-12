@@ -3,9 +3,19 @@
     <v-subheader>RINFORZI</v-subheader>
 
     <div v-if="fasePreparazione || rinforziConsentiti > 0">
-      <span class="text-caption">Devi piazzare {{rinforziConsentiti}} armate
-      {{fasePreparazione ? "" : (" (" + turno.armateStati + " per bonus territori, " + turno.armateContinenti
-            + " per bonus continenti)")}}. Clicca sulla mappa i territori da rinforzare</span>
+      <v-list v-if="!fasePreparazione">
+        <span class="text-caption d-block">Devi piazzare {{rinforziConsentiti}} armate: </span>
+        <v-list-item>
+          <v-list-item-content>{{turno.armateStati}} per gli stati che possiedi</v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>{{turno.armateContinenti}} per i continenti conquistati</v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>{{turno.armateTris}} per il tris eventualmente giocato</v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <span class="text-caption d-block" v-else>Devi piazzare {{rinforziConsentiti}} armate per la fase di preparazione</span>
 
       <v-list>
         <v-list-item v-for="rinf in rinforzi" :key="rinf.id">
@@ -33,21 +43,31 @@
       </v-btn>
     </div>
 
-    <span class="d-block text-caption" v-else>
+    <span class="d-block text-caption" v-if="!fasePreparazione && turno.tris && rinforziConsentiti === 0">
       Hai già effettuato rinforzi in questo turno
     </span>
 
+    <v-btn color="red"
+           text @click="showTrisDialog = true"
+           v-if="!fasePreparazione && !turno.tris">Gioca tris</v-btn>
+
+    <v-dialog v-model="showTrisDialog" max-width="700px">
+      <tris-dialog @close="showTrisDialog = false"/>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import utils from "@/store/utils";
+import TrisDialog from "@/components/TrisDialog";
 
 export default {
   name: "GestoreRinforzi",
+  components: {TrisDialog},
   data() {
     return {
-      rinforzi: []
+      rinforzi: [],
+      showTrisDialog: false
     }
   },
   computed: {

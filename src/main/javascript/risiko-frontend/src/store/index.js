@@ -54,7 +54,6 @@ export default new Vuex.Store({
         },
         addRinforzi(state, rinforzi) {
             let totale = 0
-            // let mappa = {...state.gioco.mappa}
             rinforzi.forEach(r => {
                 let stato = state.gioco.mappa.stati.find(s => s.id === r.id)
                 stato.armate += r.quantity
@@ -62,7 +61,12 @@ export default new Vuex.Store({
             })
             let giocatore = state.gioco.giocatori[state.gioco.activePlayerIndex]
             giocatore.armateDisponibili -= totale
-            // state.gioco.mappa = mappa
+            if (state.gioco.turno.tris) {
+                state.gioco.turno.fase = "combattimento"
+            }
+            state.gioco.turno.armateStati = 0
+            state.gioco.turno.armateContinenti = 0
+            state.gioco.turno.armateTris = 0
         },
         setTurno(state, turno) {
             state.gioco.activePlayerIndex = state.gioco.giocatori.findIndex(g => g.nome === turno.giocatore)
@@ -71,7 +75,9 @@ export default new Vuex.Store({
                 giocatore: turno.giocatore,
                 armateStati: turno.armateStati,
                 armateContinenti: turno.armateContinenti,
-                fase: "rinforzi"
+                armateTris: 0,
+                fase: "rinforzi",
+                tris: false
             }
             state.gioco.giocatori[state.gioco.activePlayerIndex].armateDisponibili = turno.armateStati + turno.armateContinenti
         },
@@ -121,6 +127,16 @@ export default new Vuex.Store({
         aggiungiCartaTerritorio(state, carta) {
             let giocatoreAttivo = state.gioco.giocatori[state.gioco.activePlayerIndex]
             giocatoreAttivo.carteTerritorio.push(carta)
+        },
+        tris(state, { tris, armate }) {
+            let giocatoreAttivo = state.gioco.giocatori[state.gioco.activePlayerIndex]
+            giocatoreAttivo.armateDisponibili += armate
+            tris.forEach(idCarta => {
+                let index = giocatoreAttivo.carteTerritorio.findIndex(c => c.id === idCarta)
+                giocatoreAttivo.carteTerritorio.splice(index, 1)
+            })
+            state.gioco.turno.tris = true
+            state.gioco.turno.armateTris = armate
         }
     },
     actions: {
@@ -190,6 +206,14 @@ export default new Vuex.Store({
             }
             let ris = await giocoService.nuovoTurno()
             commit("setTurno", ris.data)
+        },
+        async giocaTris({ commit, state }, tris) {
+            let payload = {
+                giocatore: state.gioco.giocatori[state.gioco.activePlayerIndex].nome,
+                tris: tris
+            }
+            let { data } = await giocoService.giocaTris(payload)
+            commit("tris", { tris, armate: data })
         }
     },
     getters: {
@@ -276,6 +300,9 @@ export default new Vuex.Store({
         },
         spostamentoInCorso(state) {
             return state.gioco.spostamentoInCorso
+        },
+        carteTerritorio(state) {
+            return state.gioco.on ? state.gioco.giocatori[state.gioco.activePlayerIndex].carteTerritorio : []
         }
     }
 })
