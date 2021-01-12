@@ -9,9 +9,12 @@ public class CartaTerritorioDAO {
 
     public CartaTerritorioDAO(CartaTerritorio cartaTerritorio) {
         this.id = cartaTerritorio.getId();
-        this.statoRappresentato = cartaTerritorio.getStatoRappresentato().getNome();
+        this.statoRappresentato = cartaTerritorio.getStatoRappresentato() == null ?
+                "" : cartaTerritorio.getStatoRappresentato().getNome();
         this.figura = cartaTerritorio.getFigura().toString();
     }
+
+    public int getId() { return id; }
 
     public String getStatoRappresentato() {
         return statoRappresentato;
@@ -20,6 +23,4 @@ public class CartaTerritorioDAO {
     public String getFigura() {
         return figura;
     }
-
-    public int getId() { return id; }
 }
