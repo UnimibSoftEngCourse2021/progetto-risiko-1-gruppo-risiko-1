@@ -102,11 +102,10 @@ public class Partita {
         }
     }
 
-    // TODO:: nArmate = nArmate + 15;
     public void assegnaArmateIniziali() {
         int nArmate = 0;
         for (int i = 5; i < this.mappa.getStati().size(); i = i + 5) {
-            nArmate = nArmate + 7;
+            nArmate = nArmate + 15;
         }
         nArmate = nArmate / giocatori.size();
         int finalNArmate = nArmate;
