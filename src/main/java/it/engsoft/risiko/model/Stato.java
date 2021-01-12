@@ -7,11 +7,11 @@ import java.util.List;
 @Entity(name = "stati")
 public class Stato {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     private String nome;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "adiacenza",
             joinColumns = @JoinColumn(name = "stato1"),
             inverseJoinColumns = @JoinColumn(name = "stato2")
@@ -28,8 +28,13 @@ public class Stato {
     @Transient
     private Giocatore proprietario;
 
-    // TODO: anziché set armate metodi aggiungiArmate() e rimuoviArmate() (con controllo che non vada in negativo)
-    // TODO: aggiungere metodo aggiungiConfinante()
+    public Stato(String nome, Continente continente) {
+        this.nome = nome;
+        this.continente = continente;
+        this.confinanti = new ArrayList<>();
+    }
+
+    public Stato() {}
 
     public Long getId() {
         return id;

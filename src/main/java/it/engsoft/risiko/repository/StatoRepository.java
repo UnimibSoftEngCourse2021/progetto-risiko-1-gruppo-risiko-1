@@ -1,8 +1,7 @@
 package it.engsoft.risiko.repository;
 
 import it.engsoft.risiko.model.Stato;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface StatoRepository extends Repository<Stato, Long> {
-    Stato findById(Long id);
+public interface StatoRepository extends CrudRepository<Stato, Long> {
 }

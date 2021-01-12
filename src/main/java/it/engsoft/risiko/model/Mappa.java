@@ -9,15 +9,25 @@ import java.util.stream.Collectors;
 @Entity(name = "mappe")
 public class Mappa {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
     private String descrizione;
     private int numMinGiocatori;
     private int numMaxGiocatori;
-    @OneToMany(mappedBy = "mappa")
+    @OneToMany(mappedBy = "mappa", cascade = CascadeType.PERSIST)
     private List<Continente> continenti;
+
+    public Mappa(String nome, String descrizione, int numMinGiocatori, int numMaxGiocatori) {
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.numMinGiocatori = numMinGiocatori;
+        this.numMaxGiocatori = numMaxGiocatori;
+        this.continenti = new ArrayList<>();
+    }
+
+    public Mappa() {}
 
     public Long getId() {
         return id;
