@@ -1,33 +1,40 @@
 <template>
   <v-card>
-    <v-card-title>Gioca un tris di carte territorio!</v-card-title>
-    <v-card-text class="text-h6">Legenda</v-card-text>
-    <v-card-text>
-      3 cannoni: 4 armate<br/>
-      3 fanti: 6 armate<br/>
-      3 cavalieri: 8 armate<br/>
-      un fante, un cannone e un cavaliere: 10 armate<br/>
-      un “Jolly” più due carte uguali: 12 armate<br/>
-    </v-card-text>
+    <v-app-bar color="primary" dark class="d-flex align-center">
+      <v-icon large class="mx-3">mdi-cards</v-icon>
+      <v-app-bar-title>
+        GIOCA UN TRIS DI CARTE TERRITORIO
+      </v-app-bar-title>
+    </v-app-bar>
 
-    <v-card-text class="text-h6">Scegli 3 carte:</v-card-text>
-    <v-list v-if="carteTerritorio.length > 0">
-      <v-list-item v-for="(carta, index) in carteTerritorio" :key="index">
-        <v-list-item-action>
-          <v-checkbox v-model="checked[index]" :disabled="numberChecked === 3 && !checked[index]"></v-checkbox>
-        </v-list-item-action>
+    <v-card-text class="text-subtitle-2 black--text mt-6">Scegli 3 carte:</v-card-text>
+    <v-card-text class="black--text">
+      <v-list v-if="carteTerritorio.length > 0" class="lista-carte">
+        <v-list-item v-for="(carta, index) in carteTerritorio" :key="index" two-line>
+          <v-list-item-action>
+            <v-checkbox v-model="checked[index]" :disabled="numberChecked === 3 && !checked[index]"
+                        color="primary"
+            />
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{carta.figura}}</v-list-item-title>
+            <v-list-item-subtitle>{{carta.statoRappresentato}}</v-list-item-subtitle>
+          </v-list-item-content>
 
-        <v-list-item-title>{{carta.figura}}</v-list-item-title>
-        <v-list-item-subtitle>{{carta.statoRappresentato}}</v-list-item-subtitle>
-      </v-list-item>
-    </v-list>
-    <v-card-text class="text-caption" v-else>
-      Non hai carte territorio al momento
+
+        </v-list-item>
+      </v-list>
+
+      <span class="d-block text-body-2" v-else>
+              Non hai carte territorio al momento
+
+      </span>
     </v-card-text>
 
     <v-card-actions>
-      <v-btn color="red" text @click="$emit('close')">Chiudi</v-btn>
-      <v-btn color="red" text :disabled="!trisValido" @click="confermaGiocaTris">Gioca</v-btn>
+      <v-spacer/>
+      <v-btn color="primary" text @click="$emit('close')">Chiudi</v-btn>
+      <v-btn color="primary" text :disabled="!trisValido" @click="confermaGiocaTris">Gioca</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -97,5 +104,8 @@ export default {
 </script>
 
 <style scoped>
-
+  .lista-carte {
+    max-height: 30rem;
+    overflow-y: auto;
+  }
 </style>

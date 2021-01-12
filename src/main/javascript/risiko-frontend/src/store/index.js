@@ -250,37 +250,37 @@ export default new Vuex.Store({
             }
             return {nodes, edges}
         },
-        getMappe(state) {
+        mappe(state) {
             return state.mappe
         },
-        getGiocatori(state) {
+        giocatori(state) {
             return state.gioco.on ? state.gioco.giocatori : []
         },
-        getFasePreparazione(state) {
+        fasePreparazione(state) {
             return state.gioco.on && state.gioco.preparazione
         },
-        getTurno(state) {
+        turno(state) {
             return state.gioco.on ? state.gioco.turno : null
         },
-        getActivePlayer(state) {
+        giocatoreAttivo(state) {
             return state.gioco.on ? state.gioco.giocatori[state.gioco.activePlayerIndex].nome : ""
         },
-        getMappaGioco(state) {
+        mappaGioco(state) {
             return state.gioco.on ? state.gioco.mappa : null
         },
-        getArmateDisponibili(state) {
+        armateDisponibili(state) {
             return state.gioco.on ? state.gioco.giocatori[state.gioco.activePlayerIndex].armateDisponibili : 0
         },
-        getBloccaRinforzi(state) {
+        bloccaRinforzi(state) {
             return !state.gioco.on || (!state.gioco.preparazione && state.gioco.turno.fase !== "rinforzi")
         },
-        getBloccaCombattimenti(state) {
+        bloccaCombattimenti(state) {
             return !state.gioco.on ||
                 state.gioco.preparazione ||
                 state.gioco.giocatori[state.gioco.activePlayerIndex].armateDisponibili > 0 || // non ha ancora effettuato i rinforzi obbligatori
                 state.gioco.turno.fase === "spostamento"
         },
-        getStatoAttaccante(state) {
+        statoAttaccante(state) {
             if (!state.gioco.on || !state.gioco.combattimento.inCorso)
                 return null
             let idAttaccante = state.gioco.combattimento.attaccante
@@ -288,10 +288,10 @@ export default new Vuex.Store({
                 return null
             return state.gioco.mappa.stati.find(s => s.id === idAttaccante)
         },
-        getCombattimentoInCorso(state) {
+        combattimentoInCorso(state) {
             return state.gioco.on && state.gioco.combattimento.inCorso
         },
-        getStatoDifensore(state) {
+        statoDifensore(state) {
             if (!state.gioco.on || !state.gioco.combattimento.inCorso)
                 return null
             let idDifensore = state.gioco.combattimento.difensore
@@ -299,7 +299,7 @@ export default new Vuex.Store({
                 return null
             return state.gioco.mappa.stati.find(s => s.id === idDifensore)
         },
-        getCombattimento(state) {
+        combattimento(state) {
             return state.gioco.on ? state.gioco.combattimento : null
         },
         bloccaSpostamento(state) {
@@ -313,7 +313,7 @@ export default new Vuex.Store({
         carteTerritorio(state) {
             return state.gioco.on ? state.gioco.giocatori[state.gioco.activePlayerIndex].carteTerritorio : []
         },
-        getWinner(state) {
+        winner(state) {
             return state.gioco.on ? state.gioco.winner : null
         }
     }

@@ -6,6 +6,8 @@
 
 <script>
 
+import {mapGetters} from "vuex";
+
 let network = null;
 let nodes = null
 import * as visNet from "vis-network";
@@ -55,7 +57,7 @@ export default {
   },
 
   watch: {
-    networkData: {
+    mapNetwork: {
       handler: function (value) {
         value.nodes.forEach(node => {
           let {id, label, group, title} = node
@@ -69,8 +71,8 @@ export default {
   mounted() {
     // create a network
     let container = document.getElementById('network');
-    nodes = new visData.DataSet(this.networkData.nodes)
-    let edges = new visData.DataSet(this.networkData.edges)
+    nodes = new visData.DataSet(this.mapNetwork.nodes)
+    let edges = new visData.DataSet(this.mapNetwork.edges)
     network = new visNet.Network(container, {nodes, edges}, this.options)
     network.on("select", (data) => {
       if (data.nodes.length > 0)
@@ -88,20 +90,15 @@ export default {
   },
 
   computed: {
-    networkData() {
-      return this.$store.getters.mapNetwork
-    },
-    mappa() {
-      return this.$store.getters.getMappaGioco
-    }
+    ...mapGetters(["mapNetwork", "mappaGioco"])
   },
 
   methods: {
     trovaStatiInContinente(continenteId) {
-      return this.mappa.stati.filter(stato => stato.continente === continenteId).map(stato => stato.id)
+      return this.mappaGioco.stati.filter(stato => stato.continente === continenteId).map(stato => stato.id)
     },
     trovaContinente(statoId) {
-      return this.mappa.stati.find(stato => stato.id === statoId).continente
+      return this.mappaGioco.stati.find(stato => stato.id === statoId).continente
     },
     evidenziaStatiContinente(continenteId) {
       let nodeIds = this.trovaStatiInContinente(continenteId)

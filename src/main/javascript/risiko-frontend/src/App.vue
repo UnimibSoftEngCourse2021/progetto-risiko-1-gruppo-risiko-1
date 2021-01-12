@@ -13,7 +13,7 @@
 
       <v-spacer/>
       <v-item-group>
-        <v-btn text @click="openNewGameDialog">
+        <v-btn color="primary" class="white--text" @click="openNewGameDialog">
           Nuovo gioco
         </v-btn>
 
@@ -25,8 +25,10 @@
 
     <v-main class="black-background">
       <Game v-if="gameActive" :key="gameKey">
-
       </Game>
+      <v-img v-else src="board.png" max-height="50rem" contain>
+
+      </v-img>
     </v-main>
 
     <v-dialog v-model="showNuovoGiocoDialog" max-width="700px">
@@ -73,11 +75,11 @@ export default {
 
     gameSituation() {
       let ris
-      if (this.$store.getters.getFasePreparazione)
+      if (this.$store.getters.fasePreparazione)
         ris = "Fase di preparazione - "
       else
-        ris = "Turno " + this.$store.getters.getTurno.num + " - "
-      return ris + this.$store.getters.getActivePlayer
+        ris = "Turno " + this.$store.getters.turno.num + " - "
+      return ris + this.$store.getters.giocatoreAttivo
     }
   }
 };

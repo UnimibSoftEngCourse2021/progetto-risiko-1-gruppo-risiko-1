@@ -1,32 +1,34 @@
 <template>
   <div>
-    <v-subheader>RINFORZI</v-subheader>
+    <h4 class="text-h6 ma-4">
+      RINFORZI
+    </h4>
 
-    <div v-if="fasePreparazione || rinforziConsentiti > 0">
-      <v-list v-if="!fasePreparazione">
-        <span class="text-caption d-block">Devi piazzare {{rinforziConsentiti}} armate: </span>
-        <v-list-item>
-          <v-list-item-content>{{turno.armateStati}} per gli stati che possiedi</v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>{{turno.armateContinenti}} per i continenti conquistati</v-list-item-content>
-        </v-list-item>
-        <v-list-item>
-          <v-list-item-content>{{turno.armateTris}} per il tris eventualmente giocato</v-list-item-content>
-        </v-list-item>
-      </v-list>
-      <span class="text-caption d-block" v-else>Devi piazzare {{rinforziConsentiti}} armate per la fase di preparazione</span>
+    <v-row class="align-center mb-2 ml-3">
+      <v-icon large class="mr-3">mdi-tank</v-icon>
+      <span class="text-subtitle-1">{{rinforziConsentiti - totaleRinforzi}} rimanenti</span>
+    </v-row>
 
-      <v-list>
+
+    <div v-if="fasePreparazione || rinforziConsentiti > 0" class="ml-5">
+      <div v-if="!fasePreparazione">
+        <span class="text-subtitle-2 d-block mb-2">Devi piazzare {{rinforziConsentiti}} armate: </span>
+        <span class="text-subtitle-2 d-block">{{ turno.armateStati }} per gli stati che possiedi</span>
+        <span class="text-subtitle-2 d-block">{{ turno.armateContinenti }} per i continenti conquistati</span>
+        <span class="text-subtitle-2 d-block">{{ turno.armateTris }} per il tris eventualmente giocato</span>
+      </div>
+      <span class="text-subtitle-2 d-block mb-2" v-else>Devi piazzare {{rinforziConsentiti}} armate per la fase di preparazione</span>
+
+      <v-list class="rinforzi-list">
         <v-list-item v-for="rinf in rinforzi" :key="rinf.id">
           <v-row>
-            <v-badge :content="rinf.quantity" color="red">
+            <v-badge :content="rinf.quantity" color="primary" inline>
               <v-list-item-title>{{ rinf.nome }}</v-list-item-title>
             </v-badge>
 
             <v-spacer/>
             <v-list-item-action>
-              <v-row>
+              <v-row class="mr-5">
                 <v-btn icon :disabled="totaleRinforzi === rinforziConsentiti" @click="rinf.quantity++">
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
@@ -38,18 +40,40 @@
           </v-row>
         </v-list-item>
       </v-list>
-      <v-btn text color="red" :disabled="rinforziConsentiti !== totaleRinforzi"
-             @click="inviaRinforzi">Piazza rinforzi
-      </v-btn>
+<!--      <v-btn text color="red" :disabled="rinforziConsentiti !== totaleRinforzi"-->
+<!--             @click="confermaInviaRinforzi">Piazza rinforzi-->
+<!--      </v-btn>-->
     </div>
 
-    <span class="d-block text-caption" v-if="!fasePreparazione && turno.tris && rinforziConsentiti === 0">
+    <span class="d-block text-subtitle-2 mb-2" v-if="!fasePreparazione && turno.tris && rinforziConsentiti === 0">
       Hai già effettuato rinforzi in questo turno
     </span>
 
-    <v-btn color="red"
-           text @click="showTrisDialog = true"
-           v-if="!fasePreparazione && !turno.tris">Gioca tris</v-btn>
+    <v-row>
+      <v-spacer />
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" icon large class="mx-3" v-on="on" v-bind="attrs"
+                 :disabled="rinforziConsentiti !== totaleRinforzi || rinforziConsentiti === 0"
+                 @click="confermaInviaRinforzi">
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
+        </template>
+        <span>Posiziona armate</span>
+      </v-tooltip>
+
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" icon large class="mx-3" v-on="on" v-bind="attrs"
+                 @click="showTrisDialog = true"
+                 v-if="!fasePreparazione && !turno.tris">
+            <v-icon>mdi-cards</v-icon>
+          </v-btn>
+        </template>
+        <span>Gioca tris di carte territorio</span>
+      </v-tooltip>
+
+    </v-row>
 
     <v-dialog v-model="showTrisDialog" max-width="700px">
       <tris-dialog @close="showTrisDialog = false"/>
@@ -60,6 +84,7 @@
 <script>
 import utils from "@/store/utils";
 import TrisDialog from "@/components/TrisDialog";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "GestoreRinforzi",
@@ -71,15 +96,7 @@ export default {
     }
   },
   computed: {
-    fasePreparazione() {
-      return this.$store.getters.getFasePreparazione;
-    },
-    activePlayer() {
-      return this.$store.getters.getActivePlayer
-    },
-    mappa() {
-      return this.$store.getters.getMappaGioco
-    },
+    ...mapGetters(["fasePreparazione", "giocatoreAttivo", "mappaGioco", "armateDisponibili", "turno"]),
     totaleRinforzi() {
       let ris = 0
       this.rinforzi.forEach(r => { ris = ris + r.quantity })
@@ -87,17 +104,15 @@ export default {
     },
     rinforziConsentiti() {
       if (this.fasePreparazione)
-        return Math.min(3, this.$store.getters.getArmateDisponibili)
-      return this.$store.getters.getArmateDisponibili
-    },
-    turno() {
-      return this.$store.getters.getTurno
+        return Math.min(3, this.armateDisponibili)
+      return this.$store.getters.armateDisponibili
     }
   },
   methods: {
+    ...mapActions(["inviaRinforzi"]),
     onNodeSelected({ id }) {
-      let stato = utils.trovaStatoId(this.mappa, id)
-      if (stato.proprietario === this.activePlayer && this.totaleRinforzi < this.rinforziConsentiti) {
+      let stato = utils.trovaStatoId(this.mappaGioco, id)
+      if (stato.proprietario === this.giocatoreAttivo && this.totaleRinforzi < this.rinforziConsentiti) {
         let rinforzoIndex = this.rinforzi.findIndex(rinf => rinf.id === id)
         if (rinforzoIndex === -1) {
           this.rinforzi.push({ id, nome: stato.nome, quantity: 0 })
@@ -115,8 +130,8 @@ export default {
         this.rinforzi.splice(index, 1)
       }
     },
-    async inviaRinforzi() {
-      await this.$store.dispatch("inviaRinforzi", this.rinforzi)
+    async confermaInviaRinforzi() {
+      await this.inviaRinforzi(this.rinforzi)
       this.rinforzi = []
     }
   }
@@ -124,5 +139,8 @@ export default {
 </script>
 
 <style scoped>
-
+  .rinforzi-list {
+    overflow-y: auto;
+    max-height: 15rem;
+  }
 </style>

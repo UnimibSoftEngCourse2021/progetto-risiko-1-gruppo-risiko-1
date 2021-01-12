@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-app-bar color="red" dark>
+        <v-app-bar color="primary" dark>
           <v-app-bar-title>Nuovo gioco</v-app-bar-title>
         </v-app-bar>
 
@@ -16,14 +16,16 @@
               :rule="[v => !!v]"
           />
 
-          <v-card-text v-if="selected" class="text-caption">{{selected.descrizione}}</v-card-text>
+          <v-alert type="info" color="primary" dark v-if="selected">
+            {{selected.descrizione}}
+          </v-alert>
 
-          <v-combobox multiple small-chips
+          <v-combobox multiple small-chips deletable-chips color="primary"
               :disabled="!selected"
               :items="giocatoriDefault"
               v-model="elencoGiocatori"
               :rules="[validaGiocatori]"
-              :label="'Inserisci i nomi dei giocatori' + (this.selected ? ' (da ' + selected.numMinGiocatori + ' a '
+              :label="'Scrivi i nomi dei giocatori' + (this.selected ? ' (da ' + selected.numMinGiocatori + ' a '
                         + selected.numMaxGiocatori + ')' : '' )"
           />
         </v-form>
@@ -43,6 +45,8 @@
 
 <script>
 
+import {mapActions, mapGetters} from "vuex";
+
 export default {
 name: "NuovoGiocoDialog",
   data() {
@@ -55,11 +59,10 @@ name: "NuovoGiocoDialog",
     }
   },
   computed: {
-    mappe() {
-      return this.$store.getters.getMappe
-    }
+    ...mapGetters(["mappe"])
   },
   methods: {
+  ...mapActions(["startGame"]),
     validaGiocatori(elenco) {
       if (!this.selected)
         return false;
@@ -72,8 +75,10 @@ name: "NuovoGiocoDialog",
         mappaId: this.selected.id,
         mod: "COMPLETA"
       }
-      await this.$store.dispatch("startGame", config)
+      await this.startGame(config)
       this.$emit("gameStarted")
+      this.elencoGiocatori = []
+      this.selected = null
     }
   }
 }

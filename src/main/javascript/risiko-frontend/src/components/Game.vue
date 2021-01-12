@@ -18,10 +18,10 @@
     </v-row>
 
     <v-dialog max-width="700px" v-model="showWinnerDialog" persistent>
-      <v-card v-if="getWinner">
+      <v-card v-if="winner">
         <v-card-title>Vittoria!</v-card-title>
-        <v-card-text>{{getWinner.nome}} ha vinto la partita, raggiungendo il suo obiettivo:</v-card-text>
-        <v-card-text>{{getWinner.obiettivo}}</v-card-text>
+        <v-card-text>{{ winner.nome }} ha vinto la partita, raggiungendo il suo obiettivo:</v-card-text>
+        <v-card-text>{{ winner.obiettivo }}</v-card-text>
 
         <v-card-actions>
           <v-btn color="red" text @click="terminaPartita">Termina partita</v-btn>
@@ -48,14 +48,13 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getWinner"])
+    ...mapGetters(["winner"])
   },
 
   watch: {
-    getWinner(winner) {
+    winner(winner) {
       if (winner)
         this.showWinnerDialog = true
-      console.log(this.showWinnerDialog)
     }
   },
 

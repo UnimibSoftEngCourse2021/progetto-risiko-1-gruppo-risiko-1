@@ -1,29 +1,52 @@
 <template>
   <div>
-    <div>
-      <h3 class="text-h5 text-center my-6">Informazioni sulla partita</h3>
+    <v-banner color="primary" dark class="text-h5 text-center mb-5">Informazioni sulla partita</v-banner>
 
-      <!-- Obiettivi -->
-      <v-btn color="red" text @click="showObiettiviDialog = true" class="mb-5" width="wrap-content">
-        Mostra obiettivi
-      </v-btn>
+    <!-- Obiettivi -->
+    <v-row>
+      <v-col class="d-flex align-center flex-column" cols="6">
+        <span class="text-subtitle-2">OBIETTIVI</span>
+        <v-btn color="primary" rounded x-large @click="showObiettiviDialog = true" class="mb-5" width="wrap-content">
+          <v-icon x-large >mdi-bullseye-arrow</v-icon>
+        </v-btn>
+      </v-col>
 
-      <!-- Giocatori -->
-      <v-btn color="red" text @click="showGiocatoriDialog = true">Mostra info giocatori</v-btn>
+      <v-col class="d-flex align-center flex-column" cols="6">
+        <!-- Giocatori -->
+        <span class="text-subtitle-2">GIOCATORI</span>
+        <v-btn color="primary" rounded x-large @click="showGiocatoriDialog = true">
+          <v-icon x-large>mdi-account-multiple</v-icon>
+        </v-btn>
 
-      <!-- Continenti -->
-      <v-list class="lista-continenti">
-        <v-subheader>CONTINENTI</v-subheader>
-        <v-list-item-group v-model="selectedContinente" color="red" >
-          <v-list-item v-for="c in continenti" :key="c.id" two-line>
-            <v-list-item-content>
-              <v-list-item-title>{{ c.nome }}</v-list-item-title>
-              <v-list-item-subtitle>{{ c.armateBonus }} armate bonus</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </div>
+      </v-col>
+    </v-row>
+
+
+    <!-- Continenti -->
+    <v-subheader class="black--text">CONTINENTI</v-subheader>
+    <span class="d-block text-body-2 ml-5">Clicca un continente per evidenziarlo sulla mappa</span>
+    <v-list class="lista-continenti">
+      <v-list-item-group v-model="selectedContinente" color="primary" >
+        <v-list-item v-for="c in continenti" :key="c.id">
+            <v-list-item-title>{{ c.nome }}</v-list-item-title>
+            <v-list-item-icon>
+              <v-icon class="mx-3">mdi-tank</v-icon>
+              {{c.armateBonus}}
+            </v-list-item-icon>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+
+    <!-- Tris carte territorio -->
+    <v-subheader class="black--text">LEGENDA TRIS CARTE TERRITORIO</v-subheader>
+    <v-container class="px-6 ma-0">
+      <v-row v-for="tris in legenda" :key="tris.tris" class="my-1">
+        <span class="text-subtitle-1">{{tris.tris}}</span>
+        <v-spacer/>
+        <span class="text-subtitle-1">{{tris.armate}}</span>
+        <v-icon class="ml-3">mdi-tank</v-icon>
+      </v-row>
+    </v-container>
 
     <v-dialog v-model="showObiettiviDialog" max-width="700px">
       <obiettivi-dialog/>
@@ -39,6 +62,7 @@
 
 import ObiettiviDialog from "@/components/ObiettiviDialog";
 import GiocatoriDialog from "@/components/GiocatoriDialog";
+import {mapGetters} from "vuex";
 
 export default {
   name: "Info",
@@ -46,7 +70,29 @@ export default {
   data() { return {
     showObiettiviDialog: true,
     selectedContinente: null,
-    showGiocatoriDialog: false
+    showGiocatoriDialog: false,
+    legenda: [
+      {
+        tris: "3 cannoni",
+        armate: 4
+      },
+      {
+        tris: "3 fanti",
+        armate: 6
+      },
+      {
+        tris: "3 cavalieri",
+        armate: 8
+      },
+      {
+        tris: "Un cannone, un fante, un cavaliere",
+        armate: 10
+      },
+      {
+        tris: "Due figure uguali e un jolly",
+        armate: 12
+      },
+    ]
   }},
 
   watch: {
@@ -56,8 +102,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters(["mappaGioco"]),
     continenti() {
-      return this.$store.getters.getMappaGioco.continenti
+      return this.mappaGioco.continenti
     }
   }
 }

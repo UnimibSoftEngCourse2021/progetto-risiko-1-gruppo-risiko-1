@@ -1,30 +1,48 @@
 <template>
   <div>
-    <v-subheader>SPOSTAMENTO STRATEGICO</v-subheader>
-    <div v-if="getTurno.fase !== 'spostamento'">
-      <v-btn color="red" text @click="iniziaSpostamento" v-if="!spostamentoInCorso">INIZIA SPOSTAMENTO</v-btn>
+    <h4 class="text-h6 ma-4">
+      SPOSTAMENTO STRATEGICO
+    </h4>
+
+    <div v-if="turno.fase !== 'spostamento'">
+      <v-btn color="primary" block rounded @click="iniziaSpostamento" v-if="!spostamentoInCorso">INIZIA SPOSTAMENTO</v-btn>
 
       <div v-else>
-        <v-btn color="red" text @click="chiudi">Annulla</v-btn>
 
-        <span class="d-block text-caption">Seleziona sulla mappa lo stato di partenza</span>
-        <span class="d-block">Stato di partenza: {{statoPartenza ? statoPartenza.nome : ""}}</span>
-
-        <span class="d-block text-caption">Seleziona sulla mappa lo stato di arrivo</span>
-        <span class="d-block">Stato di arrivo: {{statoArrivo ? statoArrivo.nome : ""}}</span>
+        <span class="d-block text-body-2 mb-3">Seleziona sulla mappa lo stato di partenza e quello di arrivo</span>
+        <span class="d-block text-subtitle-2">Stato di partenza: {{statoPartenza ? statoPartenza.nome : ""}}</span>
+        <span class="d-block text-subtitle-2">Stato di arrivo: {{statoArrivo ? statoArrivo.nome : ""}}</span>
 
         <v-select label="Armate da spostare"
                   v-model="armate"
                   :items="armateSpostabili"
                   :disabled="!statoPartenza" />
 
-        <v-btn color="red" text :disabled="!statoPartenza || !statoArrivo || !armate" @click="confermaSpostamento">
-          OK
-        </v-btn>
+        <v-row>
+          <v-spacer />
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" icon @click="chiudi" v-on="on" v-bind="attrs">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+            Annulla
+          </v-tooltip>
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }" v-on="on" v-bind="attrs">
+              <v-btn color="primary" icon :disabled="!statoPartenza || !statoArrivo || !armate" @click="confermaSpostamento">
+                <v-icon>mdi-check</v-icon>
+              </v-btn>
+            </template>
+            Conferma spostamento
+          </v-tooltip>
+        </v-row>
       </div>
 
     </div>
-    <span class="d-block text-caption">Hai già effettuato uno spostamento in questo turno</span>
+    <span v-else class="d-block text-body-2">Hai già effettuato uno spostamento in questo turno</span>
   </div>
 </template>
 
@@ -42,7 +60,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getTurno", "getActivePlayer", "spostamentoInCorso", "getMappaGioco"]),
+    ...mapGetters(["turno", "giocatoreAttivo", "spostamentoInCorso", "mappaGioco"]),
     armateSpostabili() {
       let ris = []
       if (this.statoPartenza) {
@@ -70,20 +88,20 @@ export default {
         statoPartenza: this.statoPartenza.id,
         statoArrivo: this.statoArrivo.id,
         armate: this.armate,
-        giocatore: this.getActivePlayer
+        giocatore: this.giocatoreAttivo
       }
       await this.spostamento(spostamentoData)
       this.chiudi()
     },
     onNodeSelected({ id }) {
       if (!this.statoPartenza) {
-        let stato = utils.trovaStatoId(this.getMappaGioco, id)
-        if (stato.proprietario === this.getActivePlayer && stato.armate > 1) {
+        let stato = utils.trovaStatoId(this.mappaGioco, id)
+        if (stato.proprietario === this.giocatoreAttivo && stato.armate > 1) {
           this.statoPartenza = stato
         }
       } else if (!this.statoArrivo) {
-        let stato = utils.trovaStatoId(this.getMappaGioco, id)
-        if (stato.proprietario === this.getActivePlayer && utils.confinanti(stato, this.statoPartenza)) {
+        let stato = utils.trovaStatoId(this.mappaGioco, id)
+        if (stato.proprietario === this.giocatoreAttivo && utils.confinanti(stato, this.statoPartenza)) {
           this.statoArrivo = stato
         }
       }
