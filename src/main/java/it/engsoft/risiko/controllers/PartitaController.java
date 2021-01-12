@@ -57,7 +57,11 @@ public class PartitaController {
     @PostMapping(path = "/difesa")
     public DifesaDAO difesa(@RequestBody DifesaDTO difesaDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
-        return partitaService.difesa(difesaDTO, partita);
+        DifesaDAO difesa = partitaService.difesa(difesaDTO, partita);
+        if(difesa.isObiettivoRaggiuntoAtt())
+            httpSession.setAttribute(partitaKey, null);
+
+        return difesa;
     }
 
     @PostMapping(path = "/spostamento")
