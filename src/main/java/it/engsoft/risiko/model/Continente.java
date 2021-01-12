@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.DatiErratiException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,16 +10,23 @@ import java.util.Objects;
 @Entity(name = "continenti")
 public class Continente {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nome;
     private int armateBonus;
     @ManyToOne
     @JoinColumn(name = "mappa_id", nullable = false)
     private Mappa mappa;
-    @OneToMany(mappedBy = "continente")
+    @OneToMany(mappedBy = "continente", cascade = CascadeType.PERSIST)
     private List<Stato> stati;
+
+    public Continente(String nome, int armateBonus) {
+        this.nome = nome;
+        this.armateBonus = armateBonus;
+        this.stati = new ArrayList<>();
+    }
+
+    public Continente() {}
 
     public Long getId() {
         return id;
@@ -43,6 +52,17 @@ public class Continente {
         if (armateBonus <= 0)
             throw new RuntimeException("Armate bonus zero o negative");
         this.armateBonus = armateBonus;
+    }
+
+    public Mappa getMappa() {
+        return mappa;
+    }
+
+    public void setMappa(Mappa mappa) {
+        if (mappa == null)
+            throw new DatiErratiException();
+
+        this.mappa = mappa;
     }
 
     // stati

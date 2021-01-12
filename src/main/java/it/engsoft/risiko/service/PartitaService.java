@@ -8,10 +8,7 @@ import it.engsoft.risiko.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +29,11 @@ public class PartitaService {
         Partita partita = new Partita();
 
         // istanzia la mappa caricandola tramite id da un repository
-        partita.setMappa(mappaRepository.findById(nuovoGiocoDTO.getMappaId()));
+        Optional<Mappa> mappa = mappaRepository.findById(nuovoGiocoDTO.getMappaId());
+        if(mappa.isEmpty())
+            throw new RuntimeException();
+
+        partita.setMappa(mappa.get());
 
         // controllo sul valore minimo e massimo di giocatori ammessi dalla mappa
         if (partita.getMappa().getNumMaxGiocatori() < nuovoGiocoDTO.getGiocatori().size() ||

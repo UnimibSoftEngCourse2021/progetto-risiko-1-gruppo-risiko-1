@@ -1,5 +1,6 @@
 package it.engsoft.risiko.controllers;
 
+import it.engsoft.risiko.dto.NuovaMappaDTO;
 import it.engsoft.risiko.service.MappaService;
 import it.engsoft.risiko.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,8 @@ public class MappaController {
         return mappaService.mappa(mappaId);
     }
 
-//    @RequestMapping(method = RequestMethod.POST, path = "/mappe")
-//    public void nuovaMappa(@RequestBody MappaDTO mappaDTO) {
-//        // TODO: gestire dati in ingresso
-//        mappaService.nuovaMappa(mappaDTO);
-//    }
+    @RequestMapping(method = RequestMethod.POST, path = "/mappe")
+    public void nuovaMappa(@RequestBody NuovaMappaDTO nuovaMappaDTO) {
+        mappaService.nuovaMappa(nuovaMappaDTO);
+    }
 }
