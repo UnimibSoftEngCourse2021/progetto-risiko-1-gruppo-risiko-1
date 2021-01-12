@@ -9,7 +9,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         gioco: {
-            on: false
+            on: false,
+            winner: null
         },
         mappe: [],
         mappa: {
@@ -50,6 +51,7 @@ export default new Vuex.Store({
             gioco.primoGiocatoreIndex = gioco.activePlayerIndex
             gioco.combattimento = { inCorso: false, attaccante: null, difensore: null }
             gioco.spostamentoInCorso = false
+            gioco.winner = null
             state.gioco = gioco
         },
         addRinforzi(state, rinforzi) {
@@ -96,7 +98,7 @@ export default new Vuex.Store({
         setStatoDifensore(state, stato) {
             state.gioco.combattimento.difensore = stato.id
         },
-        setEsitoCombattimento(state, { dadoAtt, dadoDif, vittimeAtt, vittimeDif, vittoriaAtt }) {
+        setEsitoCombattimento(state, { dadoAtt, dadoDif, vittimeAtt, vittimeDif, vittoriaAtt, obiettivoRaggiuntoAtt }) {
             state.gioco.turno.fase = "combattimento"
             state.gioco.combattimento = { ...state.gioco.combattimento, dadoAtt, dadoDif, vittimeAtt, vittimeDif, vittoriaAtt }
             let statoAttaccante = utils.trovaStatoId(state.gioco.mappa, state.gioco.combattimento.attaccante)
@@ -107,6 +109,10 @@ export default new Vuex.Store({
                 Vue.set(statoDifensore, "proprietario", statoAttaccante.proprietario)
             } else {
                 state.gioco.combattimento.inCorso = false
+            }
+
+            if (obiettivoRaggiuntoAtt) {
+                state.gioco.winner = state.gioco.giocatori[state.gioco.activePlayerIndex]
             }
         },
         clearCombattimento(state) {
@@ -137,6 +143,9 @@ export default new Vuex.Store({
             })
             state.gioco.turno.tris = true
             state.gioco.turno.armateTris = armate
+        },
+        terminaPartita(state) {
+            state.gioco.on = false
         }
     },
     actions: {
@@ -303,6 +312,9 @@ export default new Vuex.Store({
         },
         carteTerritorio(state) {
             return state.gioco.on ? state.gioco.giocatori[state.gioco.activePlayerIndex].carteTerritorio : []
+        },
+        getWinner(state) {
+            return state.gioco.on ? state.gioco.winner : null
         }
     }
 })

@@ -16,6 +16,18 @@
         <azioni-giocatore ref="azioniGiocatore"/>
       </v-col>
     </v-row>
+
+    <v-dialog max-width="700px" v-model="showWinnerDialog" persistent>
+      <v-card v-if="getWinner">
+        <v-card-title>Vittoria!</v-card-title>
+        <v-card-text>{{getWinner.nome}} ha vinto la partita, raggiungendo il suo obiettivo:</v-card-text>
+        <v-card-text>{{getWinner.obiettivo}}</v-card-text>
+
+        <v-card-actions>
+          <v-btn color="red" text @click="terminaPartita">Termina partita</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 
 </template>
@@ -24,23 +36,31 @@
 import Board from "@/components/Board";
 import GameInfo from "@/components/GameInfo";
 import AzioniGiocatore from "@/components/AzioniGiocatore";
+import {mapGetters, mapMutations} from "vuex";
 
 export default {
   name: "Game",
   components: {AzioniGiocatore, Board, GameInfo},
   data() {
     return {
-      showObiettiviDialog: true,
+      showWinnerDialog: false
     }
   },
 
   computed: {
-    fasePreparazione() {
-      return this.$store.getters.getFasePreparazione;
-    },
+    ...mapGetters(["getWinner"])
+  },
+
+  watch: {
+    getWinner(winner) {
+      if (winner)
+        this.showWinnerDialog = true
+      console.log(this.showWinnerDialog)
+    }
   },
 
   methods: {
+    ...mapMutations(["terminaPartita"]),
     evidenziaContinente(id) {
       this.$refs.board.evidenziaStatiContinente(id)
     },
