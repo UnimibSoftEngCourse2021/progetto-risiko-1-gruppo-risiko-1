@@ -55,7 +55,7 @@ public class ConqContinenti extends Obiettivo {
             throw new RuntimeException("Giocatore non valido");
 
         for (Continente continente : targetContinenti) {
-            if (giocatore.equals(continente.getProprietario()))
+            if (!giocatore.equals(continente.getProprietario()))
                 return false;
         }
 
