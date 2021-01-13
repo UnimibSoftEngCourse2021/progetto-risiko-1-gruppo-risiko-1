@@ -25,12 +25,12 @@ DROP TABLE IF EXISTS `adiacenza`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `adiacenza` (
-  `stato1` bigint NOT NULL,
-  `stato2` bigint NOT NULL,
-  PRIMARY KEY (`stato1`,`stato2`),
-  KEY `adiacenza_FK_1` (`stato2`),
-  CONSTRAINT `adiacenza_FK` FOREIGN KEY (`stato1`) REFERENCES `stati` (`id`),
-  CONSTRAINT `adiacenza_FK_1` FOREIGN KEY (`stato2`) REFERENCES `stati` (`id`)
+                             `stato1` bigint NOT NULL,
+                             `stato2` bigint NOT NULL,
+                             PRIMARY KEY (`stato1`,`stato2`),
+                             KEY `adiacenza_FK_1` (`stato2`),
+                             CONSTRAINT `adiacenza_FK` FOREIGN KEY (`stato1`) REFERENCES `stati` (`id`),
+                             CONSTRAINT `adiacenza_FK_1` FOREIGN KEY (`stato2`) REFERENCES `stati` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -40,7 +40,7 @@ CREATE TABLE `adiacenza` (
 
 LOCK TABLES `adiacenza` WRITE;
 /*!40000 ALTER TABLE `adiacenza` DISABLE KEYS */;
-INSERT INTO `adiacenza` VALUES (4,1),(5,1),(4,2),(7,2),(8,2),(9,2),(10,2),(11,2),(4,3),(5,3),(6,3),(7,3),(1,4),(2,4),(3,4),(5,4),(7,4),(1,5),(3,5),(4,5),(6,5),(24,5),(3,6),(5,6),(7,6),(2,7),(3,7),(4,7),(6,7),(8,7),(2,8),(7,8),(9,8),(19,8),(2,9),(8,9),(12,9),(19,9),(2,10),(11,10),(23,10),(2,11),(10,11),(12,11),(2,12),(9,12),(11,12),(14,12),(19,12),(38,12),(39,12),(14,13),(15,13),(16,13),(17,13),(19,13),(12,14),(13,14),(15,14),(19,14),(37,14),(38,14),(13,15),(14,15),(16,15),(37,15),(13,16),(15,16),(17,16),(18,16),(13,17),(16,17),(18,17),(19,17),(16,18),(17,18),(26,18),(8,19),(9,19),(12,19),(13,19),(14,19),(17,19),(21,20),(22,20),(23,20),(20,21),(22,21),(20,22),(21,22),(23,22),(10,23),(20,23),(22,23),(5,24),(25,24),(27,24),(24,25),(26,25),(27,25),(28,25),(18,26),(25,26),(28,26),(29,26),(24,27),(25,27),(28,27),(30,27),(25,28),(26,28),(27,28),(29,28),(30,28),(31,28),(26,29),(28,29),(31,29),(27,30),(28,30),(31,30),(32,30),(28,31),(29,31),(30,31),(32,31),(30,32),(31,32),(34,33),(35,33),(36,33),(37,33),(33,34),(35,34),(36,34),(32,35),(34,35),(33,36),(34,36),(14,37),(15,37),(33,37),(38,37),(39,37),(40,37),(12,38),(14,38),(37,38),(39,38),(37,39),(38,39),(40,39),(41,39),(42,39),(37,40),(39,40),(42,40),(39,41),(42,41),(39,42),(40,42),(41,42);
+INSERT INTO `adiacenza` VALUES (4,1),(5,1),(4,2),(7,2),(8,2),(9,2),(10,2),(11,2),(12,2),(4,3),(5,3),(6,3),(7,3),(1,4),(2,4),(3,4),(5,4),(7,4),(1,5),(3,5),(4,5),(6,5),(24,5),(3,6),(5,6),(7,6),(2,7),(3,7),(4,7),(6,7),(8,7),(2,8),(7,8),(9,8),(19,8),(2,9),(8,9),(12,9),(19,9),(2,10),(11,10),(23,10),(2,11),(10,11),(12,11),(2,12),(9,12),(11,12),(14,12),(19,12),(38,12),(39,12),(14,13),(15,13),(16,13),(17,13),(19,13),(12,14),(13,14),(15,14),(19,14),(37,14),(38,14),(13,15),(14,15),(16,15),(37,15),(13,16),(15,16),(17,16),(18,16),(13,17),(16,17),(18,17),(19,17),(16,18),(17,18),(26,18),(8,19),(9,19),(12,19),(13,19),(14,19),(17,19),(21,20),(22,20),(23,20),(20,21),(22,21),(20,22),(21,22),(23,22),(10,23),(20,23),(22,23),(5,24),(25,24),(27,24),(24,25),(26,25),(27,25),(28,25),(18,26),(25,26),(28,26),(29,26),(24,27),(25,27),(28,27),(30,27),(25,28),(26,28),(27,28),(29,28),(30,28),(31,28),(26,29),(28,29),(31,29),(27,30),(28,30),(31,30),(32,30),(28,31),(29,31),(30,31),(32,31),(30,32),(31,32),(35,32),(34,33),(35,33),(36,33),(37,33),(33,34),(35,34),(36,34),(32,35),(33,35),(34,35),(33,36),(34,36),(14,37),(15,37),(33,37),(38,37),(39,37),(40,37),(12,38),(14,38),(37,38),(39,38),(12,39),(37,39),(38,39),(40,39),(41,39),(42,39),(37,40),(39,40),(42,40),(39,41),(42,41),(39,42),(40,42),(41,42);
 /*!40000 ALTER TABLE `adiacenza` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,13 +52,13 @@ DROP TABLE IF EXISTS `continenti`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `continenti` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `nome` varchar(50) NOT NULL,
-  `armateBonus` int NOT NULL,
-  `mappa_id` bigint NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `continenti_FK` (`mappa_id`),
-  CONSTRAINT `continenti_FK` FOREIGN KEY (`mappa_id`) REFERENCES `mappe` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                              `id` bigint NOT NULL AUTO_INCREMENT,
+                              `nome` varchar(50) NOT NULL,
+                              `armateBonus` int NOT NULL,
+                              `mappa_id` bigint NOT NULL,
+                              PRIMARY KEY (`id`),
+                              KEY `continenti_FK` (`mappa_id`),
+                              CONSTRAINT `continenti_FK` FOREIGN KEY (`mappa_id`) REFERENCES `mappe` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -80,12 +80,12 @@ DROP TABLE IF EXISTS `mappe`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mappe` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `nome` varchar(50) NOT NULL,
-  `descrizione` varchar(100) NOT NULL,
-  `numMinGiocatori` int NOT NULL,
-  `numMaxGiocatori` int NOT NULL,
-  PRIMARY KEY (`id`)
+                         `id` bigint NOT NULL AUTO_INCREMENT,
+                         `nome` varchar(50) NOT NULL,
+                         `descrizione` varchar(100) NOT NULL,
+                         `numMinGiocatori` int NOT NULL,
+                         `numMaxGiocatori` int NOT NULL,
+                         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -107,12 +107,12 @@ DROP TABLE IF EXISTS `stati`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `stati` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `nome` varchar(50) NOT NULL,
-  `continente_id` bigint NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `stati_FK` (`continente_id`),
-  CONSTRAINT `stati_FK` FOREIGN KEY (`continente_id`) REFERENCES `continenti` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                         `id` bigint NOT NULL AUTO_INCREMENT,
+                         `nome` varchar(50) NOT NULL,
+                         `continente_id` bigint NOT NULL,
+                         PRIMARY KEY (`id`),
+                         KEY `stati_FK` (`continente_id`),
+                         CONSTRAINT `stati_FK` FOREIGN KEY (`continente_id`) REFERENCES `continenti` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -135,4 +135,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-29 13:20:12
+-- Dump completed on 2021-01-13 10:26:56

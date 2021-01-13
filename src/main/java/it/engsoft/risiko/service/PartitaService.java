@@ -65,7 +65,6 @@ public class PartitaService {
         // setta la modalità
         partita.setModalita(Partita.Modalita.valutaModalita(nuovoGiocoDTO.getMod()));
 
-
         partita.setFasePreparazione(true);
 
         // scegliamo casualmente un ordine di giocatori
