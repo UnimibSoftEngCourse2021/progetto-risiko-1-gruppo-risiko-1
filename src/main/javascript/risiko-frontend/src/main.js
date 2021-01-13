@@ -6,8 +6,12 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
-new Vue({
+let vueApp = new Vue({
   store,
   vuetify,
   render: h => h(App)
-}).$mount('#app')
+})
+
+vueApp.$mount('#app')
+
+export { vueApp };

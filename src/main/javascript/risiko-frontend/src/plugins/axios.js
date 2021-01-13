@@ -1,6 +1,6 @@
 "use strict";
 
-// import Vue from 'vue';
+import {vueApp} from '@/main.js';
 import axios from "axios";
 
 let config = {
@@ -11,23 +11,25 @@ const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
   function(config) {
-    // Do something before request is sent
+      vueApp.$store.commit("setLoading", true)
     return config;
   },
   function(error) {
-    // Do something with request error
-    return Promise.reject(error);
+      vueApp.$store.commit("setLoading", false)
+      vueApp.$store.commit("setError", true)
+      return Promise.reject(error);
   }
 );
 
 // Add a response interceptor
 _axios.interceptors.response.use(
   function(response) {
-    // Do something with response data
+      vueApp.$store.commit("setLoading", false)
     return response;
   },
   function(error) {
-    // Do something with response error
+      vueApp.$store.commit("setLoading", false)
+      vueApp.$store.commit("setError", true)
     return Promise.reject(error);
   }
 );

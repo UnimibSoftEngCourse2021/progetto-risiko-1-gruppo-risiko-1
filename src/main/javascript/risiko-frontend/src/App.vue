@@ -34,6 +34,11 @@
     <v-dialog v-model="showNuovoGiocoDialog" max-width="700px">
       <nuovo-gioco-dialog @gameStarted="prepareGame" @close="showNuovoGiocoDialog = false"/>
     </v-dialog>
+
+    <loader v-if="loading"/>
+    <v-dialog v-model="$store.state.error" max-width="700px" persistent>
+      <error-dialog />
+    </v-dialog>
   </v-app>
 </template>
 
@@ -41,11 +46,16 @@
 
 import Game from "@/components/Game";
 import NuovoGiocoDialog from "@/components/NuovoGiocoDialog";
+import Loader from "@/components/Loader";
+import {mapGetters} from "vuex";
+import ErrorDialog from "@/components/ErrorDialog";
 
 export default {
   name: 'App',
 
   components: {
+    ErrorDialog,
+    Loader,
     NuovoGiocoDialog,
     Game
   },
@@ -69,17 +79,15 @@ export default {
   },
 
   computed: {
-    gameActive() {
-      return this.$store.getters.gameActive
-    },
+    ...mapGetters(["gameActive", "loading", "fasePreparazione", "turno", "giocatoreAttivo"]),
 
     gameSituation() {
       let ris
-      if (this.$store.getters.fasePreparazione)
+      if (this.fasePreparazione)
         ris = "Fase di preparazione - "
       else
-        ris = "Turno " + this.$store.getters.turno.num + " - "
-      return ris + this.$store.getters.giocatoreAttivo
+        ris = "Turno " + this.turno.num + " - "
+      return ris + this.giocatoreAttivo
     }
   }
 };

@@ -15,9 +15,17 @@ export default new Vuex.Store({
         mappe: [],
         mappa: {
             continenti: [],
-        }
+        },
+        loading: false,
+        error: false
     },
     mutations: {
+        setError(state, error) {
+          state.error = error
+        },
+        setLoading(state, isLoading) {
+          state.loading = isLoading
+        },
         setListaMappe(state, mappe) {
             state.mappe = mappe;
         },
@@ -226,6 +234,9 @@ export default new Vuex.Store({
         }
     },
     getters: {
+        loading(state) {
+          return state.loading
+        },
         gameActive(state) {
             return state.gioco.on;
         },
