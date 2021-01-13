@@ -30,15 +30,15 @@ public class PartitaService {
 
         // istanzia la mappa caricandola tramite id da un repository
         Optional<Mappa> mappa = mappaRepository.findById(nuovoGiocoDTO.getMappaId());
-        if(mappa.isEmpty())
-            throw new RuntimeException();
+        if (mappa.isEmpty())
+            throw new DatiErratiException();
 
         partita.setMappa(mappa.get());
 
         // controllo sul valore minimo e massimo di giocatori ammessi dalla mappa
         if (partita.getMappa().getNumMaxGiocatori() < nuovoGiocoDTO.getGiocatori().size() ||
                 partita.getMappa().getNumMinGiocatori() > nuovoGiocoDTO.getGiocatori().size())
-            throw new RuntimeException("Ecceduto il limite massimo-minimo di giocatori");
+            throw new DatiErratiException();
 
         // creazione dei nuovi giocatori
         partita.setGiocatori(nuovoGiocoDTO.getGiocatori()
@@ -55,17 +55,22 @@ public class PartitaService {
         partita.assegnaArmateIniziali();
 
         // metti un armata su ogni territorio e aggiorna quelle dei giocatori rispettivamente
-        partita.getGiocatori().forEach(giocatore -> {
-            giocatore.getStati().forEach(stato -> {
-                stato.aggiungiArmate(1);
-                giocatore.modificaTruppeDisponibili(-1);
-            });
-        });
+        partita.getGiocatori().forEach(
+                giocatore -> giocatore.getStati().forEach(
+                        stato -> {
+                            stato.aggiungiArmate(1);
+                            giocatore.modificaTruppeDisponibili(-1);
+                        }
+                )
+        )
+        ;
 
         // setta la modalità
         partita.setModalita(Partita.Modalita.valutaModalita(nuovoGiocoDTO.getMod()));
 
         partita.setFasePreparazione(true);
+
+        //TODO:: integrazione compattazione mappa in mappa service
 
         // scegliamo casualmente un ordine di giocatori
         Collections.shuffle(partita.getGiocatori());
@@ -77,7 +82,7 @@ public class PartitaService {
     }
 
     public IniziaTurnoDAO iniziaTurno(Partita partita) {
-        if (partita == null || partita.isFasePreparazione())
+        if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
         // blocca iniziaTurno se fase diversa da NULL
@@ -91,7 +96,7 @@ public class PartitaService {
         int armateContinenti = 0;
         for (Continente continente : partita.getMappa().getContinenti()) {
             if (partita.getGiocatoreAttivo().equals(continente.getProprietario()))
-                armateContinenti = continente.getArmateBonus();
+                armateContinenti = armateContinenti + continente.getArmateBonus();
         }
 
         partita.getGiocatoreAttivo().modificaTruppeDisponibili(armateContinenti + armateStati);
@@ -100,10 +105,8 @@ public class PartitaService {
     }
 
     public Map<String, Object> rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
-        if (partita == null)
-            throw new MossaIllegaleException();
 
-        // gestione rinforzi iniziali, credo convenga aggiungere dei controlli sul numero di armate in input da lato client
+        // blocca il rinforzo se non chiamato dal giocatore attivo in quel turno
         Giocatore giocatore = toGiocatore(rinforzoDTO.getGiocatore(), partita);
         if (!partita.getGiocatoreAttivo().equals(giocatore))
             throw new MossaIllegaleException();
@@ -163,9 +166,6 @@ public class PartitaService {
     }
 
     public int giocaTris(TrisDTO trisDTO, Partita partita) {
-        if (partita == null || partita.getTurno() == null)
-            throw new MossaIllegaleException();
-
         // blocca giocaTris se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
@@ -176,7 +176,7 @@ public class PartitaService {
 
         // blocca giocaTris se in trisDTO non sono contenute esattamente tre carte
         if (trisDTO.getTris().size() != 3)
-            throw new MossaIllegaleException();
+            throw new DatiErratiException();
 
         // seleziona giocatore che gioca il tris
         Giocatore giocatore = toGiocatore(trisDTO.getGiocatore(), partita);
@@ -192,14 +192,11 @@ public class PartitaService {
     }
 
     public void attacco(AttaccoDTO attaccoDTO, Partita partita) {
-        if (partita == null || partita.getTurno() == null)
-            throw new MossaIllegaleException();
-
         // blocca l'attacco se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
 
-        // blocca l'attacco se si è in afse di spostamento
+        // blocca l'attacco se si è in fase di spostamento
         if (partita.getTurno().getFase().equals(Turno.Fase.SPOSTAMENTO))
             throw new MossaIllegaleException();
 
@@ -233,14 +230,6 @@ public class PartitaService {
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
-        Stato statoAtt = partita.getTurno().getCombattimentoInCorso().getStatoAttaccante();
-        Stato statoDif = partita.getTurno().getCombattimentoInCorso().getStatoDifensore();
-        Giocatore giocatoreDif = partita.getTurno().getCombattimentoInCorso().getStatoDifensore().getProprietario();
-        Giocatore giocatoreAtt = partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getProprietario();
-
-        if (partita == null || partita.getTurno() == null)
-            throw new MossaIllegaleException();
-
         // blocca la difesa se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
@@ -256,6 +245,11 @@ public class PartitaService {
         // blocca la difesa se non si è in fase di combattimento
         if (!partita.getTurno().getFase().equals(Turno.Fase.COMBATTIMENTI))
             throw new MossaIllegaleException();
+
+        Stato statoAtt = partita.getTurno().getCombattimentoInCorso().getStatoAttaccante();
+        Stato statoDif = partita.getTurno().getCombattimentoInCorso().getStatoDifensore();
+        Giocatore giocatoreDif = partita.getTurno().getCombattimentoInCorso().getStatoDifensore().getProprietario();
+        Giocatore giocatoreAtt = partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getProprietario();
 
         // blocca la difesa se chiamata da un giocatore non coinvolto come difensore nell'attuale combattimento
         if (!giocatoreDif.equals(toGiocatore(difesaDTO.getGiocatore(), partita)))
@@ -298,16 +292,13 @@ public class PartitaService {
     }
 
     public void spostamentoStrategico(SpostamentoDTO spostamentoDTO, Partita partita) {
-        Giocatore giocatore = toGiocatore(spostamentoDTO.getGiocatore(), partita);
-        Stato statoArrivo = toStato(spostamentoDTO.getStatoArrivo(), partita);
-        Stato statoPartenza = toStato(spostamentoDTO.getStatoPartenza(), partita);
-
-        if (partita == null || partita.getTurno() == null)
-            throw new MossaIllegaleException();
-
         // blocca lo spostamento se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
+
+        Giocatore giocatore = toGiocatore(spostamentoDTO.getGiocatore(), partita);
+        Stato statoArrivo = toStato(spostamentoDTO.getStatoArrivo(), partita);
+        Stato statoPartenza = toStato(spostamentoDTO.getStatoPartenza(), partita);
 
         // blocca lo spostamento se non viene chiamato dal giocatore attivo in quel turno
         if (!partita.getGiocatoreAttivo().equals(giocatore))
@@ -317,32 +308,24 @@ public class PartitaService {
         if (!statoArrivo.getProprietario().equals(statoPartenza.getProprietario()))
             throw new MossaIllegaleException();
 
-        SpostamentoStrategico spostamentoAttacco = null;
-        SpostamentoStrategico spostamentoStrategico = null;
-
         if (partita.getTurno().getCombattimentoInCorso() != null) {
-            spostamentoAttacco = new SpostamentoStrategico(statoPartenza, statoArrivo,
-                    Integer.max(partita.getTurno().getCombattimentoInCorso().getArmateAttaccante() -
-                                    partita.getTurno().getCombattimentoInCorso().getVittimeAttaccante(),
-                            spostamentoDTO.getArmate()));
+            SpostamentoStrategico spostamentoAttacco =
+                    new SpostamentoStrategico(statoPartenza, statoArrivo, spostamentoDTO.getArmate());
+            if (armateNonValide(spostamentoAttacco, partita))
+                throw new DatiErratiException();
+            spostamentoAttacco.esegui();
             partita.getTurno().setCombattimentoInCorso(null);
         } else {
             partita.getTurno().setFase(Turno.Fase.SPOSTAMENTO);
-            spostamentoStrategico = new SpostamentoStrategico(statoPartenza, statoArrivo,
-                    Integer.min( statoPartenza.getArmate() - 1,
-                            spostamentoDTO.getArmate()));
+            SpostamentoStrategico spostamentoStrategico =
+                    new SpostamentoStrategico(statoPartenza, statoArrivo, spostamentoDTO.getArmate());
+            if (armateNonValide(spostamentoStrategico, partita))
+                throw new DatiErratiException();
+            spostamentoStrategico.esegui();
         }
-
-        // individua ed esegue spostamento da effettuare
-        if (spostamentoAttacco != null)
-            spostamentoAttacco.esegui();
-        else spostamentoStrategico.esegui();
     }
 
     public CartaTerritorioDAO fineTurno(Partita partita) {
-        if (partita == null || partita.getTurno() == null)
-            throw new MossaIllegaleException();
-
         // blocca fineTurno se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException();
@@ -367,24 +350,41 @@ public class PartitaService {
     }
 
 
-    public Stato toStato(Long idStato, Partita partita) {
+    private Stato toStato(Long idStato, Partita partita) {
         List<Stato> stato;
         stato = partita.getMappa().getStati().stream().filter(
                 s -> s.getId().equals(idStato)
         ).collect(Collectors.toList());
         if (stato.get(0) == null)
-            throw new RuntimeException("Stato non esiste");
+            throw new DatiErratiException();
         return stato.get(0);
     }
 
-    public Giocatore toGiocatore(String nomeGiocatore, Partita partita) {
+    private Giocatore toGiocatore(String nomeGiocatore, Partita partita) {
         Giocatore giocatore = null;
         for (int i = 0; i < partita.getGiocatori().size(); i++) {
-            if (nomeGiocatore.equalsIgnoreCase(partita.getGiocatori().get(i).getNome()))
+            if (nomeGiocatore.equals(partita.getGiocatori().get(i).getNome()))
                 giocatore = partita.getGiocatori().get(i);
         }
         if (giocatore == null)
             throw new DatiErratiException();
         return giocatore;
+    }
+
+    private boolean armateNonValide(SpostamentoStrategico spostamentoStrategico, Partita partita) {
+        if (partita.getTurno().getCombattimentoInCorso() != null)
+            return spostamentoStrategico.getQuantita() <= 0
+                    ||
+                    spostamentoStrategico.getQuantita() <=
+                            partita.getTurno().getCombattimentoInCorso().getArmateAttaccante() -
+                                    partita.getTurno().getCombattimentoInCorso().getVittimeAttaccante()
+                    ||
+                    spostamentoStrategico.getQuantita() >= spostamentoStrategico.getPartenza().getArmate()
+                    ;
+
+        return spostamentoStrategico.getQuantita() <= 0
+                ||
+                spostamentoStrategico.getQuantita() >= spostamentoStrategico.getPartenza().getArmate()
+                ;
     }
 }
