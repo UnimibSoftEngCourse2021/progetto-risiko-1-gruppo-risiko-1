@@ -11,20 +11,21 @@
 
     <div v-if="combattimentoInCorso">
 
-      <span class="text-body-2 d-block">Seleziona sulla mappa lo stato attaccante e scegli con quante truppe attaccare</span>
+      <span class="text-body-2 d-block">Seleziona sulla mappa lo stato attaccante, lo stato difensore e scegli con quante armate attaccare.
+       Poi, fai scegliere al difensore con quante armate difendersi.</span>
 
       <span class="d-block text-subtitle-2 mt-2">Attaccante: {{ statoAttaccante ? statoAttaccante.nome : "" }}</span>
 
       <v-select :disabled="!statoAttaccante"
                 v-model="$store.state.gioco.combattimento.armateAttaccante"
-                label="Seleziona il numero di armate attaccanti"
+                label="Numero armate attaccante"
                 :items="possibiliArmateAttaccanti" />
 
       <span class="d-block text-subtitle-2">Difensore: {{ statoDifensore ? statoDifensore.nome : "" }}</span>
 
       <v-select :disabled="!statoDifensore"
                 v-model="$store.state.gioco.combattimento.armateDifensore"
-                label="Fai selezionare al difensore il numero di armate con cui intende difendersi"
+                label="Numero armate difensore"
                 :items="possibiliArmateDifensori" />
 
       <v-row>

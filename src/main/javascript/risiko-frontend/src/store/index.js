@@ -78,7 +78,7 @@ export default new Vuex.Store({
             state.gioco.turno.armateContinenti = 0
             state.gioco.turno.armateTris = 0
         },
-        setTurno(state, turno) {
+        setTurno(state, {turno, pescato}) {
             state.gioco.activePlayerIndex = state.gioco.giocatori.findIndex(g => g.nome === turno.giocatore)
             state.gioco.turno = {
                 num: turno.numeroTurno,
@@ -87,7 +87,8 @@ export default new Vuex.Store({
                 armateContinenti: turno.armateContinenti,
                 armateTris: 0,
                 fase: "rinforzi",
-                tris: false
+                tris: false,
+                giocatorePrecedentePescato: pescato
             }
             state.gioco.giocatori[state.gioco.activePlayerIndex].armateDisponibili = turno.armateStati + turno.armateContinenti
         },
@@ -185,17 +186,17 @@ export default new Vuex.Store({
             if (state.gioco.preparazione && !data.preparazione) {
                 commit("finePreparazione")
                 let {data} = await giocoService.nuovoTurno()
-                commit("setTurno", data)
+                commit("setTurno", { turno: data, pescato: false })
             } else if (data.preparazione) {
                 commit("setActivePlayer", data.giocatore)
             }
         },
-        async nuovoTurno({state, commit}) {
-            let {data} = await giocoService.nuovoTurno()
-            if (data.giocatore !== state.gioco.giocatori[state.gioco.activePlayerIndex].nome) {
-                commit("setTurno", data)
-            }
-        },
+        // async nuovoTurno({state, commit}) {
+        //     let {data} = await giocoService.nuovoTurno()
+        //     if (data.giocatore !== state.gioco.giocatori[state.gioco.activePlayerIndex].nome) {
+        //         commit("setTurno", {data, pescato: false})
+        //     }
+        // },
         async confermaAttacco({ commit, state }) {
             let attaccoPayload = {
                 giocatore: state.gioco.giocatori[state.gioco.activePlayerIndex].nome,
@@ -222,7 +223,7 @@ export default new Vuex.Store({
                 commit("aggiungiCartaTerritorio", data)
             }
             let ris = await giocoService.nuovoTurno()
-            commit("setTurno", ris.data)
+            commit("setTurno", {turno: ris.data, pescato: !!data.id })
         },
         async giocaTris({ commit, state }, tris) {
             let payload = {
@@ -245,7 +246,6 @@ export default new Vuex.Store({
                 let proprietarioIndex = state.gioco.giocatori.findIndex(g => g.nome === stato.proprietario)
                 return {
                     id: stato.id,
-                    title: stato.nome + "<br/>" + state.gioco.giocatori[proprietarioIndex].nome,
                     group: proprietarioIndex,
                     label: String(stato.armate)
                 }
@@ -326,6 +326,18 @@ export default new Vuex.Store({
         },
         winner(state) {
             return state.gioco.on ? state.gioco.winner : null
+        },
+        infoGiocatori(state) {
+            return state.gioco.giocatori.map(giocatore => {
+                let statiConquistati = state.gioco.mappa.stati.filter(s => s.proprietario === giocatore.nome)
+                let armateTotali = 0
+                statiConquistati.forEach(s => armateTotali += s.armate)
+                return {
+                    ...giocatore,
+                    statiConquistati: statiConquistati.length,
+                    armateTotali
+                }
+            })
         }
     }
 })

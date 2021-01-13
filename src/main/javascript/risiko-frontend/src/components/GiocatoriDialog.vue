@@ -10,7 +10,7 @@
     <span class="text-body-1 ma-5 d-block">Clicca il nome di un giocatore per visualizzarne le informazioni principali</span>
 
     <v-expansion-panels>
-      <v-expansion-panel v-for="giocatore in giocatori" :key="giocatore.nome">
+      <v-expansion-panel v-for="giocatore in infoGiocatori" :key="giocatore.nome">
         <v-expansion-panel-header class="text-subtitle-1">{{giocatore.nome}}</v-expansion-panel-header>
         <v-expansion-panel-content class="ml-5 mb-5">
           <v-list>
@@ -18,7 +18,14 @@
               <v-list-item-icon>
                 <v-icon>mdi-tank</v-icon>
               </v-list-item-icon>
-              <v-list-item-content>Armate disponibili da posizionare: {{giocatore.armateDisponibili}}</v-list-item-content>
+              <v-list-item-content>Armate totali: {{giocatore.armateTotali}} (+ {{giocatore.armateDisponibili}} da posizionare)</v-list-item-content>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-map-marker</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>Stati conquistati: {{giocatore.statiConquistati}}</v-list-item-content>
             </v-list-item>
 
             <v-list-item>
@@ -28,17 +35,6 @@
               <v-list-item-content>Continenti conquistati: {{continentiDelGiocatore(giocatore.nome)}}</v-list-item-content>
             </v-list-item>
           </v-list>
-
-<!--          <v-list >-->
-<!--            <v-subheader>CARTE TERRITORIO</v-subheader>-->
-<!--            <v-list-item-group v-if="giocatore.carteTerritorio.length > 0" >-->
-<!--              <v-list-item v-for="carta in giocatore.carteTerritorio" :key="carta.id" >-->
-<!--                <v-list-item-title>{{carta.figura}}</v-list-item-title>-->
-<!--                <v-list-item-subtitle>{{carta.statoRappresentato}}</v-list-item-subtitle>-->
-<!--              </v-list-item>-->
-<!--            </v-list-item-group>-->
-<!--            <span v-else class="d-block text-caption">Nessuna carta territorio</span>-->
-<!--          </v-list>-->
 
           <v-subheader>CARTE TERRITORIO</v-subheader>
           <v-slide-group show-arrows v-if="giocatore.carteTerritorio.length > 0">
@@ -64,7 +60,7 @@ import {mapGetters} from "vuex";
 export default {
   name: "GiocatoriDialog",
   computed: {
-    ...mapGetters(["giocatori", "mappaGioco"])
+    ...mapGetters(["infoGiocatori", "mappaGioco"])
   },
   methods: {
     continentiDelGiocatore(nomeGiocatore) {

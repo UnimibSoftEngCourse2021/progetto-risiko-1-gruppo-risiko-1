@@ -1,6 +1,19 @@
 <template>
-  <v-container>
-    <div id="network">Hello</div>
+  <v-container class="pa-0">
+    <div class="text-box mb-2">
+      <span class="white--text d-block text-center text-h6">
+        {{hoverNodeInfo}}
+      </span>
+    </div>
+    <div class="d-flex">
+      <div class="d-inline-block my-1 mx-3 d-flex flex-column align-center" v-for="c in colors" :key="c.giocatore">
+          <v-btn class="mx-3" :color="c.color" x-small fab>
+          </v-btn>
+          <span class="white--text text-body-1 d-block text--center">{{c.giocatore}}</span>
+      </div>
+    </div>
+    <div id="network">
+    </div>
   </v-container>
 </template>
 
@@ -12,6 +25,7 @@ let network = null;
 let nodes = null
 import * as visNet from "vis-network";
 import * as visData from "vis-data";
+import utils from "@/store/utils";
 
 export default {
   name: "Board",
@@ -52,7 +66,9 @@ export default {
             avoidOverlap: 1
           }
         }
-      }
+      },
+      hoverNodeInfo: "",
+      colors: []
     }
   },
 
@@ -60,9 +76,10 @@ export default {
     mapNetwork: {
       handler: function (value) {
         value.nodes.forEach(node => {
-          let {id, label, group, title} = node
-          nodes.update({id, label, group, title})
+          let {id, label, group} = node
+          nodes.update({id, label, group})
         })
+        this.setColors()
       },
       deep: true
     }
@@ -80,25 +97,45 @@ export default {
     })
 
     network.on("hoverNode", ({ node }) => {
-      let continenteId = this.trovaContinente(node)
-      this.evidenziaStatiContinente(continenteId)
-    })
-    network.on("blurNode", () => {
-      network.unselectAll()
+      let continente = this.trovaContinente(node)
+      this.evidenziaStatiContinente(continente.id)
+      let stato = utils.trovaStatoId(this.mappaGioco, node)
+      this.hoverNodeInfo = continente.nome.toUpperCase() + " - " + stato.nome
     })
 
+    network.on("blurNode", () => {
+      network.unselectAll()
+      this.hoverNodeInfo = ""
+    })
+
+    this.setColors()
   },
 
   computed: {
-    ...mapGetters(["mapNetwork", "mappaGioco"])
+    ...mapGetters(["mapNetwork", "mappaGioco", "giocatori", "giocatoreAttivo"])
   },
 
   methods: {
+    setColors() {
+      if (!network)
+        this.colors = []
+
+      let ris = []
+      this.giocatori.forEach((g, index) => {
+        let ids = Object.keys(network.body.nodes)
+        let id = ids.find(id => network.body.nodes[id].options.group === index)
+        let n = network.body.nodes[id]
+        ris.push({ giocatore: g.nome, color: n.options.color.background })
+      })
+
+      this.colors=ris
+    },
     trovaStatiInContinente(continenteId) {
       return this.mappaGioco.stati.filter(stato => stato.continente === continenteId).map(stato => stato.id)
     },
     trovaContinente(statoId) {
-      return this.mappaGioco.stati.find(stato => stato.id === statoId).continente
+      let continenteId = this.mappaGioco.stati.find(stato => stato.id === statoId).continente
+      return this.mappaGioco.continenti.find(c => c.id === continenteId)
     },
     evidenziaStatiContinente(continenteId) {
       let nodeIds = this.trovaStatiInContinente(continenteId)
@@ -109,9 +146,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import url("~vis/dist/vis.min.css");
-
 #network {
   height: 800px;
 }
+
+.text-box {
+  height: 1.5rem;
+}
+
+
+
 </style>

@@ -6,7 +6,7 @@
 
     <v-row class="align-center mb-2 ml-3">
       <v-icon large class="mr-3">mdi-tank</v-icon>
-      <span class="text-subtitle-1">{{rinforziConsentiti - totaleRinforzi}} rimanenti</span>
+      <span class="text-subtitle-1">{{totaleRinforzi}}/{{rinforziConsentiti}}</span>
     </v-row>
 
 
@@ -17,7 +17,8 @@
         <span class="text-subtitle-2 d-block">{{ turno.armateContinenti }} per i continenti conquistati</span>
         <span class="text-subtitle-2 d-block">{{ turno.armateTris }} per il tris eventualmente giocato</span>
       </div>
-      <span class="text-subtitle-2 d-block mb-2" v-else>Devi piazzare {{rinforziConsentiti}} armate per la fase di preparazione</span>
+      <span class="text-subtitle-2 d-block mb-2" v-else>Devi piazzare {{rinforziConsentiti}} armate per la fase di preparazione
+       ({{armateDisponibili}} rimanenti in tutto)</span>
 
       <v-list class="rinforzi-list">
         <v-list-item v-for="rinf in rinforzi" :key="rinf.id">
@@ -40,9 +41,6 @@
           </v-row>
         </v-list-item>
       </v-list>
-<!--      <v-btn text color="red" :disabled="rinforziConsentiti !== totaleRinforzi"-->
-<!--             @click="confermaInviaRinforzi">Piazza rinforzi-->
-<!--      </v-btn>-->
     </div>
 
     <span class="d-block text-subtitle-2 mb-2" v-if="!fasePreparazione && turno.tris && rinforziConsentiti === 0">
