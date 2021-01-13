@@ -52,7 +52,7 @@ export default {
   components: {AzioniGiocatore, Board, GameInfo},
   data() {
     return {
-      showWinnerDialog: true
+      showWinnerDialog: false
     }
   },
 
