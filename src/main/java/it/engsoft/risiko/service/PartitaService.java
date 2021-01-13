@@ -377,7 +377,7 @@ public class PartitaService {
                     ||
                     spostamentoStrategico.getQuantita() <=
                             partita.getTurno().getCombattimentoInCorso().getArmateAttaccante() -
-                                    partita.getTurno().getCombattimentoInCorso().getVittimeAttaccante()
+                                    partita.getTurno().getCombattimentoInCorso().getVittimeAttaccante() - 1
                     ||
                     spostamentoStrategico.getQuantita() >= spostamentoStrategico.getPartenza().getArmate()
                     ;
