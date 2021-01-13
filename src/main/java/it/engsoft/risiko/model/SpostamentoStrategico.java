@@ -37,4 +37,8 @@ public class SpostamentoStrategico {
         destinazione.aggiungiArmate(quantita);
         eseguito = true;
     }
+
+    public Stato getPartenza() { return partenza; }
+
+    public int getQuantita() { return quantita; }
 }

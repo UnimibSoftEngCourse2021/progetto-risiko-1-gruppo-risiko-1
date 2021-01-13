@@ -1,5 +1,6 @@
 package it.engsoft.risiko.controllers;
 
+import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.service.PartitaService;
 import it.engsoft.risiko.dto.*;
 import it.engsoft.risiko.dao.*;
@@ -33,30 +34,40 @@ public class PartitaController {
     @PostMapping(path = "/rinforzi")
     public Map<String, Object> rinforzi(@RequestBody RinforzoDTO rinforzoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        if (partita == null)
+            throw new MossaIllegaleException();
         return partitaService.rinforzo(rinforzoDTO, partita);
     }
 
     @PostMapping(path = "/inizia-turno")
     public IniziaTurnoDAO iniziaTurno(HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        if (partita == null)
+            throw new MossaIllegaleException();
         return partitaService.iniziaTurno(partita);
     }
 
     @PostMapping(path = "/tris")
     public int giocaTris(@RequestBody TrisDTO trisDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        if (partita == null)
+            throw new MossaIllegaleException();
         return partitaService.giocaTris(trisDTO, partita);
     }
 
     @PostMapping(path = "/attacco")
     public void attacco(@RequestBody AttaccoDTO attaccoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        if (partita == null)
+            throw new MossaIllegaleException();
         partitaService.attacco(attaccoDTO, partita);
     }
 
     @PostMapping(path = "/difesa")
     public DifesaDAO difesa(@RequestBody DifesaDTO difesaDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        if (partita == null)
+            throw new MossaIllegaleException();
         DifesaDAO difesa = partitaService.difesa(difesaDTO, partita);
         if(difesa.isObiettivoRaggiuntoAtt())
             httpSession.setAttribute(partitaKey, null);
@@ -67,12 +78,16 @@ public class PartitaController {
     @PostMapping(path = "/spostamento")
     public void spostamento(@RequestBody SpostamentoDTO spostamentoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        if (partita == null)
+            throw new MossaIllegaleException();
         partitaService.spostamentoStrategico(spostamentoDTO, partita);
     }
 
     @PostMapping(path = "/fine-turno")
     public CartaTerritorioDAO fineTurno(HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
+        if (partita == null)
+            throw new MossaIllegaleException();
         return partitaService.fineTurno(partita);
     }
 }
