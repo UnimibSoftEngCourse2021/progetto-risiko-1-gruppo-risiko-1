@@ -76,7 +76,18 @@ public class Stato {
     }
 
     public void aggiungiConfinante(Stato stato) {
-        confinanti.add(stato);
+        if (!confinanti.contains(stato))
+            confinanti.add(stato);
+    }
+
+    public void aggiungiConfinanti(List<Stato> stati) {
+        for (Stato stato : stati) {
+            aggiungiConfinante(stato);
+        }
+    }
+
+    public void rimuoviConfinante(Stato stato) {
+        confinanti.remove(stato);
     }
 
     // se uno stato (y) è confinante di un altro (x) dovrebbe valere anche il contrario; con l'attuale setter cio' non avviene
@@ -84,6 +95,10 @@ public class Stato {
         if (confinanti == null)
             throw new RuntimeException("Stati confinanti nulli");
         this.confinanti = confinanti;
+    }
+
+    public Continente getContinente() {
+        return continente;
     }
 
     // giocatore proprietario dello stato

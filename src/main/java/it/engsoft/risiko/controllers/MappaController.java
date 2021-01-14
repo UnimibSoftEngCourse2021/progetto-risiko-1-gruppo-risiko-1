@@ -31,7 +31,7 @@ public class MappaController {
         return mappaService.mappa(mappaId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/mappe")
+    @PostMapping(path = "/mappe")
     public void nuovaMappa(@RequestBody NuovaMappaDTO nuovaMappaDTO) {
         mappaService.nuovaMappa(nuovaMappaDTO);
     }

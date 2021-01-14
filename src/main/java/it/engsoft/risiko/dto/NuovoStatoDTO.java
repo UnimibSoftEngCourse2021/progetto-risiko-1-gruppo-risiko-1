@@ -13,7 +13,7 @@ public class NuovoStatoDTO {
             throw new DatiErratiException();
         this.nome = nome;
 
-        if(confinanti == null || confinanti.size() == 0)
+        if(confinanti == null || confinanti.isEmpty())
             throw new DatiErratiException();
         this.confinanti = confinanti;
     }

@@ -14,13 +14,15 @@ import java.util.stream.Collectors;
 @Service
 public class PartitaService {
     private final MappaRepository mappaRepository;
+    private final MappaService mappaService;
     private final CarteTerritorioService carteTerritorioService;
     private final CarteObiettivoService carteObiettivoService;
 
     @Autowired
-    public PartitaService(MappaRepository mappaRepository, CarteObiettivoService carteObiettivoService,
+    public PartitaService(MappaRepository mappaRepository, MappaService mappaService, CarteObiettivoService carteObiettivoService,
                           CarteTerritorioService carteTerritorioService) {
         this.mappaRepository = mappaRepository;
+        this.mappaService = mappaService;
         this.carteTerritorioService = carteTerritorioService;
         this.carteObiettivoService = carteObiettivoService;
     }
@@ -29,11 +31,9 @@ public class PartitaService {
         Partita partita = new Partita();
 
         // istanzia la mappa caricandola tramite id da un repository
-        Optional<Mappa> mappa = mappaRepository.findById(nuovoGiocoDTO.getMappaId());
-        if (mappa.isEmpty())
-            throw new DatiErratiException();
+        Mappa mappa = mappaService.getMappa(nuovoGiocoDTO.getMappaId(), nuovoGiocoDTO.getMod());
 
-        partita.setMappa(mappa.get());
+        partita.setMappa(mappa);
 
         // controllo sul valore minimo e massimo di giocatori ammessi dalla mappa
         if (partita.getMappa().getNumMaxGiocatori() < nuovoGiocoDTO.getGiocatori().size() ||
@@ -69,8 +69,6 @@ public class PartitaService {
         partita.setModalita(Partita.Modalita.valutaModalita(nuovoGiocoDTO.getMod()));
 
         partita.setFasePreparazione(true);
-
-        //TODO:: integrazione compattazione mappa in mappa service
 
         // scegliamo casualmente un ordine di giocatori
         Collections.shuffle(partita.getGiocatori());

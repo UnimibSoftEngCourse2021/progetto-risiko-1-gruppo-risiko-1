@@ -80,10 +80,8 @@ public class Continente {
         stati.add(stato);
     }
 
-    public void rimuoviStato(Stato stato) {
-        boolean ris = stati.remove(stato);
-        if (!ris)
-            throw new RuntimeException("Stato rimosso non esiste");
+    public void rimuoviStati(List<Stato> stati) {
+        this.stati.removeAll(stati);
     }
 
     // il metodo ritorna il giocatore che possiede tutti gli stati che compongono un continente.
