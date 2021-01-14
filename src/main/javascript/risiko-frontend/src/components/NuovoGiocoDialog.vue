@@ -28,6 +28,11 @@
               :label="'Scrivi i nomi dei giocatori' + (this.selected ? ' (da ' + selected.numMinGiocatori + ' a '
                         + selected.numMaxGiocatori + ')' : '' )"
           />
+
+          <v-select label="Seleziona la modalità di gioco"
+                    :items="modeItems"
+                    v-model="selectedMode"
+                    :rules="[ v => !!v ]"/>
         </v-form>
       </v-card-text>
 
@@ -55,6 +60,8 @@ name: "NuovoGiocoDialog",
       selected: null,
       giocatoriDefault: [  ],
       elencoGiocatori: [],
+      modeItems: [ "COMPLETA", "RIDOTTA", "VELOCE" ],
+      selectedMode: "",
       formValid: false
     }
   },
@@ -73,7 +80,7 @@ name: "NuovoGiocoDialog",
       let config = {
         giocatori: this.elencoGiocatori,
         mappaId: this.selected.id,
-        mod: "COMPLETA"
+        mod: this.selectedMode
       }
       await this.startGame(config)
       this.$emit("gameStarted")
