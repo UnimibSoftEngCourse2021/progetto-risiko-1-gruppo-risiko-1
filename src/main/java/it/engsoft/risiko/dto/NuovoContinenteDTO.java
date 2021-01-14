@@ -1,15 +1,25 @@
 package it.engsoft.risiko.dto;
 
+import it.engsoft.risiko.exceptions.DatiErratiException;
+
 import java.util.List;
 
 public class NuovoContinenteDTO {
-    private String nome;
-    private int armateBonus;
-    private List<NuovoStatoDTO> stati;
+    private final String nome;
+    private final int armateBonus;
+    private final List<NuovoStatoDTO> stati;
 
     public NuovoContinenteDTO(String nome, int armateBonus, List<NuovoStatoDTO> stati) {
+        if(nome == null || nome.trim().isEmpty())
+            throw new DatiErratiException();
         this.nome = nome;
+
+        if(armateBonus <= 0)
+            throw new DatiErratiException();
         this.armateBonus = armateBonus;
+
+        if(stati == null || stati.size() < 4)
+            throw new DatiErratiException();
         this.stati = stati;
     }
 
