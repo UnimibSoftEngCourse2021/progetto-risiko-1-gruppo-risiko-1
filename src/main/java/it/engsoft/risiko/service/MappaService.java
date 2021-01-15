@@ -72,14 +72,14 @@ public class MappaService {
      * @param mod: modalitá secondo la quale va compattata la mappa
      */
     private void compattaMappa(Mappa mappa, String mod) {
-        int statiDaCompattare= 0;
+        int n = 0;
 
         if (mod.equals("COMPLETA"))
             return;
         else if (mod.equals("RIDOTTA"))
-            statiDaCompattare = 2;
+            n = 3;
         else // VELOCE
-            statiDaCompattare = 3;
+            n = 2;
 
         Stato statoCompattato = null;
         List<Stato> statiDaRimuovere = new ArrayList<>();
@@ -88,10 +88,10 @@ public class MappaService {
             for (int i = 0; i < continente.getStati().size(); i++) {
                 Stato stato = continente.getStati().get(i);
 
-                if (i % statiDaCompattare == 0) {
+                if (i % n == 0) {
                     statoCompattato = stato;
                 }
-                else if (i % statiDaCompattare == 1 || i % statiDaCompattare == 2) {
+                else if (i % n == 1) {
                     mergeStati(statoCompattato, stato);
                     statiDaRimuovere.add(stato);
                 }
