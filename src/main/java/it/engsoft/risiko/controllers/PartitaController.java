@@ -35,7 +35,7 @@ public class PartitaController {
     public Map<String, Object> rinforzi(@RequestBody RinforzoDTO rinforzoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: partita null");
         return partitaService.rinforzo(rinforzoDTO, partita);
     }
 
@@ -43,7 +43,7 @@ public class PartitaController {
     public IniziaTurnoDAO iniziaTurno(HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: partita null");
         return partitaService.iniziaTurno(partita);
     }
 
@@ -51,7 +51,7 @@ public class PartitaController {
     public int giocaTris(@RequestBody TrisDTO trisDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: partita null");
         return partitaService.giocaTris(trisDTO, partita);
     }
 
@@ -59,7 +59,7 @@ public class PartitaController {
     public void attacco(@RequestBody AttaccoDTO attaccoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: partita null");
         partitaService.attacco(attaccoDTO, partita);
     }
 
@@ -67,7 +67,7 @@ public class PartitaController {
     public DifesaDAO difesa(@RequestBody DifesaDTO difesaDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: partita null");
         DifesaDAO difesa = partitaService.difesa(difesaDTO, partita);
         if(difesa.isObiettivoRaggiuntoAtt())
             httpSession.setAttribute(partitaKey, null);
@@ -79,7 +79,7 @@ public class PartitaController {
     public void spostamento(@RequestBody SpostamentoDTO spostamentoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: partita null");
         partitaService.spostamentoStrategico(spostamentoDTO, partita);
     }
 
@@ -87,7 +87,7 @@ public class PartitaController {
     public CartaTerritorioDAO fineTurno(HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: partita null");
         return partitaService.fineTurno(partita);
     }
 }

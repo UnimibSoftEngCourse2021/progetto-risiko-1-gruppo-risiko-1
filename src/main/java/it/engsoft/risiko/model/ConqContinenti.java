@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,14 +47,11 @@ public class ConqContinenti extends Obiettivo {
      * Ritorna il numero di continenti extra da conquistare.
      * @return il numero di continenti extra
      */
-    public int getContinentiExtra() {
-        return continentiExtra;
-    }
 
     @Override
     public boolean raggiunto(Giocatore giocatore) {
         if (giocatore == null)
-            throw new RuntimeException("Giocatore non valido");
+            throw new ModelDataException("Giocatore in conqContinenti.raggiunto non valido");
 
         for (Continente continente : targetContinenti) {
             if (!giocatore.equals(continente.getProprietario()))

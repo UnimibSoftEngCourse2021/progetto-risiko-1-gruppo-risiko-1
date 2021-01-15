@@ -11,7 +11,7 @@ public final class RinforzoDTO {
 
     public RinforzoDTO(String giocatore, Map<String, Integer> rinforzi) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: giocatore nullo o vuoto");
         this.giocatore = giocatore;
 
         this.rinforzi = rinforzi.entrySet().stream()

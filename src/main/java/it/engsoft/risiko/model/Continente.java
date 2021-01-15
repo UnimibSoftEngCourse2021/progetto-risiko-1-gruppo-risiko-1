@@ -1,6 +1,6 @@
 package it.engsoft.risiko.model;
 
-import it.engsoft.risiko.exceptions.DatiErratiException;
+import it.engsoft.risiko.exceptions.ModelDataException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class Continente {
 
     public void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty())
-            throw new RuntimeException("Nome continente nullo o mancante");
+            throw new ModelDataException("Nome continente nullo o mancante");
         this.nome = nome;
     }
 
@@ -48,19 +48,13 @@ public class Continente {
         return armateBonus;
     }
 
-    public void setArmateBonus(int armateBonus) {
-        if (armateBonus <= 0)
-            throw new RuntimeException("Armate bonus zero o negative");
-        this.armateBonus = armateBonus;
-    }
-
     public Mappa getMappa() {
         return mappa;
     }
 
     public void setMappa(Mappa mappa) {
         if (mappa == null)
-            throw new DatiErratiException();
+            throw new ModelDataException("Mappa in Continente.setMappa nulla");
 
         this.mappa = mappa;
     }
@@ -72,7 +66,7 @@ public class Continente {
 
     public void setStati(ArrayList<Stato> stati) {
         if (stati == null)
-            throw new RuntimeException("Stati apparteneti al continente nulli");
+            throw new ModelDataException("Stati apparteneti al continente nulli");
         this.stati = stati;
     }
 

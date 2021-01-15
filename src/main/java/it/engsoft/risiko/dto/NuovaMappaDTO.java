@@ -13,20 +13,21 @@ public class NuovaMappaDTO {
 
     public NuovaMappaDTO(String nome, String descrizione, int numMinGiocatori, int numMaxGiocatori, List<NuovoContinenteDTO> continenti) {
         if(nome == null || nome.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: nome mappa nullo o vuoto");
         this.nome = nome;
 
         if(descrizione == null)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: descrizione nulla");
         this.descrizione = descrizione;
 
         if(numMinGiocatori < 2 || numMaxGiocatori > 8)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: numero giocatori min/max invalido");
         this.numMinGiocatori = numMinGiocatori;
         this.numMaxGiocatori = numMaxGiocatori;
 
         if(continenti == null || continenti.size() < 4 || continenti.size() > 7)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: numero continenti non valido");
+
         this.continenti = continenti;
     }
 

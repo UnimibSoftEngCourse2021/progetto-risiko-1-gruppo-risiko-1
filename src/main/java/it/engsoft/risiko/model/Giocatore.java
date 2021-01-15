@@ -1,12 +1,13 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Giocatore {
-    private final ArrayList<Stato> stati = new ArrayList<Stato>();
+    private final ArrayList<Stato> stati = new ArrayList<>();
     private String nome;
-    private ArrayList<CartaTerritorio> carteTerritorio = new ArrayList<CartaTerritorio>();
+    private final ArrayList<CartaTerritorio> carteTerritorio = new ArrayList<>();
     private Obiettivo obiettivo;
     private Giocatore uccisore;
     private int truppeDisponibili = 0;
@@ -20,7 +21,7 @@ public class Giocatore {
 
     public void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty())
-            throw new RuntimeException();
+            throw new ModelDataException("Nome in Giocatore.setNome non valido");
 
         this.nome = nome;
     }
@@ -31,14 +32,14 @@ public class Giocatore {
 
     public void aggiungiStato(Stato stato) {
         if (stato == null)
-            throw new RuntimeException("Stato non valido");
+            throw new ModelDataException("Stato in Giocatore.aggiungiStato non valido");
 
         stati.add(stato);
     }
 
     public void rimuoviStato(Stato stato) {
         if(stato == null || !stati.contains(stato))
-            throw new RuntimeException("Stato non valido");
+            throw new ModelDataException("Stato in Giocatore.rimuoviStato non valido");
 
         stati.remove(stato);
     }
@@ -49,16 +50,9 @@ public class Giocatore {
 
     public void aggiungiCartaTerritorio(CartaTerritorio cartaTerritorio) {
         if (cartaTerritorio == null)
-            throw new RuntimeException("Carta territorio non valida");
+            throw new ModelDataException("Carta territorio in Giocatore.aggiungiCartaTerritorio nulla");
 
         carteTerritorio.add(cartaTerritorio);
-    }
-
-    public void rimuoviCartaTerritorio(CartaTerritorio cartaTerritorio) {
-        if(cartaTerritorio == null || !carteTerritorio.contains(cartaTerritorio))
-            throw new RuntimeException("Carta territorio non valida");
-
-        carteTerritorio.remove(cartaTerritorio);
     }
 
     public Obiettivo getObiettivo() {
@@ -67,7 +61,7 @@ public class Giocatore {
 
     public void setObiettivo(Obiettivo obiettivo) {
         if (obiettivo == null)
-            throw new RuntimeException();
+            throw new ModelDataException("Obiettivo in Giocatore.setObiettivo nullo");
 
         this.obiettivo = obiettivo;
     }
@@ -84,13 +78,13 @@ public class Giocatore {
 
     public void setTruppeDisponibili(int truppeDisponibili) {
         if(truppeDisponibili < 0)
-            throw new RuntimeException("Truppe disponibili giocatore è negativo");
+            throw new ModelDataException("Truppe disponibili in Giocatore.setTruppeDisponibili è negativo");
         this.truppeDisponibili = truppeDisponibili;
     }
 
     public void modificaTruppeDisponibili(int truppeDisponibili) {
         if(this.truppeDisponibili + truppeDisponibili < 0)
-            throw new RuntimeException("Truppe disponibili giocatore è negativo");
+            throw new ModelDataException("Truppe disponibili in Giocatore.modificaTruppeDisponibili è negativo");
         this.truppeDisponibili = this.truppeDisponibili + truppeDisponibili;
     }
 

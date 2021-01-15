@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 /**
  * Un obiettivo che impone ad un giocatore di distruggere tutte le armate di un altro giocatore. Se ciò non è possibile,
  * l'obiettivo di ripiego diventa conquistare un certo numero di territori della mappa.
@@ -32,18 +34,10 @@ public class ConqGiocatore extends Obiettivo {
         return target;
     }
 
-    /**
-     * Ritorna l'obiettivo secondario da raggiungere.
-     * @return l'obiettivo secondario
-     */
-    public ConqTerritori getObSecondario() {
-        return obSecondario;
-    }
-
     @Override
     public boolean raggiunto(Giocatore giocatore) {
         if(giocatore == null)
-            throw new RuntimeException("Giocatore non valido");
+            throw new ModelDataException("Giocatore in ConqGiocatore.raggiunto non valido");
 
         if (target.isEliminato()) {
             if (target.getUccisore().equals(giocatore))

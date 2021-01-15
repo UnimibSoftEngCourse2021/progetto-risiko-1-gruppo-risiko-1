@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
@@ -7,7 +9,7 @@ import java.util.Random;
 public class Combattimento {
     private final Stato statoAttaccante, statoDifensore;
     private final int armateAttaccante;
-    private int armateDifensore;
+
 
     private boolean conquista;
     private int vittimeAttaccante, vittimeDifensore;
@@ -17,8 +19,8 @@ public class Combattimento {
     private final ArrayList<Integer> tiriAttaccante, tiriDifensore;
 
     public Combattimento(Stato statoAttaccante, Stato statoDifensore, int armateAttaccante) {
-        if (!statiCompatibili(statoAttaccante, statoDifensore) || !armateAttaccanteValide(statoAttaccante, armateAttaccante)) {
-            throw new RuntimeException("Combattimento constructor: not valid parameters!");
+        if (statiNonCompatibili(statoAttaccante, statoDifensore) || armateAttaccanteNonValide(statoAttaccante, armateAttaccante)) {
+            throw new ModelDataException("Combattimento constructor: not valid parameters!");
         }
 
         this.statoAttaccante = statoAttaccante;
@@ -29,26 +31,26 @@ public class Combattimento {
         tiriDifensore = new ArrayList<>();
     }
 
-    private boolean statiCompatibili(Stato statoAttaccante, Stato statoDifensore) {
-        return statoAttaccante != null
-                && statoDifensore != null
-                && !statoAttaccante.getProprietario().equals(statoDifensore.getProprietario())
-                && statoAttaccante.isConfinante(statoDifensore);
+    private boolean statiNonCompatibili(Stato statoAttaccante, Stato statoDifensore) {
+        return statoAttaccante == null
+                || statoDifensore == null
+                || statoAttaccante.getProprietario().equals(statoDifensore.getProprietario())
+                || !statoAttaccante.isConfinante(statoDifensore);
     }
 
-    private boolean armateAttaccanteValide(Stato statoAttaccante, int nArmate) {
-        return statoAttaccante != null && statoAttaccante.getArmate() > nArmate && nArmate >= 1 && nArmate <= 3;
+    private boolean armateAttaccanteNonValide(Stato statoAttaccante, int nArmate) {
+        return statoAttaccante == null || statoAttaccante.getArmate() <= nArmate || nArmate < 1 || nArmate > 3;
     }
 
-    private boolean armateDifensoreValide(Stato statoDifensore, int nArmate) {
-        return statoDifensore != null && nArmate >= 1 && nArmate <= statoDifensore.getArmate() && nArmate <= 3;
+    private boolean armateDifensoreNonValide(Stato statoDifensore, int nArmate) {
+        return statoDifensore == null || nArmate < 1 || nArmate > statoDifensore.getArmate() || nArmate > 3;
     }
 
     public void simulaCombattimento(final int armateDifensore) {
-        if (!statiCompatibili(statoAttaccante, statoDifensore)
-                || !armateAttaccanteValide(statoAttaccante, armateAttaccante)
-                || !armateDifensoreValide(statoDifensore, armateDifensore)) {
-            throw new RuntimeException("Impostazioni combattimento non valide");
+        if (statiNonCompatibili(statoAttaccante, statoDifensore)
+                || armateAttaccanteNonValide(statoAttaccante, armateAttaccante)
+                || armateDifensoreNonValide(statoDifensore, armateDifensore)) {
+            throw new ModelDataException("Impostazioni simulaCombattimento non valide");
         }
 
 
@@ -95,8 +97,6 @@ public class Combattimento {
     }
 
     public int getArmateAttaccante() { return armateAttaccante; }
-
-    public int getArmateDifensore() { return armateDifensore; }
 
     public ArrayList<Integer> getTiriAttaccante() {
         return tiriAttaccante;

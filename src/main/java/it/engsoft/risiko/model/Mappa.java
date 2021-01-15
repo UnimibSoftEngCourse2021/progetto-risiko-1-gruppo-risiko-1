@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public class Mappa {
 
     public void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty())
-            throw new RuntimeException("Nome mappa nullo o mancante");
+            throw new ModelDataException("Nome mappa in Mappa.setNome nullo o mancante");
         this.nome = nome;
     }
 
@@ -56,7 +58,7 @@ public class Mappa {
      */
     public void setDescrizione(String descrizione) {
         if (descrizione == null)
-            throw new RuntimeException("Descrizione mappa nulla");
+            throw new ModelDataException("Descrizione mappa in Mappa.setDescrizione nulla");
         this.descrizione = descrizione;
     }
 
@@ -67,7 +69,7 @@ public class Mappa {
 
     public void setNumMinGiocatori(int numMinGiocatori) {
         if (numMinGiocatori < 2)
-            throw new RuntimeException("Numero giocatori minimo inferiore a 2");
+            throw new ModelDataException("Numero giocatori minimo in Mappa.setNumMinGiocatori inferiore a 2");
         this.numMinGiocatori = numMinGiocatori;
     }
 
@@ -77,8 +79,8 @@ public class Mappa {
     }
 
     public void setNumMaxGiocatori(int numMaxGiocatori) {
-        if (numMaxGiocatori < 2)
-            throw new RuntimeException("Numero giocatori massimo inferiore a 2");
+        if (numMaxGiocatori > 8)
+            throw new ModelDataException("Numero giocatori massimo in Mappa.setNumMaxGiocatori superiore a 8");
         this.numMaxGiocatori = numMaxGiocatori;
     }
 
@@ -89,18 +91,12 @@ public class Mappa {
 
     public void setContinenti(ArrayList<Continente> continenti) {
         if (continenti == null)
-            throw new RuntimeException("Continenti appartenenti alla mappa nulli");
+            throw new ModelDataException("Continenti appartenenti alla mappa in Mappa.setContinenti nulli");
         this.continenti = continenti;
     }
 
     public void aggiungiContinente(Continente continente) {
         continenti.add(continente);
-    }
-
-    public void rimuoviContinente(Continente continente) {
-        boolean ris = continenti.remove(continente);
-        if (!ris)
-            throw new RuntimeException("Continente rimosso non esiste");
     }
 
     @Override

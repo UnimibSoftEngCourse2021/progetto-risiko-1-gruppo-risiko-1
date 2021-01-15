@@ -44,21 +44,4 @@ public class Turno {
         return conquista;
     }
 
-
-    //TODO:: pulire metodi se inutili
-    //public Rinforzo getRinforzo() {
-        //return rinforzo;
-    //}
-
-    //public void setRinforzo(Rinforzo rinforzo) {
-       // this.rinforzo = rinforzo;
-    //}
-
-    //public SpostamentoStrategico getSpostamentoStrategico() {
-      //  return spostamentoStrategico;
-    //}
-
-    //public void setSpostamentoStrategico(SpostamentoStrategico spostamentoStrategico) {
-      //  this.spostamentoStrategico = spostamentoStrategico;
-    //}
 }

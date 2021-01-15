@@ -28,11 +28,9 @@ public class MappaService {
     public List<CompactMappaDAO> mappe() {
         List<Mappa> mappe = mappaRepository.findAll();
 
-        List<CompactMappaDAO> compactMappe = mappe.stream()
+        return mappe.stream()
                 .map(CompactMappaDAO::new)
                 .collect(Collectors.toList());
-
-        return compactMappe;
     }
 
     /**
@@ -44,7 +42,7 @@ public class MappaService {
     public MappaDAO mappa(Long mappaId) {
         Optional<Mappa> optMappa = mappaRepository.findById(mappaId);
         if (optMappa.isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: la mappa e' vuota");
 
         return new MappaDAO(optMappa.get());
     }
@@ -58,7 +56,7 @@ public class MappaService {
     public Mappa getMappa(Long mappaId, String mod) {
         Optional<Mappa> optMappa = mappaRepository.findById(mappaId);
         if (optMappa.isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: la mappa e' vuota");
         Mappa mappa = optMappa.get();
 
         compattaMappa(mappa, mod);
@@ -124,7 +122,7 @@ public class MappaService {
      */
     public void nuovaMappa(NuovaMappaDTO nuovaMappaDTO) {
         if (!nomiUnivoci(nuovaMappaDTO))
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: il nome della mappa non e' univoco");
 
         Map<String, Stato> nomi_stati = new HashMap<>();
 
@@ -207,7 +205,8 @@ public class MappaService {
         for (Stato stato : nomi_stati.values()) {
             for (Stato confinante : stato.getConfinanti()) {
                 if(confinante.getConfinanti().stream().noneMatch(c -> c.getNome().equals(stato.getNome())))
-                    throw new DatiErratiException();
+                    throw new DatiErratiException("Dati errati: gli stati non sono confinanti");
+
             }
         }
     }
@@ -235,6 +234,6 @@ public class MappaService {
         }
 
         if(visitati.size() != grafo.size())
-            throw new DatiErratiException();
+            throw new DatiErratiException("");
     }
 }

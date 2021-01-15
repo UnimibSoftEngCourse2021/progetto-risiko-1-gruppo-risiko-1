@@ -10,11 +10,11 @@ public class TrisDTO {
 
     public TrisDTO(String giocatore, List<Integer> tris) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: giocatore nullo o vuoto");
         this.giocatore = giocatore;
 
         if(tris.size() != 3)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: numero di carte diverso da 3");
         this.tris = tris;
     }
 

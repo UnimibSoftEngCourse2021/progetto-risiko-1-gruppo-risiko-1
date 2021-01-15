@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 public class
 Rinforzo {
     private final int numeroArmate;
@@ -8,7 +10,7 @@ Rinforzo {
 
     public Rinforzo(final Stato target, final int numeroArmate) {
         if (target == null || numeroArmate < 1) {
-            throw new RuntimeException("Invalid constructor parameters (Rinforzo)");
+            throw new ModelDataException("Invalid constructor parameters (Rinforzo)");
         }
         this.target = target;
         this.numeroArmate = numeroArmate;
@@ -17,7 +19,7 @@ Rinforzo {
 
     public void esegui() {
         if (eseguito) {
-            throw new RuntimeException("Il rinforzo è già stato eseguito");
+            throw new ModelDataException("Il rinforzo è già stato eseguito");
         }
 
         target.aggiungiArmate(numeroArmate);

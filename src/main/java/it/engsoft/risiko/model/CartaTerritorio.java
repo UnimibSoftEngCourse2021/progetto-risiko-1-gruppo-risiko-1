@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 import java.util.Objects;
 
 public class CartaTerritorio {
@@ -16,7 +18,7 @@ public class CartaTerritorio {
 
     public CartaTerritorio(int id, Stato statoRappresentato) {
         if(id < 0)
-            throw new RuntimeException("ID carta territorio non valido.");
+            throw new ModelDataException("ID carta territorio non valido.");
 
         this.id = id;
         this.statoRappresentato = statoRappresentato;
@@ -38,7 +40,7 @@ public class CartaTerritorio {
 
     public void setFigura(Figura figura) {
         if (figura == null)
-            throw new RuntimeException("Figura nulla");
+            throw new ModelDataException("Figura carta territorio nulla");
         this.figura = figura;
     }
 

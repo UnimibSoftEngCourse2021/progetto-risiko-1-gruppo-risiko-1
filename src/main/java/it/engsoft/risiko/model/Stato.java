@@ -1,5 +1,7 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +49,10 @@ public class Stato {
 
     public void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty())
-            throw new RuntimeException("Nome stato nullo o mancante");
+            throw new ModelDataException("Nome stato in Stato.setNome nullo o mancante");
         this.nome = nome;
     }
 
-    // TODO: non sarebbe meglio un solo metodo aggiungi armate al quale si possono passare valori negativi?
     // armate
     public int getArmate() {
         return armate;
@@ -59,13 +60,13 @@ public class Stato {
 
     public void aggiungiArmate(int n) {
         if (n <= 0)
-            throw new RuntimeException("Inserito un numero negativo o nullo di armate");
+            throw new ModelDataException("Inserito un numero negativo o nullo di armate in Stato.aggiungiArmate");
         armate = armate + n;
     }
 
     public void rimuoviArmate(int n) {
         if (armate - n < 0)
-            throw new RuntimeException("Inserito un numero negativo di armate");
+            throw new ModelDataException("Inserito un numero negativo di armate in Stato.rimuoviArmate");
         armate = armate - n;
     }
 
@@ -96,7 +97,7 @@ public class Stato {
     // se uno stato (y) è confinante di un altro (x) dovrebbe valere anche il contrario; con l'attuale setter cio' non avviene
     public void setConfinanti(ArrayList<Stato> confinanti) {
         if (confinanti == null)
-            throw new RuntimeException("Stati confinanti nulli");
+            throw new ModelDataException("Stati confinanti in Stato.setConfinanti nulli");
         this.confinanti = confinanti;
     }
 
@@ -111,7 +112,7 @@ public class Stato {
 
     public void setProprietario(Giocatore proprietario) {
         if (proprietario == null)
-            throw new RuntimeException("Giocatore prorprietario dello stato nullo");
+            throw new ModelDataException("Giocatore prorprietario dello stato in Stato.setProprietario nullo");
         this.proprietario = proprietario;
     }
 

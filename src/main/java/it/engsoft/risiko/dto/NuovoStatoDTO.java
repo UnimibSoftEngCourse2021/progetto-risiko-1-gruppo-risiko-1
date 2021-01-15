@@ -10,11 +10,11 @@ public class NuovoStatoDTO {
 
     public NuovoStatoDTO(String nome, List<String> confinanti) {
         if(nome == null || nome.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: nome stato nullo o mancante");
         this.nome = nome;
 
         if(confinanti == null || confinanti.isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: lo stato non ha confinanti");
         this.confinanti = confinanti;
     }
 

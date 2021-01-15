@@ -11,15 +11,15 @@ public final class NuovoGiocoDTO {
 
     public NuovoGiocoDTO(ArrayList<String> giocatori, Long mappaId, String mod) {
         if(giocatori == null)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: lista giocatori nulla");
         this.giocatori = giocatori;
 
         if(mappaId < 0L)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: id mappa non valido");
         this.mappaId = mappaId;
 
         if(mod == null || mod.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: modalita' nulla o mancante");
         this.mod = mod;
     }
 

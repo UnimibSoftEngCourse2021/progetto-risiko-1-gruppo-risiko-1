@@ -8,11 +8,11 @@ public final class DifesaDTO {
 
     public DifesaDTO(String giocatore, int armate) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: giocatore nullo o vuoto");
         this.giocatore = giocatore;
 
         if(armate <= 0)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: numero armate negativo");
         this.armate = armate;
     }
 

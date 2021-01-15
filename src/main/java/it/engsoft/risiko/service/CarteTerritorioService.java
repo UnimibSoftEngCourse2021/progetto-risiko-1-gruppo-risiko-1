@@ -113,7 +113,7 @@ public class CarteTerritorioService {
 
         // Controlla che le carte siano presenti
         if(optA.isEmpty() || optB.isEmpty() || optC.isEmpty())
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: le carte non sono presenti");
 
         CartaTerritorio a = optA.get();
         CartaTerritorio b = optB.get();
@@ -123,7 +123,7 @@ public class CarteTerritorioService {
 
         // Se standard = 0 il tris non è valido
         if (standard == 0)
-            throw new MossaIllegaleException();
+            throw new MossaIllegaleException("Mossa illegale: tris non valido");
 
         // Rimette le carte usate nel mazzo
         rimettiNelMazzo(mazzo, a, b, c);
@@ -196,10 +196,7 @@ public class CarteTerritorioService {
         if (a.getFigura() == c.getFigura() && c.getFigura() != b.getFigura() && c.getFigura() != CartaTerritorio.Figura.JOLLY)
             return true;
 
-        if (b.getFigura() == c.getFigura() && c.getFigura() != a.getFigura() && c.getFigura() != CartaTerritorio.Figura.JOLLY)
-            return true;
-
-        return false;
+        return b.getFigura() == c.getFigura() && c.getFigura() != a.getFigura() && c.getFigura() != CartaTerritorio.Figura.JOLLY;
     }
 
     /**
@@ -212,10 +209,7 @@ public class CarteTerritorioService {
         if (b.getFigura() == CartaTerritorio.Figura.JOLLY)
             return true;
 
-        if (c.getFigura() == CartaTerritorio.Figura.JOLLY)
-            return true;
-
-        return false;
+        return c.getFigura() == CartaTerritorio.Figura.JOLLY;
     }
 
     private void rimettiNelMazzo(List<CartaTerritorio> mazzo, CartaTerritorio a, CartaTerritorio b, CartaTerritorio c) {

@@ -10,19 +10,19 @@ public final class AttaccoDTO {
 
     public AttaccoDTO(String giocatore, Long attaccante, Long difensore, int armate) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: giocatore nullo o vuoto");
         this.giocatore = giocatore;
 
         if(attaccante < 0L)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: id attaccante non valido");
         this.attaccante = attaccante;
 
         if(difensore < 0L)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: id difensore non valido");
         this.difensore = difensore;
 
         if(armate <= 0)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: numero armate negativo");
         this.armate = armate;
     }
 

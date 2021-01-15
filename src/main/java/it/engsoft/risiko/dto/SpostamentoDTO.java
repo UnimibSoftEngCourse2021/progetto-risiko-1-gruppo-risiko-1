@@ -10,19 +10,19 @@ public final class SpostamentoDTO {
 
     public SpostamentoDTO(String giocatore, Long statoPartenza, Long statoArrivo, int armate) {
         if(giocatore == null || giocatore.trim().isEmpty())
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: giocatore nullo o vuoto");
         this.giocatore = giocatore;
 
         if(statoPartenza < 0L)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: id stato partenza non valido");
         this.statoPartenza = statoPartenza;
 
         if(statoArrivo < 0L)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: id stato arrivo on valido");
         this.statoArrivo = statoArrivo;
 
         if(armate <= 0)
-            throw new DatiErratiException();
+            throw new DatiErratiException("Dati errati: numero armate zero o negativo");
         this.armate = armate;
     }
 
