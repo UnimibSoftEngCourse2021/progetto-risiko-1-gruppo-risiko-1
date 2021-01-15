@@ -49,8 +49,14 @@ public class PartitaService {
         // assegna gli obiettivi
         this.carteObiettivoService.setObiettiviGiocatori(partita.getMappa(), partita.getGiocatori());
 
+        // scegliamo casualmente un ordine di giocatori
+        Collections.shuffle(partita.getGiocatori());
+
         // distribuisci le carte territorio, comprende assegnazione degli stati
         this.carteTerritorioService.distribuisciCarte(partita);
+
+        // inverte la lista dei giocatori
+        Collections.reverse(partita.getGiocatori());
 
         partita.assegnaArmateIniziali();
 
@@ -67,9 +73,6 @@ public class PartitaService {
 
         partita.setFasePreparazione(true);
 
-        // scegliamo casualmente un ordine di giocatori
-        Collections.shuffle(partita.getGiocatori());
-
         // viene impostato manualmente solo la prima volta, il primo della lista randomizzata
         partita.setGiocatoreAttivo(partita.getGiocatori().get(0));
 
@@ -84,7 +87,7 @@ public class PartitaService {
         if (!partita.getTurno().getFase().equals(Turno.Fase.NULL))
             throw new MossaIllegaleException("Mossa illegale: fase del turno incorretta");
         // calcolo armate bonus date al giocatore attivo dagli stati conquistati
-        int armateStati = partita.getGiocatoreAttivo().getStati().size() / 3;
+        int armateStati = Math.max(1, partita.getGiocatoreAttivo().getStati().size() / 3);
 
         // calcolo armate bonus date al giocatore attivo dai continenti conquistati
         int armateContinenti = 0;
@@ -112,15 +115,8 @@ public class PartitaService {
             // imposta il prossimo giocatore attivo
             partita.setProssimoGiocatoreAttivo();
 
-            // se ogni giocatore non ha armate da piazzare allora la preparazione è finita: inizia la partita
-            boolean fasePrep = false;
-            for(Giocatore giocatore1 : partita.getGiocatori()){
-                if (giocatore1.getTruppeDisponibili() != 0) {
-                    fasePrep = true;
-                    break;
-                }
-            }
-            if(!fasePrep){
+            // se il prossimo giocatore non ha armate da piazzare allora la preparazione è finita: inizia la partita
+            if (partita.getGiocatoreAttivo().getTruppeDisponibili() == 0) {
                 partita.setFasePreparazione(false);
                 partita.iniziaPrimoTurno();
             }
