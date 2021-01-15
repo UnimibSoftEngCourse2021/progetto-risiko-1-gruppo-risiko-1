@@ -42,9 +42,9 @@
 </template>
 
 <script>
-import Board from "@/components/Board";
-import GameInfo from "@/components/GameInfo";
-import AzioniGiocatore from "@/components/AzioniGiocatore";
+import Board from "@/components/Gioco/Board";
+import GameInfo from "@/components/Gioco/GameInfo";
+import AzioniGiocatore from "@/components/Gioco/AzioniGiocatore";
 import {mapGetters, mapMutations} from "vuex";
 
 export default {

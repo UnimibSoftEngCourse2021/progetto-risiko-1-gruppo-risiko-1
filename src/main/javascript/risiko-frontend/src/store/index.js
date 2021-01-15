@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import mappeService from "@/services/mappeService";
 import giocoService from "@/services/giocoService";
 import utils from "@/store/utils";
+import MappaInCostruzione from "@/store/MappaInCostruzione";
 
 Vue.use(Vuex)
 
@@ -13,9 +14,7 @@ export default new Vuex.Store({
             winner: null
         },
         mappe: [],
-        mappa: {
-            continenti: [],
-        },
+        mappaInCostruzione: {},
         loading: false,
         error: false
     },
@@ -31,6 +30,9 @@ export default new Vuex.Store({
         },
         setMappa(state, mappa) {
             state.mappa = utils.formattaMappa(mappa)
+        },
+        setNuovaMappaInCostruzione(state) {
+            state.mappaInCostruzione = new MappaInCostruzione()
         },
         startGame(state, data) {
             let gioco = {}
@@ -155,14 +157,15 @@ export default new Vuex.Store({
         },
         terminaPartita(state) {
             state.gioco.on = false
+        },
+        clearMappaInCostruzione(state) {
+            state.mappaInCostruzione = {}
         }
     },
     actions: {
-        async downloadMappe({commit, state}) {
-            if (state.mappe.length === 0) {
-                let {data} = await mappeService.getListaMappe();
-                commit("setListaMappe", data)
-            }
+        async downloadMappe({commit}) {
+            let {data} = await mappeService.getListaMappe();
+            commit("setListaMappe", data)
         },
         async downloadMappa({commit}, id) {
             let {data} = await mappeService.getMappa(id)
@@ -232,9 +235,16 @@ export default new Vuex.Store({
             }
             let { data } = await giocoService.giocaTris(payload)
             commit("tris", { tris, armate: data })
+        },
+        async inserisciMappa({ commit }, mappa) {
+            await mappeService.inserisciMappa(mappa)
+            commit("clearMappaInCostruzione")
         }
     },
     getters: {
+        mappaInCostruzione(state) {
+            return state.mappaInCostruzione
+        },
         loading(state) {
           return state.loading
         },
@@ -260,6 +270,9 @@ export default new Vuex.Store({
                 }
             }
             return {nodes, edges}
+        },
+        anteprimaNetwork(state) {
+            return state.mappaInCostruzione.asNetwork()
         },
         mappe(state) {
             return state.mappe

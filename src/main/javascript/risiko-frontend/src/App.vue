@@ -17,7 +17,7 @@
           Nuovo gioco
         </v-btn>
 
-        <v-btn text>
+        <v-btn text @click="inserisciMappa">
           Inserisci mappa
         </v-btn>
       </v-item-group>
@@ -35,6 +35,10 @@
       <nuovo-gioco-dialog @gameStarted="prepareGame" @close="showNuovoGiocoDialog = false"/>
     </v-dialog>
 
+    <v-dialog v-model="showInserimentoMappaDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+      <inserimento-mappa-dialog @close="showInserimentoMappaDialog = false"/>
+    </v-dialog>
+
     <loader v-if="loading"/>
     <v-dialog v-model="$store.state.error" max-width="700px" persistent>
       <error-dialog />
@@ -44,16 +48,18 @@
 
 <script>
 
-import Game from "@/components/Game";
-import NuovoGiocoDialog from "@/components/NuovoGiocoDialog";
-import Loader from "@/components/Loader";
-import {mapGetters} from "vuex";
-import ErrorDialog from "@/components/ErrorDialog";
+import Game from "@/components/Gioco/Game";
+import NuovoGiocoDialog from "@/components/Gioco/NuovoGiocoDialog";
+import Loader from "@/components/Common/Loader";
+import {mapGetters, mapMutations} from "vuex";
+import ErrorDialog from "@/components/Common/ErrorDialog";
+import InserimentoMappaDialog from "@/components/InserimentoMappa/InserimentoMappaDialog";
 
 export default {
   name: 'App',
 
   components: {
+    InserimentoMappaDialog,
     ErrorDialog,
     Loader,
     NuovoGiocoDialog,
@@ -63,11 +69,13 @@ export default {
   data() {
     return {
       showNuovoGiocoDialog: false,
-      gameKey: 0
+      gameKey: 0,
+      showInserimentoMappaDialog: false
     }
   },
 
   methods: {
+    ...mapMutations(["setNuovaMappaInCostruzione"]),
     async openNewGameDialog() {
       await this.$store.dispatch("downloadMappe");
       this.showNuovoGiocoDialog = true
@@ -75,6 +83,10 @@ export default {
     prepareGame() {
       this.showNuovoGiocoDialog = false
       this.gameKey++
+    },
+    inserisciMappa() {
+      this.setNuovaMappaInCostruzione()
+      this.showInserimentoMappaDialog = true
     }
   },
 

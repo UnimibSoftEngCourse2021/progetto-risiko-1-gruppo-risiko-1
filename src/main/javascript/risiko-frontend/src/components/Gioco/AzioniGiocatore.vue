@@ -22,12 +22,12 @@
 </template>
 
 <script>
-import GestoreRinforzi from "@/components/GestoreRinforzi";
-import GestoreCombattimenti from "@/components/GestoreCombattimenti";
-import GestoreSpostamentoStrategico from "@/components/GestoreSpostamentoStrategico";
+import GestoreRinforzi from "@/components/Gioco/GestoreRinforzi";
+import GestoreCombattimenti from "@/components/Gioco/GestoreCombattimenti";
+import GestoreSpostamentoStrategico from "@/components/Gioco/GestoreSpostamentoStrategico";
 
 import {mapActions, mapGetters} from "vuex"
-import FineTurnoDialog from "@/components/FineTurnoDialog";
+import FineTurnoDialog from "@/components/Gioco/FineTurnoDialog";
 
 export default {
   name: "AzioniGiocatore",

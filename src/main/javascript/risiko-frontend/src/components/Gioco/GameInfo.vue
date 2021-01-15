@@ -60,8 +60,8 @@
 
 <script>
 
-import ObiettiviDialog from "@/components/ObiettiviDialog";
-import GiocatoriDialog from "@/components/GiocatoriDialog";
+import ObiettiviDialog from "@/components/Gioco/ObiettiviDialog";
+import GiocatoriDialog from "@/components/Gioco/GiocatoriDialog";
 import {mapGetters} from "vuex";
 
 export default {

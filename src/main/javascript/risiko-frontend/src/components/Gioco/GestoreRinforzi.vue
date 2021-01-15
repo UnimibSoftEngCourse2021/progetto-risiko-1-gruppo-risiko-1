@@ -81,7 +81,7 @@
 
 <script>
 import utils from "@/store/utils";
-import TrisDialog from "@/components/TrisDialog";
+import TrisDialog from "@/components/Gioco/TrisDialog";
 import {mapActions, mapGetters} from "vuex";
 
 export default {

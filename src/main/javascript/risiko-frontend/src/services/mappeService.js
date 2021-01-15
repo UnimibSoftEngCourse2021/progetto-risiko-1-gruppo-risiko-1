@@ -2,7 +2,8 @@ import _axios from "@/plugins/axios";
 
 export default {
     getListaMappe,
-    getMappa
+    getMappa,
+    inserisciMappa
 }
 
 function getListaMappe() {
@@ -11,4 +12,8 @@ function getListaMappe() {
 
 function getMappa(id) {
     return _axios.get("api/mappe/" + id)
+}
+
+function inserisciMappa(mappa) {
+    return _axios.post("api/mappe", mappa)
 }

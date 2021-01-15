@@ -153,7 +153,4 @@ export default {
 .text-box {
   height: 1.5rem;
 }
-
-
-
 </style>

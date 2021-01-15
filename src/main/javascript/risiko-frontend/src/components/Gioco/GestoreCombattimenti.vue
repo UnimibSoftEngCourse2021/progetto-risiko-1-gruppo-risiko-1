@@ -64,7 +64,7 @@
 <script>
 
 import utils from "@/store/utils";
-import CombattimentoDialog from "@/components/CombattimentoDialog";
+import CombattimentoDialog from "@/components/Gioco/CombattimentoDialog";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
 export default {
