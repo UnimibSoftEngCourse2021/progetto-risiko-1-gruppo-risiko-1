@@ -39,6 +39,8 @@ public class ConqGiocatore extends Obiettivo {
         if(giocatore == null)
             throw new ModelDataException("Giocatore in ConqGiocatore.raggiunto non valido");
 
+        if (giocatore.equals(target))
+            return obSecondario.raggiunto(giocatore);
         if (target.isEliminato()) {
             if (target.getUccisore().equals(giocatore))
                 return true;
