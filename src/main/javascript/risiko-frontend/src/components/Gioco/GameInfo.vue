@@ -96,8 +96,11 @@ export default {
   }},
 
   watch: {
-    selectedContinente(id) {
-      this.$emit("evidenziaContinente", id + 1)
+    selectedContinente(index) {
+      let continente = this.continenti[index]
+      if (continente) {
+        this.$emit("evidenziaContinente", continente.id)
+      }
     }
   },
 
