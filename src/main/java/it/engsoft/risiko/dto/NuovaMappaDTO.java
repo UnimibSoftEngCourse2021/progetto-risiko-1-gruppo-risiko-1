@@ -25,7 +25,7 @@ public class NuovaMappaDTO {
         this.numMinGiocatori = numMinGiocatori;
         this.numMaxGiocatori = numMaxGiocatori;
 
-        if(continenti == null || continenti.size() < 3)
+        if(continenti == null || continenti.size() < 4 || continenti.size() > 7)
             throw new DatiErratiException();
         this.continenti = continenti;
     }

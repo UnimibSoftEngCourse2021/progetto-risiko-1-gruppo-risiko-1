@@ -151,6 +151,7 @@ public class MappaService {
 
         aggiungiConfinanti(nomi_stati, nuovaMappaDTO);
         checkConfinanti(nomi_stati);
+        grafoConnesso(new ArrayList<>(nomi_stati.values()));
 
         mappaRepository.save(mappa);
     }
@@ -205,9 +206,35 @@ public class MappaService {
     private void checkConfinanti(Map<String, Stato> nomi_stati) {
         for (Stato stato : nomi_stati.values()) {
             for (Stato confinante : stato.getConfinanti()) {
-                if (!confinante.getConfinanti().contains(stato))
+                if(confinante.getConfinanti().stream().noneMatch(c -> c.getNome().equals(stato.getNome())))
                     throw new DatiErratiException();
             }
         }
+    }
+
+    /**
+     * Controlla che ogni nodo sia raggiungibile
+     * @param grafo: lista contenente gli stati
+     */
+    private void grafoConnesso(List<Stato> grafo) {
+        List<Stato> visitati = new ArrayList<>();
+        LinkedList<Stato> queue = new LinkedList<>();
+
+        visitati.add(grafo.get(0));
+        queue.offer(grafo.get(0));
+
+        while (!queue.isEmpty()) {
+            Stato statoCorrente = queue.poll();
+
+            for(Stato confinante : statoCorrente.getConfinanti()) {
+                if(visitati.stream().noneMatch(v -> v.getNome().equals(confinante.getNome()))) {
+                    visitati.add(confinante);
+                    queue.offer(confinante);
+                }
+            }
+        }
+
+        if(visitati.size() != grafo.size())
+            throw new DatiErratiException();
     }
 }

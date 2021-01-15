@@ -76,7 +76,10 @@ public class Stato {
     }
 
     public void aggiungiConfinante(Stato stato) {
-        if (!confinanti.contains(stato))
+        if (stato == null)
+            throw new RuntimeException();
+
+        if(confinanti.stream().noneMatch(c -> c.getNome().equals(stato.getNome())))
             confinanti.add(stato);
     }
 
@@ -124,5 +127,4 @@ public class Stato {
         Stato stato = (Stato) o;
         return id.equals(stato.id);
     }
-
 }

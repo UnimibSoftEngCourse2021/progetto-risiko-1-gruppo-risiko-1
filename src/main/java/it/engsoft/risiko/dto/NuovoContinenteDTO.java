@@ -18,7 +18,7 @@ public class NuovoContinenteDTO {
             throw new DatiErratiException();
         this.armateBonus = armateBonus;
 
-        if(stati == null || stati.size() < 4)
+        if(stati == null || stati.size() < 4 || stati.size() > 12)
             throw new DatiErratiException();
         this.stati = stati;
     }
