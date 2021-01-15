@@ -26,10 +26,11 @@
         {{ combattimento.vittimeDif }} armate</span>
     </v-card-text>
 
-
-    <div v-if="combattimento.vittoriaAtt" >
+    <v-card-text v-if="combattimento.vittoriaAtt">
+      <v-alert type="success">Complimenti! Hai conquistato lo stato</v-alert>
+    </v-card-text>
+    <div v-if="combattimento.vittoriaAtt && !winner" >
       <v-card-text >
-        <v-alert type="success">Complimenti! Hai conquistato lo stato</v-alert>
         <div id="seleziona-truppe">
           <v-select
               label="Scegli quante truppe spostare"
@@ -63,7 +64,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["combattimento", "mappaGioco", "giocatoreAttivo"]),
+    ...mapGetters(["combattimento", "mappaGioco", "giocatoreAttivo", "winner"]),
     truppeSpostabili() {
       let ris = []
       if (!this.combattimento.vittoriaAtt)

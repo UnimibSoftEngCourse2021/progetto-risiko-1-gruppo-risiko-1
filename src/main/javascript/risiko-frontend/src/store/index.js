@@ -116,15 +116,15 @@ export default new Vuex.Store({
             statoAttaccante.armate -= vittimeAtt
             let statoDifensore = utils.trovaStatoId(state.gioco.mappa, state.gioco.combattimento.difensore)
             statoDifensore.armate -= vittimeDif
-            if (vittoriaAtt) {
+            if (obiettivoRaggiuntoAtt) {
+                state.gioco.winner = state.gioco.giocatori[state.gioco.activePlayerIndex]
+                state.gioco.combattimento.inCorso = false
+            } else if (vittoriaAtt) {
                 Vue.set(statoDifensore, "proprietario", statoAttaccante.proprietario)
             } else {
                 state.gioco.combattimento.inCorso = false
             }
-
-            if (obiettivoRaggiuntoAtt) {
-                state.gioco.winner = state.gioco.giocatori[state.gioco.activePlayerIndex]
-            }
+            
         },
         clearCombattimento(state) {
             state.gioco.combattimento = { inCorso: false, attaccante: null, difensore: null, armateAttaccante: null, armateDifensore: null }
