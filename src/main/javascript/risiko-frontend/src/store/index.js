@@ -160,6 +160,9 @@ export default new Vuex.Store({
         },
         clearMappaInCostruzione(state) {
             state.mappaInCostruzione = {}
+        },
+        setWinner(state) {
+            state.gioco.winner = state.gioco.giocatori[state.gioco.activePlayerIndex]
         }
     },
     actions: {
@@ -179,27 +182,24 @@ export default new Vuex.Store({
             // effettua i rinforzi
             let rinforziMap = {}
             rinforzi.forEach(r => rinforziMap[String(r.id)] = r.quantity)
-            let {data} = await giocoService.inviaRinforzi({
+            let { data } = await giocoService.inviaRinforzi({
                 giocatore: state.gioco.giocatori[state.gioco.activePlayerIndex].nome,
                 rinforzi: rinforziMap
             })
             commit("addRinforzi", rinforzi)
 
-            // se in fase preparazione, bisogna valutare se essa è terminata e qual è il prossimo giocatore attivo
-            if (state.gioco.preparazione && !data.preparazione) {
+            let { giocatore, preparazione, vittoria } = data;
+            if (vittoria) {
+                commit("setWinner")
+            } else if (state.gioco.preparazione && !preparazione) {
+                // se in fase preparazione, bisogna valutare se essa è terminata e qual è il prossimo giocatore attivo
                 commit("finePreparazione")
-                let {data} = await giocoService.nuovoTurno()
+                let { data } = await giocoService.nuovoTurno()
                 commit("setTurno", { turno: data, pescato: false })
-            } else if (data.preparazione) {
-                commit("setActivePlayer", data.giocatore)
+            } else if (preparazione) {
+                commit("setActivePlayer", giocatore)
             }
         },
-        // async nuovoTurno({state, commit}) {
-        //     let {data} = await giocoService.nuovoTurno()
-        //     if (data.giocatore !== state.gioco.giocatori[state.gioco.activePlayerIndex].nome) {
-        //         commit("setTurno", {data, pescato: false})
-        //     }
-        // },
         async confermaAttacco({ commit, state }) {
             let attaccoPayload = {
                 giocatore: state.gioco.giocatori[state.gioco.activePlayerIndex].nome,
@@ -217,8 +217,12 @@ export default new Vuex.Store({
             commit("setEsitoCombattimento", data)
         },
         async spostamento({ commit }, spostamento) {
-            await giocoService.spostamento(spostamento)
+            let response = await giocoService.spostamento(spostamento)
             commit("setSpostamento", spostamento)
+            let vittoria = response.data
+            if (vittoria) {
+                commit("setWinner")
+            }
         },
         async terminaTurno({ commit }) {
             let { data } = await giocoService.fineTurno()

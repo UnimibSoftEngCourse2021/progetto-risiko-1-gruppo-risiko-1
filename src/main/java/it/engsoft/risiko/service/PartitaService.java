@@ -101,7 +101,7 @@ public class PartitaService {
         return new IniziaTurnoDAO(partita.getTurno().getNumero(), partita.getGiocatoreAttivo().getNome(), armateStati, armateContinenti);
     }
 
-    public Map<String, Object> rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
+    public RinforzoDAO rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
 
         // blocca il rinforzo se non chiamato dal giocatore attivo in quel turno
         Giocatore giocatore = toGiocatore(rinforzoDTO.getGiocatore(), partita);
@@ -133,11 +133,11 @@ public class PartitaService {
             eseguiRinforzo(rinforzoDTO, partita.getGiocatoreAttivo().getTruppeDisponibili(), partita);
         }
 
-        Map<String, Object> risposta = new HashMap<>();
-        risposta.put("giocatore", partita.getGiocatoreAttivo().getNome());
-        risposta.put("preparazione", partita.isFasePreparazione());
-
-        return risposta;
+        return new RinforzoDAO(
+                partita.getGiocatoreAttivo().getNome(),
+                partita.isFasePreparazione(),
+                partita.getGiocatoreAttivo().obRaggiunto()
+        );
     }
 
     private void eseguiRinforzo(RinforzoDTO rinforzoDTO, int armateDaPiazzare, Partita partita) {
@@ -289,7 +289,7 @@ public class PartitaService {
         return difesaDAO;
     }
 
-    public void spostamentoStrategico(SpostamentoDTO spostamentoDTO, Partita partita) {
+    public boolean spostamentoStrategico(SpostamentoDTO spostamentoDTO, Partita partita) {
         // blocca lo spostamento se si è in fase di preparazione
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: si e' ancora in fase di preparazione");
@@ -321,6 +321,8 @@ public class PartitaService {
                 throw new DatiErratiException("Dati errati: armate spostamento non valide");
             spostamentoStrategico.esegui();
         }
+
+        return giocatore.obRaggiunto();
     }
 
     public CartaTerritorioDAO fineTurno(Partita partita) {

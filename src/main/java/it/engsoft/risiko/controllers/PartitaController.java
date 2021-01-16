@@ -32,11 +32,15 @@ public class PartitaController {
     }
 
     @PostMapping(path = "/rinforzi")
-    public Map<String, Object> rinforzi(@RequestBody RinforzoDTO rinforzoDTO, HttpSession httpSession) {
+    public RinforzoDAO rinforzi(@RequestBody RinforzoDTO rinforzoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
             throw new MossaIllegaleException("Mossa illegale: partita null");
-        return partitaService.rinforzo(rinforzoDTO, partita);
+        RinforzoDAO response = partitaService.rinforzo(rinforzoDTO, partita);
+        if (response.isVittoria())  {
+            httpSession.setAttribute(partitaKey, null);
+        }
+        return response;
     }
 
     @PostMapping(path = "/inizia-turno")
@@ -76,11 +80,14 @@ public class PartitaController {
     }
 
     @PostMapping(path = "/spostamento")
-    public void spostamento(@RequestBody SpostamentoDTO spostamentoDTO, HttpSession httpSession) {
+    public boolean spostamento(@RequestBody SpostamentoDTO spostamentoDTO, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
             throw new MossaIllegaleException("Mossa illegale: partita null");
-        partitaService.spostamentoStrategico(spostamentoDTO, partita);
+        boolean obiettivoRaggiunto = partitaService.spostamentoStrategico(spostamentoDTO, partita);
+        if (obiettivoRaggiunto)
+            httpSession.setAttribute(partitaKey, null);
+        return obiettivoRaggiunto;
     }
 
     @PostMapping(path = "/fine-turno")
