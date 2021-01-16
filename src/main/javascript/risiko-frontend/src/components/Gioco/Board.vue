@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       options: {
+        groups: { useDefaultGroups: false },
         nodes: {
           shape: "dot",
 
@@ -67,8 +68,7 @@ export default {
           }
         }
       },
-      hoverNodeInfo: "",
-      colors: []
+      hoverNodeInfo: ""
     }
   },
 
@@ -79,7 +79,6 @@ export default {
           let {id, label, group} = node
           nodes.update({id, label, group})
         })
-        this.setColors()
       },
       deep: true
     }
@@ -90,6 +89,11 @@ export default {
     let container = document.getElementById('network');
     nodes = new visData.DataSet(this.mapNetwork.nodes)
     let edges = new visData.DataSet(this.mapNetwork.edges)
+
+    for (let giocatore of this.giocatori) {
+      this.options.groups[giocatore.nome] = { color: { ...this.gameColors[giocatore.nome] } }
+    }
+
     network = new visNet.Network(container, {nodes, edges}, this.options)
     network.on("select", (data) => {
       if (data.nodes.length > 0)
@@ -107,29 +111,23 @@ export default {
       network.unselectAll()
       this.hoverNodeInfo = ""
     })
-
-    this.setColors()
   },
 
   computed: {
-    ...mapGetters(["mapNetwork", "mappaGioco", "giocatori", "giocatoreAttivo"])
+    ...mapGetters(["mapNetwork", "mappaGioco", "giocatori", "giocatoreAttivo", "gameColors"]),
+    colors() {
+      let ris = []
+      for (let giocatore of this.giocatori) {
+        ris.push({
+          giocatore: giocatore.nome,
+          color: this.gameColors[giocatore.nome].background
+        })
+      }
+      return ris
+    }
   },
 
   methods: {
-    setColors() {
-      if (!network)
-        this.colors = []
-
-      let ris = []
-      this.giocatori.forEach((g, index) => {
-        let ids = Object.keys(network.body.nodes)
-        let id = ids.find(id => network.body.nodes[id].options.group === index)
-        let n = network.body.nodes[id]
-        ris.push({ giocatore: g.nome, color: n.options.color.background })
-      })
-
-      this.colors=ris
-    },
     trovaStatiInContinente(continenteId) {
       return this.mappaGioco.stati.filter(stato => stato.continente === continenteId).map(stato => stato.id)
     },

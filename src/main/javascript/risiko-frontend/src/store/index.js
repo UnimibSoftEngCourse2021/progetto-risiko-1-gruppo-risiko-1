@@ -37,6 +37,7 @@ export default new Vuex.Store({
         startGame(state, data) {
             let gioco = {}
             gioco.on = true
+            gioco.colors = data.colors
             gioco.mappa = utils.formattaMappa(data.mappa)
             gioco.giocatori = data.giocatori.map(giocatore => {
                 return {
@@ -175,8 +176,9 @@ export default new Vuex.Store({
             commit("setMappa", data)
         },
         async startGame({commit}, config) {
-            let {data} = await giocoService.nuovoGioco(config);
-            commit("startGame", data)
+            let { giocatori, mappaId, mod, unicoObiettivo, colors } = config
+            let {data} = await giocoService.nuovoGioco({ giocatori, mappaId, mod, unicoObiettivo });
+            commit("startGame", { ...data, colors })
         },
         async inviaRinforzi({commit, state}, rinforzi) {
             // effettua i rinforzi
@@ -255,12 +257,14 @@ export default new Vuex.Store({
         gameActive(state) {
             return state.gioco.on;
         },
+        gameColors(state) {
+            return state.gioco.colors
+        },
         mapNetwork(state) {
             let nodes = state.gioco.mappa.stati.map(stato => {
-                let proprietarioIndex = state.gioco.giocatori.findIndex(g => g.nome === stato.proprietario)
                 return {
                     id: stato.id,
-                    group: proprietarioIndex,
+                    group: stato.proprietario,
                     label: String(stato.armate)
                 }
             })

@@ -31,7 +31,7 @@
       </v-img>
     </v-main>
 
-    <v-dialog v-model="showNuovoGiocoDialog" max-width="700px">
+    <v-dialog v-model="showNuovoGiocoDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
       <nuovo-gioco-dialog @gameStarted="prepareGame" @close="showNuovoGiocoDialog = false"/>
     </v-dialog>
 
