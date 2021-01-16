@@ -13,7 +13,7 @@ public class Giocatore {
     private int truppeDisponibili = 0;
 
     public Giocatore(String nome){
-        this.nome = nome;
+        this.setNome(nome);
     }
     public String getNome() {
         return nome;
