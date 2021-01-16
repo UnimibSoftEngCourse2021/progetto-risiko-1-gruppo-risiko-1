@@ -80,6 +80,7 @@ export default {
     ...mapMutations(["clearCombattimento"]),
     ...mapActions(["spostamento"]),
     chiudi() {
+      this.truppeDaSpostare = null
       this.clearCombattimento()
       this.$emit("close")
     },

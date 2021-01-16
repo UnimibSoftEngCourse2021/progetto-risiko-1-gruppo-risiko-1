@@ -47,7 +47,7 @@ public class PartitaService {
                 .collect(Collectors.toList()));
 
         // assegna gli obiettivi
-        this.carteObiettivoService.setObiettiviGiocatori(partita.getMappa(), partita.getGiocatori());
+        this.carteObiettivoService.setObiettiviGiocatori(partita.getMappa(), partita.getGiocatori(), nuovoGiocoDTO.isUnicoObiettivo());
 
         // scegliamo casualmente un ordine di giocatori
         Collections.shuffle(partita.getGiocatori());

@@ -8,8 +8,9 @@ public final class NuovoGiocoDTO {
     private final ArrayList<String> giocatori;
     private final long mappaId;
     private final String mod;
+    private final boolean unicoObiettivo;
 
-    public NuovoGiocoDTO(ArrayList<String> giocatori, Long mappaId, String mod) {
+    public NuovoGiocoDTO(ArrayList<String> giocatori, Long mappaId, String mod, boolean unicoObiettivo) {
         if(giocatori == null)
             throw new DatiErratiException("Dati errati: lista giocatori nulla");
         this.giocatori = giocatori;
@@ -21,6 +22,8 @@ public final class NuovoGiocoDTO {
         if(mod == null || mod.trim().isEmpty())
             throw new DatiErratiException("Dati errati: modalita' nulla o mancante");
         this.mod = mod;
+
+        this.unicoObiettivo = unicoObiettivo;
     }
 
     public ArrayList<String> getGiocatori() {
@@ -34,4 +37,6 @@ public final class NuovoGiocoDTO {
     public String getMod() {
         return mod;
     }
+
+    public boolean isUnicoObiettivo() { return unicoObiettivo; }
 }

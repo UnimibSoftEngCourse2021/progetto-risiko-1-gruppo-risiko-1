@@ -8,7 +8,7 @@
             Gioca
           </v-btn>
         </v-app-bar>
-      
+
       <v-card-text class="pa-12">
         <v-form class="pt-5" v-model="formValid">
           <v-row>

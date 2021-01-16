@@ -67,7 +67,7 @@ export default {
       let continenti = utils.continentiConquistati(this.mappaGioco, nomeGiocatore)
       return continenti.length === 0 ?
           "Nessuno" :
-          continenti.join(", ")
+          continenti.map(c => c.nome).join(", ")
     }
   }
 }

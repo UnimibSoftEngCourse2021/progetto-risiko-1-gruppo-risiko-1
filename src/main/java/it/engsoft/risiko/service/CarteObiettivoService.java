@@ -16,30 +16,34 @@ public class CarteObiettivoService {
      * @param mappa la mappa dove si sta svolgendo la partita
      * @param giocatori l'elenco dei giocatori
      */
-    public void setObiettiviGiocatori(Mappa mappa, List<Giocatore> giocatori) {
+    public void setObiettiviGiocatori(Mappa mappa, List<Giocatore> giocatori, boolean unicoObiettivo) {
         // crea gli obiettivi di vario tipo
         ConqTerritori conqTerritori = generaObiettivoConquistaTerritori(mappa);
-        ConqTerritori conqTerritoriAlternativo = generaObiettivoConqTerritoriAlternativo(mappa);
-        List<ConqGiocatore> conqGiocatori = generaObiettivoConquistaGiocatori(giocatori, conqTerritori);
+        if (unicoObiettivo) {
+            giocatori.forEach(g -> g.setObiettivo(conqTerritori));
+        } else {
+            ConqTerritori conqTerritoriAlternativo = generaObiettivoConqTerritoriAlternativo(mappa);
+            List<ConqGiocatore> conqGiocatori = generaObiettivoConquistaGiocatori(giocatori, conqTerritori);
 
         /* il numero di conqContinenti deve essere massimo pari al numero di giocatori, ma può essere di meno se
             non ci sono abbastanza coppie di continenti */
-        int numContinenti = mappa.getContinenti().size();
-        int maxCoppie = numContinenti * numContinenti - numContinenti;
-        int numObiettiviConqContinenti = Math.min(maxCoppie, giocatori.size());
-        List<ConqContinenti> conqContinenti = generaObiettivoConquistaContinenti(mappa, numObiettiviConqContinenti);
+            int numContinenti = mappa.getContinenti().size();
+            int maxCoppie = numContinenti * numContinenti - numContinenti;
+            int numObiettiviConqContinenti = Math.min(maxCoppie, giocatori.size());
+            List<ConqContinenti> conqContinenti = generaObiettivoConquistaContinenti(mappa, numObiettiviConqContinenti);
 
-        // aggrega tutti gli obiettivi in un'unica lista
-        List<Obiettivo> obiettivi = new ArrayList<>(Arrays.asList(conqTerritori, conqTerritoriAlternativo));
-        obiettivi.addAll(conqGiocatori);
-        obiettivi.addAll(conqContinenti);
+            // aggrega tutti gli obiettivi in un'unica lista
+            List<Obiettivo> obiettivi = new ArrayList<>(Arrays.asList(conqTerritori, conqTerritoriAlternativo));
+            obiettivi.addAll(conqGiocatori);
+            obiettivi.addAll(conqContinenti);
 
-        // disordina la lista in modo random
-        Collections.shuffle(obiettivi);
+            // disordina la lista in modo random
+            Collections.shuffle(obiettivi);
 
-        // prendi i primi obiettivi dalla lista random e assegnali ai giocatori
-        for (int i = 0; i < giocatori.size(); i++) {
-            giocatori.get(i).setObiettivo(obiettivi.get(i));
+            // prendi i primi obiettivi dalla lista random e assegnali ai giocatori
+            for (int i = 0; i < giocatori.size(); i++) {
+                giocatori.get(i).setObiettivo(obiettivi.get(i));
+            }
         }
     }
 
