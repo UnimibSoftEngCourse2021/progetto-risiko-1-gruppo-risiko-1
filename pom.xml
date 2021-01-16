@@ -16,7 +16,10 @@
 
     <properties>
         <java.version>15</java.version>
-
+        <sonar.modules>javascript</sonar.modules>
+        <javascript.sonar.projectBaseDir>./risiko-frontend</javascript.sonar.projectBaseDir>
+        <javascript.sonar.language>js</javascript.sonar.language>
+        <javascript.sonar.sources>./src</javascript.sonar.sources>
         <sonar.organization>unimibsoftengcourse2021</sonar.organization>
         <sonar.projectKey>UnimibSoftEngCourse2021_progetto-risiko-1-gruppo-risiko-1</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -106,7 +109,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <workingDirectory>${project.basedir}/src/main/javascript/risiko-frontend</workingDirectory>
+                    <workingDirectory>${project.basedir}/risiko-frontend</workingDirectory>
 
                     <!-- node modules directory -->
                     <installDirectory>${project.build.directory}/node</installDirectory>

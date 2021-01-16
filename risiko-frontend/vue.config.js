@@ -2,7 +2,7 @@
 
 module.exports = {
   // set build directory inside maven target directory
-  "outputDir": "../../../../target/frontend/public",
+  "outputDir": "../target/frontend/public",
 
   "transpileDependencies": [
     "vuetify"
