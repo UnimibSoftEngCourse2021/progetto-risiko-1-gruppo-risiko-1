@@ -15,14 +15,12 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
+        <project.source.version>15</project.source.version>
+        <project.target.version>15</project.target.version>
         <java.version>15</java.version>
-        <sonar.modules>javascript</sonar.modules>
-        <javascript.sonar.projectBaseDir>./risiko-frontend</javascript.sonar.projectBaseDir>
-        <javascript.sonar.language>js</javascript.sonar.language>
-        <javascript.sonar.sources>./src</javascript.sonar.sources>
-        <sonar.organization>unimibsoftengcourse2021</sonar.organization>
-        <sonar.projectKey>UnimibSoftEngCourse2021_progetto-risiko-1-gruppo-risiko-1</sonar.projectKey>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <!-- Tests are only executed in "qa" profile as part of the build lifecycle -->
+        <maven.test.skip>true</maven.test.skip>
     </properties>
 
     <dependencies>
@@ -65,12 +63,6 @@
                         <folder>{project.build.directory}/frontend</folder>
                     </folders>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.7.0.1746</version>
             </plugin>
 
             <!-- this plugin includes the frontend build as part of the main maven build lifecycle -->
@@ -129,4 +121,116 @@
         </resources>
     </build>
 
+    <profiles>
+        <!-- Quality assurance profile -->
+        <profile>
+            <id>qa</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <properties>
+                <sonar.modules>javascript</sonar.modules>
+                <javascript.sonar.projectBaseDir>./risiko-frontend</javascript.sonar.projectBaseDir>
+                <javascript.sonar.language>js</javascript.sonar.language>
+                <javascript.sonar.sources>./src</javascript.sonar.sources>
+                <sonar.organization>unimibsoftengcourse2021</sonar.organization>
+                <sonar.projectKey>UnimibSoftEngCourse2021_progetto-risiko-1-gruppo-risiko-1</sonar.projectKey>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+                <maven.test.skip>false</maven.test.skip>
+                <sonar.junit.reportPaths>
+                    ./target/surefire-reports
+                </sonar.junit.reportPaths>
+                <sonar.coverage.jacoco.xmlReportPaths>
+                    ${project.build.directory}/qa/jacoco/jacoco.xml
+                </sonar.coverage.jacoco.xmlReportPaths>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.7.0.1746</version>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>3.0.0-M5</version>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.6</version>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/qa/jacoco</outputDirectory>
+                            <destFile>${project.build.directory}/qa/jacoco/jacoco.exec</destFile>
+                            <dataFile>${project.build.directory}/qa/jacoco/jacoco.exec</dataFile>
+                            <output>file</output>
+                            <append>true</append>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>pre-unit-test</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>post-unit-test</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>default-check</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <excludes>
+                                        <exclude>**/*Application.class</exclude>
+                                    </excludes>
+                                    <rules>
+                                        <rule>
+                                            <element>BUNDLE</element>
+                                            <limits>
+                                                <limit>
+                                                    <counter>INSTRUCTION</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>0.0</minimum>
+                                                </limit>
+                                                <limit>
+                                                    <counter>LINE</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>0.0</minimum>
+                                                </limit>
+                                                <limit>
+                                                    <counter>BRANCH</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>0.0</minimum>
+                                                </limit>
+                                                <limit>
+                                                    <counter>CLASS</counter>
+                                                    <value>MISSEDCOUNT</value>
+                                                    <maximum>100</maximum>
+                                                </limit>
+                                            </limits>
+                                        </rule>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

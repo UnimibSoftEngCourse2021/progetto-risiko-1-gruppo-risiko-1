@@ -15,7 +15,16 @@ FLUSH PRIVILEGES;
 ```
 
 ### Come eseguire il progetto
-Per effettuare la build ed eseguire il progetto è sufficiente il comando
+Per effettuare la build ed eseguire il progetto è sufficiente il comando:
 ```
 mvn spring-boot:run
 ```
+
+Se si vuole effettuare la build ed eseguire i controlli di quality assurance (test, code coverage, 
+sonar analiysys) bisogna utilizzare il Maven profile "qa" (quality-assurance):
+```
+mvn clean install -Pqa -Dsonar.login={SONARCLOUD_TOKEN}
+```
+
+Di default viene utilizzato Sonarcloud per l'analisi, se non si desidera utilizzarlo è sufficiente passare 
+come parametri di sonar tutte le configurazioni necessarie (server, login, ecc...) a linea di comando.
