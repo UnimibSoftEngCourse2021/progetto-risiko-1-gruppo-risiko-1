@@ -13,7 +13,7 @@
     <gestore-spostamento-strategico ref="gestoreSpostamento" v-if="!bloccaSpostamento" />
 
     <v-btn color="primary" block rounded class="my-12" @click="confermaTerminaTurno"
-           :disabled="armateDisponibili > 0 || combattimentoInCorso">termina turno</v-btn>
+           :disabled="armateDisponibili > 0 || combattimentoInCorso || spostamentoInCorso">termina turno</v-btn>
 
     <v-dialog v-model="fineTurnoDialog" max-width="700px">
       <fine-turno-dialog  @close="fineTurnoDialog = false"/>
