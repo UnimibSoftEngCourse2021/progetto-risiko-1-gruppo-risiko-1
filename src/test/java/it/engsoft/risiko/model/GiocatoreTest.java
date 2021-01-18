@@ -1,13 +1,13 @@
 package it.engsoft.risiko.model;
 
 import it.engsoft.risiko.exceptions.ModelDataException;
-import it.engsoft.risiko.model.Giocatore;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class GiocatoreTest {
+
     @Test
     public void testNomeVuoto() {
         try {

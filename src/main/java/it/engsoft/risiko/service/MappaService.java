@@ -2,12 +2,14 @@ package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.dao.*;
 import it.engsoft.risiko.dto.*;
+import it.engsoft.risiko.exceptions.NotFoundException;
 import it.engsoft.risiko.model.*;
 import it.engsoft.risiko.exceptions.DatiErratiException;
 import it.engsoft.risiko.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,7 @@ public class MappaService {
     public MappaDAO mappa(Long mappaId) {
         Optional<Mappa> optMappa = mappaRepository.findById(mappaId);
         if (optMappa.isEmpty())
-            throw new DatiErratiException("Dati errati: la mappa e' vuota");
+            throw new NotFoundException("Mappa non trovata");
 
         return new MappaDAO(optMappa.get());
     }

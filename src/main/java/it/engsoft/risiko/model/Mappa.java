@@ -89,7 +89,7 @@ public class Mappa {
         return continenti;
     }
 
-    public void setContinenti(ArrayList<Continente> continenti) {
+    public void setContinenti(List<Continente> continenti) {
         if (continenti == null)
             throw new ModelDataException("Continenti appartenenti alla mappa in Mappa.setContinenti nulli");
         this.continenti = continenti;
