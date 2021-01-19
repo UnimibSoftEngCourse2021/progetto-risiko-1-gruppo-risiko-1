@@ -20,7 +20,7 @@ public class CarteTerritorioService {
         // Generazione mazzo
         generaMazzo(mazzo, partita.getMappa());
 
-        // Distribuzione carte ai giocatori
+        // mescola il mazzo
         Collections.shuffle(mazzo);
 
         int g = 0; // indice giocatori
@@ -32,12 +32,13 @@ public class CarteTerritorioService {
                 partita.getGiocatori().get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
                 cartaTerritorio.getStatoRappresentato().setProprietario(partita.getGiocatori().get(g));
 
-                if (g == partita.getGiocatori().size() - 1)
-                    g = 0;
-                else
-                    g++;
+                g = (g + 1) % partita.getGiocatori().size();
             }
         }
+
+        // inverte l'ordine dei giocatori in modo che per primi ci siano quelli con meno territori
+        // (ossia più armate da posizionare)
+        Collections.reverse(partita.getGiocatori());
     }
 
     /**

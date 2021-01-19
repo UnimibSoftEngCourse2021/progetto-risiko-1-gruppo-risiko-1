@@ -21,6 +21,9 @@ public class Mappa {
     @OneToMany(mappedBy = "mappa", cascade = CascadeType.PERSIST)
     private List<Continente> continenti;
 
+    private static final int NUM_MIN_GIOCATORI = 2;
+    private static final int NUM_MAX_GIOCATORI = 8;
+
     public Mappa(String nome, String descrizione, int numMinGiocatori, int numMaxGiocatori) {
         this.nome = nome;
         this.descrizione = descrizione;
@@ -68,7 +71,7 @@ public class Mappa {
     }
 
     public void setNumMinGiocatori(int numMinGiocatori) {
-        if (numMinGiocatori < 2)
+        if (numMinGiocatori < NUM_MIN_GIOCATORI)
             throw new ModelDataException("Numero giocatori minimo in Mappa.setNumMinGiocatori inferiore a 2");
         this.numMinGiocatori = numMinGiocatori;
     }
@@ -79,7 +82,7 @@ public class Mappa {
     }
 
     public void setNumMaxGiocatori(int numMaxGiocatori) {
-        if (numMaxGiocatori > 8)
+        if (numMaxGiocatori > NUM_MAX_GIOCATORI)
             throw new ModelDataException("Numero giocatori massimo in Mappa.setNumMaxGiocatori superiore a 8");
         this.numMaxGiocatori = numMaxGiocatori;
     }

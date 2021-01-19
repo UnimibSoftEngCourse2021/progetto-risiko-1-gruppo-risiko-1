@@ -1,50 +1,45 @@
 package it.engsoft.risiko.model;
 
+import it.engsoft.risiko.exceptions.ModelDataException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Partita {
-    private List<Giocatore> giocatori = new ArrayList<>();
+    private final List<Giocatore> giocatori;
     private Giocatore giocatoreAttivo;
     private Turno turno;
-    private Mappa mappa;
-    private Modalita modalita;
-    private List<CartaTerritorio> mazzo = new ArrayList<>();
+    private final Mappa mappa;
+    private final Modalita modalita;
+    private final List<CartaTerritorio> mazzo;
     private boolean fasePreparazione;
+    private boolean territoriOccupati;
 
-    public enum Modalita {
-        VELOCE,
-        RIDOTTA,
-        COMPLETA;
+    public Partita(Mappa mappa, List<Giocatore> giocatori, Modalita modalita) {
+        if (mappa == null || giocatori == null || modalita == null)
+            throw new ModelDataException("Parametri del costruttore null (partita)");
 
-        public static Modalita valutaModalita(String modalita) {
-            if (modalita.equalsIgnoreCase(Partita.Modalita.COMPLETA.toString())) {
-                return Partita.Modalita.COMPLETA;
-            } else if (modalita.equalsIgnoreCase(Partita.Modalita.RIDOTTA.toString())) {
-                return Partita.Modalita.RIDOTTA;
-            } else if (modalita.equalsIgnoreCase(Partita.Modalita.VELOCE.toString())) {
-                return Partita.Modalita.VELOCE;
-            }
-
-            return Modalita.COMPLETA;
-        }
+        this.mappa = mappa;
+        this.giocatori = giocatori;
+        this.modalita = modalita;
+        fasePreparazione = true;
+        territoriOccupati = false;
+        mazzo = new ArrayList<>();
+        assegnaArmateIniziali();
     }
-
 
     public List<Giocatore> getGiocatori() {
         return giocatori;
     }
 
-    public void setGiocatori(List<Giocatore> giocatori) {
-        this.giocatori = giocatori;
-    }
-
     public Giocatore getGiocatoreAttivo() {
-        return giocatoreAttivo;
-    }
+        if (!territoriOccupati)
+            throw new ModelDataException("Prima di iniziare a giocare devi occupare tutti i territori con un armata");
 
-    public void setGiocatoreAttivo(Giocatore giocatoreAttivo) {
-        this.giocatoreAttivo = giocatoreAttivo;
+        if (giocatoreAttivo == null) // solo la prima volta
+            giocatoreAttivo = giocatori.get(0);
+
+        return giocatoreAttivo;
     }
 
     public Turno getTurno() {
@@ -59,16 +54,8 @@ public class Partita {
         return mappa;
     }
 
-    public void setMappa(Mappa mappa) {
-        this.mappa = mappa;
-    }
-
     public Modalita getModalita() {
         return modalita;
-    }
-
-    public void setModalita(Modalita modalita) {
-        this.modalita = modalita;
     }
 
     public List<CartaTerritorio> getMazzo() {
@@ -80,11 +67,17 @@ public class Partita {
     public void setFasePreparazione(boolean fasePreparazione) { this.fasePreparazione = fasePreparazione; }
 
     public void iniziaPrimoTurno() {
-        setGiocatoreAttivo(giocatori.get(0));
+        if (fasePreparazione)
+            throw new ModelDataException("Devi prima finire la fase di preparazione");
+
+        giocatoreAttivo = giocatori.get(0);
         turno = new Turno(1);
     }
 
     public void nuovoTurno() {
+        if (fasePreparazione)
+            throw new ModelDataException("Devi prima finire la fase di preparazione");
+
         setProssimoGiocatoreAttivo();
         turno = new Turno(turno.getNumero() + 1);
     }
@@ -102,7 +95,7 @@ public class Partita {
         }
     }
 
-    public void assegnaArmateIniziali() {
+    private void assegnaArmateIniziali() {
         int nArmate = 0;
         for (int i = 5; i < this.mappa.getStati().size(); i = i + 5) {
             nArmate = nArmate + 15;
@@ -110,5 +103,26 @@ public class Partita {
         nArmate = nArmate / giocatori.size();
         int finalNArmate = nArmate;
         giocatori.forEach(giocatore -> giocatore.setTruppeDisponibili(finalNArmate));
+    }
+
+    private boolean territoriAssegnati() {
+        return giocatori.stream().noneMatch(g -> g.getStati().size() == 0);
+    }
+
+    public void occupazioneInizialeTerritori() {
+        if (!territoriAssegnati())
+            throw new ModelDataException("Prima devi distribuire le carte territorio");
+        if (territoriOccupati)
+            throw new ModelDataException("I territori sono già stati occupati");
+
+        giocatori.forEach(
+                giocatore -> giocatore.getStati().forEach(
+                        stato -> {
+                            stato.aggiungiArmate(1);
+                            giocatore.modificaTruppeDisponibili(-1);
+                        }
+                )
+        );
+        territoriOccupati = true;
     }
 }

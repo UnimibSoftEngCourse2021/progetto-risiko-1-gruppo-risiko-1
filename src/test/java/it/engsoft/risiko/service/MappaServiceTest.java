@@ -4,7 +4,7 @@ import it.engsoft.risiko.Utils;
 import it.engsoft.risiko.dto.NuovaMappaDTO;
 import it.engsoft.risiko.model.Continente;
 import it.engsoft.risiko.model.Mappa;
-import it.engsoft.risiko.model.Partita;
+import it.engsoft.risiko.model.Modalita;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,7 @@ public class MappaServiceTest {
 
     @Test
     public void testGetMappa() {
-        Mappa mappa = mappaService.getMappa(1L, Partita.Modalita.COMPLETA.toString());
+        Mappa mappa = mappaService.getMappa(1L, Modalita.COMPLETA);
         assertEquals(mappa.getNome(), "Risiko Test");
 
         assertEquals(mappa.getContinenti().size(), 6);
@@ -28,9 +28,9 @@ public class MappaServiceTest {
 
     @Test
     public void testCompattamentoMappe() {
-        Mappa mappaCompleta = mappaService.getMappa(1L, Partita.Modalita.COMPLETA.toString());
-        Mappa mappaRidotta = mappaService.getMappa(1L, Partita.Modalita.RIDOTTA.toString());
-        Mappa mappaVeloce = mappaService.getMappa(1L, Partita.Modalita.VELOCE.toString());
+        Mappa mappaCompleta = mappaService.getMappa(1L, Modalita.COMPLETA);
+        Mappa mappaRidotta = mappaService.getMappa(1L, Modalita.RIDOTTA);
+        Mappa mappaVeloce = mappaService.getMappa(1L, Modalita.VELOCE);
 
         assertEquals(mappaCompleta.getContinenti().size(), mappaRidotta.getContinenti().size());
         assertEquals(mappaRidotta.getContinenti().size(), mappaVeloce.getContinenti().size());
@@ -48,12 +48,12 @@ public class MappaServiceTest {
     @Test
     public void testInserisciMappa() {
         // prendiamo la mappa standard, la formattiamo come dto e proviamo a reinserirla con un nome diverso
-        Mappa mappaStandard = mappaService.getMappa(1L, Partita.Modalita.COMPLETA.toString());
+        Mappa mappaStandard = mappaService.getMappa(1L, Modalita.COMPLETA);
         NuovaMappaDTO nuovaMappa = utils.dtoFromMappa(mappaStandard, "Nuova mappa", "nuova desc", 2, 8);
 
         mappaService.nuovaMappa(nuovaMappa);
 
         assertEquals(mappaService.mappe().size(), 2);
-        assertNotNull(mappaService.getMappa(2L, "COMPLETA"));
+        assertNotNull(mappaService.getMappa(2L, Modalita.COMPLETA));
     }
 }

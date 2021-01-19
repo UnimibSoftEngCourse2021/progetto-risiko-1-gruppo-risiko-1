@@ -55,7 +55,7 @@ public class MappaService {
      * @param mod: modalitá secondo la quale va compattata la mappa
      * @return mappa rischiesta compattata
      */
-    public Mappa getMappa(Long mappaId, String mod) {
+    public Mappa getMappa(Long mappaId, Modalita mod) {
         Optional<Mappa> optMappa = mappaRepository.findById(mappaId);
         if (optMappa.isEmpty())
             throw new DatiErratiException("Dati errati: la mappa e' vuota");
@@ -71,12 +71,12 @@ public class MappaService {
      * @param mappa: la mappa da compattare
      * @param mod: modalitá secondo la quale va compattata la mappa
      */
-    private void compattaMappa(Mappa mappa, String mod) {
+    private void compattaMappa(Mappa mappa, Modalita mod) {
         int n = 0;
 
-        if (mod.equals("COMPLETA"))
+        if (mod.equals(Modalita.COMPLETA))
             return;
-        else if (mod.equals("RIDOTTA"))
+        else if (mod.equals(Modalita.RIDOTTA))
             n = 3;
         else // VELOCE
             n = 2;

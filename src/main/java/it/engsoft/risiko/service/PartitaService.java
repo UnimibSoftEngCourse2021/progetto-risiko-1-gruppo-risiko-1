@@ -25,56 +25,34 @@ public class PartitaService {
     }
 
     public Partita nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
-        Partita partita = new Partita();
-
-        // setta la modalità
-        partita.setModalita(Partita.Modalita.valutaModalita(nuovoGiocoDTO.getMod()));
+        Modalita modalita = Modalita.valutaModalita(nuovoGiocoDTO.getMod());
 
         // istanzia la mappa
-        Mappa mappa = mappaService.getMappa(nuovoGiocoDTO.getMappaId(), nuovoGiocoDTO.getMod());
-
-        partita.setMappa(mappa);
+        Mappa mappa = mappaService.getMappa(nuovoGiocoDTO.getMappaId(), modalita);
 
         // controllo sul valore minimo e massimo di giocatori ammessi dalla mappa
-        if (partita.getMappa().getNumMaxGiocatori() < nuovoGiocoDTO.getGiocatori().size() ||
-                partita.getMappa().getNumMinGiocatori() > nuovoGiocoDTO.getGiocatori().size())
+        if (mappa.getNumMaxGiocatori() < nuovoGiocoDTO.getGiocatori().size() ||
+                mappa.getNumMinGiocatori() > nuovoGiocoDTO.getGiocatori().size())
             throw new DatiErratiException("Dati errati: valore minimo/massimo di giocatori non ammesso");
 
         // creazione dei nuovi giocatori
-        partita.setGiocatori(nuovoGiocoDTO.getGiocatori()
+        List<Giocatore> giocatori = nuovoGiocoDTO.getGiocatori()
                 .stream()
                 .map(Giocatore::new)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
 
-        // assegna gli obiettivi
-        this.carteObiettivoService.setObiettiviGiocatori(partita.getMappa(), partita.getGiocatori(), nuovoGiocoDTO.isUnicoObiettivo());
+        // assegna gli obiettivi ai giocatori
+        this.carteObiettivoService.setObiettiviGiocatori(mappa, giocatori, nuovoGiocoDTO.isUnicoObiettivo());
 
         // scegliamo casualmente un ordine di giocatori
-        Collections.shuffle(partita.getGiocatori());
+        Collections.shuffle(giocatori);
+
+        Partita partita = new Partita(mappa, giocatori, modalita);
 
         // distribuisci le carte territorio, comprende assegnazione degli stati
         this.carteTerritorioService.distribuisciCarte(partita);
 
-        // inverte la lista dei giocatori
-        Collections.reverse(partita.getGiocatori());
-
-        partita.assegnaArmateIniziali();
-
-        // metti un armata su ogni territorio e aggiorna quelle dei giocatori rispettivamente
-        partita.getGiocatori().forEach(
-                giocatore -> giocatore.getStati().forEach(
-                        stato -> {
-                            stato.aggiungiArmate(1);
-                            giocatore.modificaTruppeDisponibili(-1);
-                        }
-                )
-        )
-        ;
-
-        partita.setFasePreparazione(true);
-
-        // viene impostato manualmente solo la prima volta, il primo della lista randomizzata
-        partita.setGiocatoreAttivo(partita.getGiocatori().get(0));
+        partita.occupazioneInizialeTerritori();
 
         return partita;
     }
@@ -160,7 +138,7 @@ public class PartitaService {
             rinforzo.esegui();
         }
 
-        partita.getGiocatoreAttivo().setTruppeDisponibili(0);
+        partita.getGiocatoreAttivo().modificaTruppeDisponibili(-armateDaPiazzare);
     }
 
     public int giocaTris(TrisDTO trisDTO, Partita partita) {
