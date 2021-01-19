@@ -1,5 +1,7 @@
 package it.engsoft.risiko.service;
 
+import it.engsoft.risiko.Utils;
+import it.engsoft.risiko.dto.NuovaMappaDTO;
 import it.engsoft.risiko.model.Continente;
 import it.engsoft.risiko.model.Mappa;
 import it.engsoft.risiko.model.Partita;
@@ -13,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MappaServiceTest {
     @Autowired
     private MappaService mappaService;
+    Utils utils = new Utils();
 
     @Test
     public void testGetMappa() {
@@ -40,5 +43,17 @@ public class MappaServiceTest {
             assertTrue(continenteCompleta.getStati().size() > continenteRidotta.getStati().size());
             assertTrue(continenteRidotta.getStati().size() > continenteVeloce.getStati().size());
         }
+    }
+
+    @Test
+    public void testInserisciMappa() {
+        // prendiamo la mappa standard, la formattiamo come dto e proviamo a reinserirla con un nome diverso
+        Mappa mappaStandard = mappaService.getMappa(1L, Partita.Modalita.COMPLETA.toString());
+        NuovaMappaDTO nuovaMappa = utils.dtoFromMappa(mappaStandard, "Nuova mappa", "nuova desc", 2, 8);
+
+        mappaService.nuovaMappa(nuovaMappa);
+
+        assertEquals(mappaService.mappe().size(), 2);
+        assertNotNull(mappaService.getMappa(2L, "COMPLETA"));
     }
 }

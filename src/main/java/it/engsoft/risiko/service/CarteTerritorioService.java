@@ -47,36 +47,23 @@ public class CarteTerritorioService {
      */
     private void generaMazzo(List<CartaTerritorio> mazzo, Mappa mappa) {
         // numStati viene utilizzato per contare gli stati e come ID per inizializzare le carte
-        int numStati = 0;
+        int idCount = 0;
 
-        // conta degli stati e creazione le carte
-        for (Continente continente : mappa.getContinenti()) {
-            for (Stato stato : continente.getStati()) {
-                numStati++;
-
-                mazzo.add(new CartaTerritorio(numStati, stato));
-            }
+        for (Stato stato: mappa.getStati()) {
+            if (idCount % 3 == 0)
+                mazzo.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.CANNONE));
+            else if (idCount % 3 == 1)
+                mazzo.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.CAVALLO));
+            else
+                mazzo.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.FANTE));
+            idCount++;
         }
 
-        // aggiunta figure alle carte
-        for (int i = 0; i < mazzo.size(); i++) {
-            if (i % 3 == 0)
-                mazzo.get(i).setFigura(CartaTerritorio.Figura.CANNONE);
-
-            if (i % 3 == 1)
-                mazzo.get(i).setFigura(CartaTerritorio.Figura.FANTE);
-
-            if (i % 3 == 2)
-                mazzo.get(i).setFigura(CartaTerritorio.Figura.CAVALLO);
-        }
-
-        int numJolly = Math.round(numStati / 20F);
+        int numJolly = Math.round(idCount / 20F);
 
         // aggiunge i jolly al mazzo
         for (int i = 0; i < numJolly; i++) {
-            CartaTerritorio jolly = new CartaTerritorio(numStati + i, null);
-            jolly.setFigura(CartaTerritorio.Figura.JOLLY);
-
+            CartaTerritorio jolly = new CartaTerritorio(idCount + i, null, CartaTerritorio.Figura.JOLLY);
             mazzo.add(jolly);
         }
     }

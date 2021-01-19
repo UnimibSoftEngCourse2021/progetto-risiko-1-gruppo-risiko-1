@@ -160,7 +160,7 @@ public class PartitaService {
             rinforzo.esegui();
         }
 
-        partita.getGiocatoreAttivo().modificaTruppeDisponibili(-armateDaPiazzare);
+        partita.getGiocatoreAttivo().setTruppeDisponibili(0);
     }
 
     public int giocaTris(TrisDTO trisDTO, Partita partita) {

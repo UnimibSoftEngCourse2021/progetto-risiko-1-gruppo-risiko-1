@@ -16,12 +16,20 @@ public class CartaTerritorio {
         JOLLY
     }
 
-    public CartaTerritorio(int id, Stato statoRappresentato) {
+    public CartaTerritorio(int id, Stato statoRappresentato, Figura figura) {
         if(id < 0)
             throw new ModelDataException("ID carta territorio non valido.");
 
         this.id = id;
         this.statoRappresentato = statoRappresentato;
+        this.figura = figura;
+
+        if (figura == null)
+            throw new ModelDataException("Figura carta territorio nulla");
+
+        if ((statoRappresentato == null && !figura.equals(Figura.JOLLY)) ||
+                (statoRappresentato != null && figura.equals(Figura.JOLLY)))
+            throw new ModelDataException("Figura non valida");
     }
 
     public int getId() {
@@ -38,11 +46,6 @@ public class CartaTerritorio {
         return figura;
     }
 
-    public void setFigura(Figura figura) {
-        if (figura == null)
-            throw new ModelDataException("Figura carta territorio nulla");
-        this.figura = figura;
-    }
 
     @Override
     public boolean equals(Object o) {

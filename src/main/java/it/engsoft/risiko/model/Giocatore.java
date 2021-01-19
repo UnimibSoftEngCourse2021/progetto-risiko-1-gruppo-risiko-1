@@ -19,7 +19,7 @@ public class Giocatore {
         return nome;
     }
 
-    public void setNome(String nome) {
+    private void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty())
             throw new ModelDataException("Nome in Giocatore.setNome non valido");
 
@@ -33,6 +33,8 @@ public class Giocatore {
     public void aggiungiStato(Stato stato) {
         if (stato == null)
             throw new ModelDataException("Stato in Giocatore.aggiungiStato non valido");
+        if(stati.contains(stato))
+            throw new ModelDataException("Si è cercato di aggiungere al giocatore " + nome + " uno stato già presente");
 
         stati.add(stato);
     }
@@ -70,7 +72,16 @@ public class Giocatore {
         return uccisore;
     }
 
-    public void setUccisore(Giocatore uccisore) { this.uccisore = uccisore; }
+    public void setUccisore(Giocatore uccisore) {
+        if (uccisore == null)
+            throw new ModelDataException("Uccisore è null");
+        if (equals(uccisore))
+            throw new ModelDataException("Un giocatore non può sconfiggere se stesso");
+        if (stati.size() > 0)
+            throw new ModelDataException("Il giocatore su cui è chiamato setUccisore non è ancora eliminato");
+
+        this.uccisore = uccisore;
+    }
 
     public int getTruppeDisponibili() {
         return truppeDisponibili;
