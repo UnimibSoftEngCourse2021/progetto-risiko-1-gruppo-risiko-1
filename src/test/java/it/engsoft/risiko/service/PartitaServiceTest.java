@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class PartitaServiceTest1 {
+public class PartitaServiceTest {
     private final PartitaService partitaService;
     private final Utils utils;
 
     @Autowired
-    public PartitaServiceTest1(PartitaService partitaService, Utils utils) {
+    public PartitaServiceTest(PartitaService partitaService, Utils utils) {
         this.partitaService = partitaService;
         this.utils = utils;
     }
