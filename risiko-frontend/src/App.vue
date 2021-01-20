@@ -24,25 +24,15 @@
     </v-app-bar>
 
     <v-main class="black-background">
-      <Game v-if="gameActive" :key="gameKey">
-      </Game>
-      <v-img v-else src="board.png" max-height="50rem" contain>
-
-      </v-img>
+      <Game v-if="gameActive" :key="gameKey" />
+      <v-img v-else src="board.png" max-height="50rem" contain />
     </v-main>
 
-    <v-dialog v-model="showNuovoGiocoDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-      <nuovo-gioco-dialog @gameStarted="prepareGame" @close="showNuovoGiocoDialog = false"/>
-    </v-dialog>
+    <nuovo-gioco-dialog ref="nuovoGiocoDialog" @gameStarted="gameKey++" />
+    <inserimento-mappa-dialog ref="inserimentoMappaDialog" />
 
-    <v-dialog v-model="showInserimentoMappaDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-      <inserimento-mappa-dialog @close="showInserimentoMappaDialog = false"/>
-    </v-dialog>
-
-    <loader v-if="loading"/>
-    <v-dialog v-model="$store.state.error" max-width="700px" persistent>
-      <error-dialog />
-    </v-dialog>
+    <loader/>
+    <error-dialog />
   </v-app>
 </template>
 
@@ -51,57 +41,51 @@
 import Game from "@/components/Gioco/Game";
 import NuovoGiocoDialog from "@/components/Gioco/NuovoGiocoDialog";
 import Loader from "@/components/Common/Loader";
-import {mapGetters, mapMutations} from "vuex";
+import { mapGetters } from "vuex";
 import ErrorDialog from "@/components/Common/ErrorDialog";
 import InserimentoMappaDialog from "@/components/InserimentoMappa/InserimentoMappaDialog";
 
 export default {
-  name: 'App',
+    name: "App",
 
-  components: {
-    InserimentoMappaDialog,
-    ErrorDialog,
-    Loader,
-    NuovoGiocoDialog,
-    Game
-  },
-
-  data() {
-    return {
-      showNuovoGiocoDialog: false,
-      gameKey: 0,
-      showInserimentoMappaDialog: false
-    }
-  },
-
-  methods: {
-    ...mapMutations(["setNuovaMappaInCostruzione"]),
-    async openNewGameDialog() {
-      await this.$store.dispatch("downloadMappe");
-      this.showNuovoGiocoDialog = true
+    components: {
+        InserimentoMappaDialog,
+        ErrorDialog,
+        Loader,
+        NuovoGiocoDialog,
+        Game
     },
-    prepareGame() {
-      this.showNuovoGiocoDialog = false
-      this.gameKey++
+
+    data() {
+        return {
+            gameKey: 0
+        };
     },
-    inserisciMappa() {
-      this.setNuovaMappaInCostruzione()
-      this.showInserimentoMappaDialog = true
-    }
-  },
 
-  computed: {
-    ...mapGetters(["gameActive", "loading", "fasePreparazione", "turno", "giocatoreAttivo"]),
+    methods: {
+        async openNewGameDialog() {
+            await this.$store.dispatch("downloadMappe");
+            this.$refs.nuovoGiocoDialog.show(true);
+        },
+        inserisciMappa() {
+            this.$refs.inserimentoMappaDialog.show()
+        }
+    },
 
-    gameSituation() {
-      let ris
-      if (this.fasePreparazione)
-        ris = "Fase di preparazione - "
-      else
-        ris = "Turno " + this.turno.num + " - "
-      return ris + this.giocatoreAttivo
+    computed: {
+        ...mapGetters(["gameActive", "fasePreparazione", "turno", "giocatoreAttivo"]),
+
+        gameSituation() {
+            let ris;
+
+            if (this.fasePreparazione) {
+                ris = "Fase di preparazione - ";
+            } else {
+                ris = `Turno ${this.turno.num} - `;
+            }
+            return ris + this.giocatoreAttivo;
+        }
     }
-  }
 };
 </script>
 

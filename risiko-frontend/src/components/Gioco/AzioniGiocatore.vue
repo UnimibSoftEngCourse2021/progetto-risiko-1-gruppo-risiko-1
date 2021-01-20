@@ -26,38 +26,38 @@ import GestoreRinforzi from "@/components/Gioco/GestoreRinforzi";
 import GestoreCombattimenti from "@/components/Gioco/GestoreCombattimenti";
 import GestoreSpostamentoStrategico from "@/components/Gioco/GestoreSpostamentoStrategico";
 
-import {mapActions, mapGetters} from "vuex"
+import { mapActions, mapGetters } from "vuex";
 import FineTurnoDialog from "@/components/Gioco/FineTurnoDialog";
 
 export default {
-  name: "AzioniGiocatore",
-  data() {
-    return {
-      fineTurnoDialog: false
-    }
-  },
-  components: {FineTurnoDialog, GestoreSpostamentoStrategico, GestoreCombattimenti, GestoreRinforzi},
-  computed: {
-    ...mapGetters(["bloccaSpostamento", "spostamentoInCorso", "bloccaRinforzi", "giocatoreAttivo", "bloccaCombattimenti",
-    "combattimentoInCorso", "armateDisponibili"])
-  },
-  methods: {
-    ...mapActions(["terminaTurno"]),
-    onNodeSelected({ id }) {
-      if (!this.bloccaRinforzi && this.armateDisponibili > 0) {
-        this.$refs.gestoreRinforzi.onNodeSelected({ id })
-      } else if (!this.bloccaCombattimenti && this.combattimentoInCorso) {
-        this.$refs.gestoreCombattimenti.onNodeSelected({ id })
-      } else if (this.spostamentoInCorso) {
-        this.$refs.gestoreSpostamento.onNodeSelected({ id })
-      }
+    name: "AzioniGiocatore",
+    data() {
+        return {
+            fineTurnoDialog: false
+        };
     },
-    async confermaTerminaTurno() {
-      await this.terminaTurno()
-      this.fineTurnoDialog = true
+    components: { FineTurnoDialog, GestoreSpostamentoStrategico, GestoreCombattimenti, GestoreRinforzi },
+    computed: {
+        ...mapGetters(["bloccaSpostamento", "spostamentoInCorso", "bloccaRinforzi", "giocatoreAttivo", "bloccaCombattimenti",
+            "combattimentoInCorso", "armateDisponibili"])
+    },
+    methods: {
+        ...mapActions(["terminaTurno"]),
+        onNodeSelected({ id }) {
+            if (!this.bloccaRinforzi && this.armateDisponibili > 0) {
+                this.$refs.gestoreRinforzi.onNodeSelected({ id });
+            } else if (!this.bloccaCombattimenti && this.combattimentoInCorso) {
+                this.$refs.gestoreCombattimenti.onNodeSelected({ id });
+            } else if (this.spostamentoInCorso) {
+                this.$refs.gestoreSpostamento.onNodeSelected({ id });
+            }
+        },
+        async confermaTerminaTurno() {
+            await this.terminaTurno();
+            this.fineTurnoDialog = true;
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

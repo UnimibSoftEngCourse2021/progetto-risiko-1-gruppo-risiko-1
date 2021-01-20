@@ -51,7 +51,6 @@
           <span>Conferma attacco</span>
         </v-tooltip>
 
-
       </v-row>
     </div>
 
@@ -63,65 +62,73 @@
 
 <script>
 
-import utils from "@/store/utils";
 import CombattimentoDialog from "@/components/Gioco/CombattimentoDialog";
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
-  name: "GestoreCombattimenti",
-  components: {CombattimentoDialog},
-  data() {
-    return {
-      sceltaAttaccanteInCorso: false,
-      sceltaBersaglioInCorso: false,
-      showCombattimentoDialog: false
-    }
-  },
-  methods: {
-    ...mapMutations(["clearCombattimento", "iniziaAttacco", "setStatoAttaccante", "setStatoDifensore"]),
-    ...mapActions(["confermaAttacco"]),
-    annullaAttacco() {
-      this.clearCombattimento()
+    name: "GestoreCombattimenti",
+    components: { CombattimentoDialog },
+    data() {
+        return {
+            sceltaAttaccanteInCorso: false,
+            sceltaBersaglioInCorso: false,
+            showCombattimentoDialog: false
+        };
     },
-    onNodeSelected({ id }) {
-      let stato = utils.trovaStatoId(this.mappaGioco, id)
-      if (this.statoAttaccante === null) {
-        if (stato.proprietario === this.giocatoreAttivo && stato.armate > 1) {
-          this.setStatoAttaccante(stato)
+    methods: {
+        ...mapMutations(["clearCombattimento", "iniziaAttacco", "setStatoAttaccante", "setStatoDifensore"]),
+        ...mapActions(["confermaAttacco"]),
+        annullaAttacco() {
+            this.clearCombattimento();
+        },
+        onNodeSelected({ id }) {
+            const stato = this.mappaGioco.trovaStatoId(id);
+
+            if (this.statoAttaccante === null) {
+                if (stato.proprietario === this.giocatoreAttivo && stato.armate > 1) {
+                    this.setStatoAttaccante(stato);
+                }
+            } else if (this.statoDifensore === null) {
+                if (stato.proprietario !== this.giocatoreAttivo && this.mappaGioco.confinanti(this.statoAttaccante, stato)) {
+                    this.setStatoDifensore(stato);
+                }
+            } // else do nothing
+        },
+        async lanciaAttacco() {
+            await this.confermaAttacco();
+            this.showCombattimentoDialog = true;
         }
-      } else if (this.statoDifensore === null) {
-        if (stato.proprietario !== this.giocatoreAttivo && utils.confinanti(this.statoAttaccante, stato)) {
-          this.setStatoDifensore(stato)
+    },
+    computed: {
+        ...mapGetters(["statoAttaccante", "statoDifensore", "combattimentoInCorso", "giocatoreAttivo", "mappaGioco"]),
+        possibiliArmateAttaccanti() {
+            const ris = [];
+
+            if (!this.statoAttaccante) {
+                return ris;
+            }
+            const max = Math.min(3, this.statoAttaccante.armate - 1);
+
+            for (let i = 1; i <= max; i++) {
+                ris.push(i);
+            }
+            return ris;
+        },
+        possibiliArmateDifensori() {
+            const ris = [];
+
+            if (!this.statoDifensore) {
+                return ris;
+            }
+            const max = Math.min(3, this.statoDifensore.armate);
+
+            for (let i = 1; i <= max; i++) {
+                ris.push(i);
+            }
+            return ris;
         }
-      } // else do nothing
-    },
-    async lanciaAttacco() {
-      await this.confermaAttacco()
-      this.showCombattimentoDialog = true
     }
-  },
-  computed: {
-    ...mapGetters(["statoAttaccante", "statoDifensore", "combattimentoInCorso", "giocatoreAttivo", "mappaGioco"]),
-    possibiliArmateAttaccanti() {
-      let ris = []
-      if (!this.statoAttaccante)
-        return ris
-      let max = Math.min(3, this.statoAttaccante.armate - 1)
-      for (let i = 1; i <= max; i++)
-        ris.push(i)
-      return ris
-    },
-    possibiliArmateDifensori() {
-      let ris = []
-      if (!this.statoDifensore)
-        return ris
-      let max = Math.min(3, this.statoDifensore.armate)
-      for (let i = 1; i <= max; i++)
-        ris.push(i)
-      return ris
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

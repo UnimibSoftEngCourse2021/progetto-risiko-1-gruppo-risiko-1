@@ -54,23 +54,23 @@
 
 <script>
 
-import utils from "@/store/utils";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  name: "GiocatoriDialog",
-  computed: {
-    ...mapGetters(["infoGiocatori", "mappaGioco"])
-  },
-  methods: {
-    continentiDelGiocatore(nomeGiocatore) {
-      let continenti = utils.continentiConquistati(this.mappaGioco, nomeGiocatore)
-      return continenti.length === 0 ?
-          "Nessuno" :
-          continenti.map(c => c.nome).join(", ")
+    name: "GiocatoriDialog",
+    computed: {
+        ...mapGetters(["infoGiocatori", "mappaGioco"])
+    },
+    methods: {
+        continentiDelGiocatore(nomeGiocatore) {
+            const continenti = this.mappaGioco.continentiConquistati(nomeGiocatore);
+
+            return continenti.length === 0
+                ? "Nessuno"
+                : continenti.map(c => c.nome).join(", ");
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

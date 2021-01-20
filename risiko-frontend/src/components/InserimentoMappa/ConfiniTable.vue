@@ -13,7 +13,7 @@
         </v-row>
       </template>
 
-      <template v-slot:item.actions="{ item }">
+      <template v-slot:[`item.actions`]="{ item }">
         <v-btn icon @click="mappaInCostruzione.removeConfine(item.from, item.to)">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
@@ -52,49 +52,49 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  name: "ConfiniTable",
-  data() {
-    return {
-      headers: [
-        {
-          text: "Primo stato",
-          value: "from"
-        },
-        {
-          text: "Secondo stato",
-          value: "to"
-        },
-        {
-          text: "Operazioni",
-          value: "actions"
-        }
-      ],
-      showDialog: false,
-      nuovoConfine: { nomeStato1: "", nomeStato2: "" }
-    }
-  },
-  computed: {
-    ...mapGetters(["anteprimaNetwork", "mappaInCostruzione"]),
-    confini() {
-      return this.anteprimaNetwork.edges
+    name: "ConfiniTable",
+    data() {
+        return {
+            headers: [
+                {
+                    text: "Primo stato",
+                    value: "from"
+                },
+                {
+                    text: "Secondo stato",
+                    value: "to"
+                },
+                {
+                    text: "Operazioni",
+                    value: "actions"
+                }
+            ],
+            showDialog: false,
+            nuovoConfine: { nomeStato1: "", nomeStato2: "" }
+        };
     },
-    confineValido() {
-      return !!this.nuovoConfine.nomeStato1 && !!this.nuovoConfine.nomeStato2 &&
+    computed: {
+        ...mapGetters(["anteprimaNetwork", "mappaInCostruzione"]),
+        confini() {
+            return this.anteprimaNetwork.edges;
+        },
+        confineValido() {
+            return !!this.nuovoConfine.nomeStato1 && !!this.nuovoConfine.nomeStato2 &&
           this.nuovoConfine.nomeStato1 !== this.nuovoConfine.nomeStato2 &&
-          !this.mappaInCostruzione.confinanti(this.nuovoConfine.nomeStato1, this.nuovoConfine.nomeStato2)
+          !this.mappaInCostruzione.confinanti(this.nuovoConfine.nomeStato1, this.nuovoConfine.nomeStato2);
+        }
+    },
+    methods: {
+        aggiungiConfine() {
+            this.mappaInCostruzione.addConfine(this.nuovoConfine.nomeStato1, this.nuovoConfine.nomeStato2);
+            this.nuovoConfine = { nomeStato1: "", nomeStato2: "" };
+            this.showDialog = false;
+        }
     }
-  },
-  methods: {
-    aggiungiConfine() {
-      this.mappaInCostruzione.addConfine(this.nuovoConfine.nomeStato1, this.nuovoConfine.nomeStato2)
-      this.nuovoConfine = { nomeStato1: "", nomeStato2: "" }
-      this.showDialog = false
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

@@ -62,55 +62,58 @@
 
 import ObiettiviDialog from "@/components/Gioco/ObiettiviDialog";
 import GiocatoriDialog from "@/components/Gioco/GiocatoriDialog";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  name: "Info",
-  components: {GiocatoriDialog, ObiettiviDialog },
-  data() { return {
-    showObiettiviDialog: true,
-    selectedContinente: null,
-    showGiocatoriDialog: false,
-    legenda: [
-      {
-        tris: "3 cannoni",
-        armate: 4
-      },
-      {
-        tris: "3 fanti",
-        armate: 6
-      },
-      {
-        tris: "3 cavalieri",
-        armate: 8
-      },
-      {
-        tris: "Un cannone, un fante, un cavaliere",
-        armate: 10
-      },
-      {
-        tris: "Due figure uguali e un jolly",
-        armate: 12
-      },
-    ]
-  }},
+    name: "Info",
+    components: { GiocatoriDialog, ObiettiviDialog },
+    data() {
+        return {
+            showObiettiviDialog: true,
+            selectedContinente: null,
+            showGiocatoriDialog: false,
+            legenda: [
+                {
+                    tris: "3 cannoni",
+                    armate: 4
+                },
+                {
+                    tris: "3 fanti",
+                    armate: 6
+                },
+                {
+                    tris: "3 cavalieri",
+                    armate: 8
+                },
+                {
+                    tris: "Un cannone, un fante, un cavaliere",
+                    armate: 10
+                },
+                {
+                    tris: "Due figure uguali e un jolly",
+                    armate: 12
+                }
+            ]
+        };
+    },
 
-  watch: {
-    selectedContinente(index) {
-      let continente = this.continenti[index]
-      if (continente) {
-        this.$emit("evidenziaContinente", continente.id)
-      }
-    }
-  },
+    watch: {
+        selectedContinente(index) {
+            const continente = this.continenti[index];
 
-  computed: {
-    ...mapGetters(["mappaGioco"]),
-    continenti() {
-      return this.mappaGioco.continenti
+            if (continente) {
+                this.$emit("evidenziaContinente", continente.id);
+            }
+        }
+    },
+
+    computed: {
+        ...mapGetters(["mappaGioco"]),
+        continenti() {
+            return this.mappaGioco.continenti;
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

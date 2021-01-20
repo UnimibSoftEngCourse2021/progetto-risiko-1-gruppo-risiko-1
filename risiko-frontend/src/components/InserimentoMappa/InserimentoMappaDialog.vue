@@ -1,7 +1,8 @@
 <template>
-  <v-card>
+  <v-dialog v-model="showDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+  <v-card v-if="showDialog">
     <v-app-bar color="primary" dark width="100%">
-      <v-btn icon @click="$emit('close')">
+      <v-btn icon @click="chiudi">
         <v-icon>mdi-close</v-icon>
       </v-btn>
 
@@ -47,38 +48,56 @@
       </v-row>
     </v-card-text>
   </v-card>
+  </v-dialog>
+
 </template>
 
 <script>
 import AnteprimaMappa from "@/components/InserimentoMappa/AnteprimaMappa";
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import ContinentiTable from "@/components/InserimentoMappa/ContinentiTable";
 import StatiTable from "@/components/InserimentoMappa/StatiTable";
 import ConfiniTable from "@/components/InserimentoMappa/ConfiniTable";
 
 export default {
-  name: "InserimentoMappaDialog",
-  components: {ConfiniTable, StatiTable, ContinentiTable, AnteprimaMappa},
-  computed: {
-    ...mapGetters(["mappaInCostruzione"]),
-    valida() {
-      return this.mappaInCostruzione.isValid()
+    name: "InserimentoMappaDialog",
+    components: { ConfiniTable, StatiTable, ContinentiTable, AnteprimaMappa },
+    data() {
+      return {
+        showDialog: false
+      }
     },
-    numMaxGiocatoriItems() {
-      let ris = []
-      for (let i = this.mappaInCostruzione.numMinGiocatori; i <= 8; i++)
-        ris.push(i)
-      return ris
+    computed: {
+        ...mapGetters(["mappaInCostruzione"]),
+        valida() {
+            return this.mappaInCostruzione.isValid();
+        },
+        numMaxGiocatoriItems() {
+            const ris = [];
+
+            for (let i = this.mappaInCostruzione.numMinGiocatori; i <= 8; i++) {
+                ris.push(i);
+            }
+            return ris;
+        }
+    },
+    methods: {
+        ...mapActions(["inserisciMappa"]),
+      ...mapMutations(["clearMappaInCostruzione", "setNuovaMappaInCostruzione"]),
+        async salvaMappa() {
+            await this.inserisciMappa(this.mappaInCostruzione.asHierarchy());
+            this.showDialog = false
+        },
+        show() {
+          this.setNuovaMappaInCostruzione()
+            this.showDialog = true
+        },
+      chiudi() {
+        this.showDialog = false
+        this.clearMappaInCostruzione()
+      }
     }
-  },
-  methods: {
-    ...mapActions(["inserisciMappa"]),
-    async salvaMappa() {
-      await this.inserisciMappa(this.mappaInCostruzione.asHierarchy())
-      this.$emit("close")
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

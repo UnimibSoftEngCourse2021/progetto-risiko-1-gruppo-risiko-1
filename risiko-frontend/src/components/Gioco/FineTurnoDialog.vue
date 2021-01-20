@@ -23,14 +23,14 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  name: "FineTurnoDialog",
-  computed: {
-    ...mapGetters(["giocatoreAttivo", "turno"])
-  }
-}
+    name: "FineTurnoDialog",
+    computed: {
+        ...mapGetters(["giocatoreAttivo", "turno"])
+    }
+};
 </script>
 
 <style scoped>

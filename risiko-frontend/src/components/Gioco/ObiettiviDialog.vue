@@ -24,14 +24,14 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  name: "ObiettiviDialog",
-  computed: {
-    ...mapGetters(["giocatori"])
-  }
-}
+    name: "ObiettiviDialog",
+    computed: {
+        ...mapGetters(["giocatori"])
+    }
+};
 </script>
 
 <style scoped>

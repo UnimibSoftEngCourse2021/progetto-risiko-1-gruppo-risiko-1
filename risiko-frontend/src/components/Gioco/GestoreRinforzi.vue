@@ -80,60 +80,64 @@
 </template>
 
 <script>
-import utils from "@/store/utils";
 import TrisDialog from "@/components/Gioco/TrisDialog";
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: "GestoreRinforzi",
-  components: {TrisDialog},
-  data() {
-    return {
-      rinforzi: [],
-      showTrisDialog: false
-    }
-  },
-  computed: {
-    ...mapGetters(["fasePreparazione", "giocatoreAttivo", "mappaGioco", "armateDisponibili", "turno"]),
-    totaleRinforzi() {
-      let ris = 0
-      this.rinforzi.forEach(r => { ris = ris + r.quantity })
-      return ris
+    name: "GestoreRinforzi",
+    components: { TrisDialog },
+    data() {
+        return {
+            rinforzi: [],
+            showTrisDialog: false
+        };
     },
-    rinforziConsentiti() {
-      if (this.fasePreparazione)
-        return Math.min(3, this.armateDisponibili)
-      return this.$store.getters.armateDisponibili
-    }
-  },
-  methods: {
-    ...mapActions(["inviaRinforzi"]),
-    onNodeSelected({ id }) {
-      let stato = utils.trovaStatoId(this.mappaGioco, id)
-      if (stato.proprietario === this.giocatoreAttivo && this.totaleRinforzi < this.rinforziConsentiti) {
-        let rinforzoIndex = this.rinforzi.findIndex(rinf => rinf.id === id)
-        if (rinforzoIndex === -1) {
-          this.rinforzi.push({ id, nome: stato.nome, quantity: 0 })
-          rinforzoIndex = this.rinforzi.length - 1
+    computed: {
+        ...mapGetters(["fasePreparazione", "giocatoreAttivo", "mappaGioco", "armateDisponibili", "turno"]),
+        totaleRinforzi() {
+            let ris = 0;
+
+            this.rinforzi.forEach(r => {
+                ris += r.quantity;
+            });
+            return ris;
+        },
+        rinforziConsentiti() {
+            if (this.fasePreparazione) {
+                return Math.min(3, this.armateDisponibili);
+            }
+            return this.$store.getters.armateDisponibili;
         }
-        this.rinforzi[rinforzoIndex].quantity++
-      }
     },
-    diminuisciRinforzo(rinf) {
-      rinf.quantity--
-      if (rinf.quantity <= 0) {
-        let index = this.rinforzi.findIndex(el => {
-          return el.id === rinf.id
-        })
-        this.rinforzi.splice(index, 1)
-      }
-    },
-    async confermaInviaRinforzi() {
-      await this.inviaRinforzi(this.rinforzi)
-      this.rinforzi = []
+    methods: {
+        ...mapActions(["inviaRinforzi"]),
+        onNodeSelected({ id }) {
+            const stato = this.mappaGioco.trovaStatoId(id);
+
+            if (stato.proprietario === this.giocatoreAttivo && this.totaleRinforzi < this.rinforziConsentiti) {
+                let rinforzoIndex = this.rinforzi.findIndex(rinf => rinf.id === id);
+
+                if (rinforzoIndex === -1) {
+                    this.rinforzi.push({ id, nome: stato.nome, quantity: 0 });
+                    rinforzoIndex = this.rinforzi.length - 1;
+                }
+                this.rinforzi[rinforzoIndex].quantity++;
+            }
+        },
+        diminuisciRinforzo(rinf) {
+            rinf.quantity--;
+            if (rinf.quantity <= 0) {
+                const index = this.rinforzi.findIndex(el => el.id === rinf.id);
+
+                this.rinforzi.splice(index, 1);
+            }
+        },
+        async confermaInviaRinforzi() {
+            await this.inviaRinforzi(this.rinforzi);
+            this.rinforzi = [];
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

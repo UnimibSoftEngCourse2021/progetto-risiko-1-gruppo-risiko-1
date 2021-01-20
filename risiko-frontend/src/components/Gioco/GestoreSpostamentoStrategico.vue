@@ -47,67 +47,70 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations, mapActions} from "vuex";
-import utils from "@/store/utils";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 
 export default {
-  name: "GestoreSpostamentoStrategico",
-  data() {
-    return {
-      statoPartenza: null,
-      statoArrivo: null,
-      armate: null
-    }
-  },
-  computed: {
-    ...mapGetters(["turno", "giocatoreAttivo", "spostamentoInCorso", "mappaGioco"]),
-    armateSpostabili() {
-      let ris = []
-      if (this.statoPartenza) {
-        for (let i = 1; i < this.statoPartenza.armate; i++) {
-          ris.push(i)
-        }
-      }
-      return ris
-    }
-  },
-  methods: {
-    ...mapMutations(["setSpostamentoInCorso"]),
-    ...mapActions(["spostamento"]),
-    iniziaSpostamento() {
-      this.setSpostamentoInCorso(true)
+    name: "GestoreSpostamentoStrategico",
+    data() {
+        return {
+            statoPartenza: null,
+            statoArrivo: null,
+            armate: null
+        };
     },
-    chiudi() {
-      this.statoArrivo = null
-      this.statoPartenza = null
-      this.armate = null
-      this.setSpostamentoInCorso(false)
-    },
-    async confermaSpostamento() {
-      let spostamentoData = {
-        statoPartenza: this.statoPartenza.id,
-        statoArrivo: this.statoArrivo.id,
-        armate: this.armate,
-        giocatore: this.giocatoreAttivo
-      }
-      await this.spostamento(spostamentoData)
-      this.chiudi()
-    },
-    onNodeSelected({ id }) {
-      if (!this.statoPartenza) {
-        let stato = utils.trovaStatoId(this.mappaGioco, id)
-        if (stato.proprietario === this.giocatoreAttivo && stato.armate > 1) {
-          this.statoPartenza = stato
+    computed: {
+        ...mapGetters(["turno", "giocatoreAttivo", "spostamentoInCorso", "mappaGioco"]),
+        armateSpostabili() {
+            const ris = [];
+
+            if (this.statoPartenza) {
+                for (let i = 1; i < this.statoPartenza.armate; i++) {
+                    ris.push(i);
+                }
+            }
+            return ris;
         }
-      } else if (!this.statoArrivo) {
-        let stato = utils.trovaStatoId(this.mappaGioco, id)
-        if (stato.proprietario === this.giocatoreAttivo && utils.confinanti(stato, this.statoPartenza)) {
-          this.statoArrivo = stato
+    },
+    methods: {
+        ...mapMutations(["setSpostamentoInCorso"]),
+        ...mapActions(["spostamento"]),
+        iniziaSpostamento() {
+            this.setSpostamentoInCorso(true);
+        },
+        chiudi() {
+            this.statoArrivo = null;
+            this.statoPartenza = null;
+            this.armate = null;
+            this.setSpostamentoInCorso(false);
+        },
+        async confermaSpostamento() {
+            const spostamentoData = {
+                statoPartenza: this.statoPartenza.id,
+                statoArrivo: this.statoArrivo.id,
+                armate: this.armate,
+                giocatore: this.giocatoreAttivo
+            };
+
+            await this.spostamento(spostamentoData);
+            this.chiudi();
+        },
+        onNodeSelected({ id }) {
+            if (!this.statoPartenza) {
+                const stato = this.mappaGioco.trovaStatoId(id);
+
+                if (stato.proprietario === this.giocatoreAttivo && stato.armate > 1) {
+                    this.statoPartenza = stato;
+                }
+            } else if (!this.statoArrivo) {
+                const stato = this.mappaGioco.trovaStatoId(id);
+
+                if (stato.proprietario === this.giocatoreAttivo && this.mappaGioco.confinanti(stato, this.statoPartenza)) {
+                    this.statoArrivo = stato;
+                }
+            }
         }
-      }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

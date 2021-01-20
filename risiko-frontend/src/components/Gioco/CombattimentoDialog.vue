@@ -53,49 +53,53 @@
 
 <script>
 
-import utils from "@/store/utils";
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 
 export default {
-  name: "CombattimentoDialog",
-  data() {
-    return {
-      truppeDaSpostare: null
-    }
-  },
-  computed: {
-    ...mapGetters(["combattimento", "mappaGioco", "giocatoreAttivo", "winner"]),
-    truppeSpostabili() {
-      let ris = []
-      if (!this.combattimento.vittoriaAtt)
-        return ris
-      let min = this.combattimento.armateAttaccante - this.combattimento.vittimeAtt
-      let max = utils.trovaStatoId(this.mappaGioco, this.combattimento.attaccante).armate - 1
-      for (let i = min; i <= max; i++)
-        ris.push(i)
-      return ris
-    }
-  },
-  methods: {
-    ...mapMutations(["clearCombattimento"]),
-    ...mapActions(["spostamento"]),
-    chiudi() {
-      this.truppeDaSpostare = null
-      this.clearCombattimento()
-      this.$emit("close")
+    name: "CombattimentoDialog",
+    data() {
+        return {
+            truppeDaSpostare: null
+        };
     },
-    async spostaTruppe() {
-      let spostamento = {
-        giocatore: this.giocatoreAttivo,
-        statoPartenza: this.combattimento.attaccante,
-        statoArrivo: this.combattimento.difensore,
-        armate: this.truppeDaSpostare
-      }
-      await this.spostamento(spostamento)
-      this.chiudi()
+    computed: {
+        ...mapGetters(["combattimento", "mappaGioco", "giocatoreAttivo", "winner"]),
+        truppeSpostabili() {
+            const ris = [];
+
+            if (!this.combattimento.vittoriaAtt) {
+                return ris;
+            }
+            const min = this.combattimento.armateAttaccante - this.combattimento.vittimeAtt;
+            const max = this.mappaGioco.trovaStatoId(this.combattimento.attaccante).armate - 1;
+
+            for (let i = min; i <= max; i++) {
+                ris.push(i);
+            }
+            return ris;
+        }
+    },
+    methods: {
+        ...mapMutations(["clearCombattimento"]),
+        ...mapActions(["spostamento"]),
+        chiudi() {
+            this.truppeDaSpostare = null;
+            this.clearCombattimento();
+            this.$emit("close");
+        },
+        async spostaTruppe() {
+            const spostamento = {
+                giocatore: this.giocatoreAttivo,
+                statoPartenza: this.combattimento.attaccante,
+                statoArrivo: this.combattimento.difensore,
+                armate: this.truppeDaSpostare
+            };
+
+            await this.spostamento(spostamento);
+            this.chiudi();
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>
