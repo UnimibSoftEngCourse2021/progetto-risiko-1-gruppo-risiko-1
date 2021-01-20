@@ -6,18 +6,16 @@
 
     <gestore-rinforzi ref="gestoreRinforzi" v-if="!bloccaRinforzi"/>
 
-
     <gestore-combattimenti class="my-5" ref="gestoreCombattimenti" v-if="!bloccaCombattimenti"/>
-
 
     <gestore-spostamento-strategico ref="gestoreSpostamento" v-if="!bloccaSpostamento" />
 
-    <v-btn color="primary" block rounded class="my-12" @click="confermaTerminaTurno"
-           :disabled="armateDisponibili > 0 || combattimentoInCorso || spostamentoInCorso">termina turno</v-btn>
+    <v-btn color="primary" block rounded class="my-12"
+           @click="confermaTerminaTurno"
+           :disabled="armateDisponibili > 0 || combattimentoInCorso || spostamentoInCorso"
+    >TERMINA TURNO</v-btn>
 
-    <v-dialog v-model="fineTurnoDialog" max-width="700px">
-      <fine-turno-dialog  @close="fineTurnoDialog = false"/>
-    </v-dialog>
+    <fine-turno-dialog  ref="fineTurnoDialog"/>
   </v-container>
 </template>
 
@@ -31,11 +29,6 @@ import FineTurnoDialog from "@/components/Gioco/FineTurnoDialog";
 
 export default {
     name: "AzioniGiocatore",
-    data() {
-        return {
-            fineTurnoDialog: false
-        };
-    },
     components: { FineTurnoDialog, GestoreSpostamentoStrategico, GestoreCombattimenti, GestoreRinforzi },
     computed: {
         ...mapGetters(["bloccaSpostamento", "spostamentoInCorso", "bloccaRinforzi", "giocatoreAttivo", "bloccaCombattimenti",
@@ -45,8 +38,8 @@ export default {
         ...mapActions(["terminaTurno"]),
         onNodeSelected({ id }) {
             if (!this.bloccaRinforzi && this.armateDisponibili > 0) {
-                this.$refs.gestoreRinforzi.onNodeSelected({ id });
-            } else if (!this.bloccaCombattimenti && this.combattimentoInCorso) {
+                this.$refs.gestoreRinforzi.onStatoSelezionato({ id });
+            } else if (this.combattimentoInCorso) {
                 this.$refs.gestoreCombattimenti.onNodeSelected({ id });
             } else if (this.spostamentoInCorso) {
                 this.$refs.gestoreSpostamento.onNodeSelected({ id });
@@ -54,7 +47,7 @@ export default {
         },
         async confermaTerminaTurno() {
             await this.terminaTurno();
-            this.fineTurnoDialog = true;
+            this.$refs.fineTurnoDialog.show();
         }
     }
 };

@@ -2,8 +2,8 @@ import Vue from "vue";
 import Vuex from "vuex";
 import mappeService from "@/services/mappeService";
 import giocoService from "@/services/giocoService";
-import { MappaInCostruzione } from "@/store/MappaInCostruzione";
-import { Gioco } from "@/store/Gioco";
+import { MappaInCostruzione } from "@/utils/MappaInCostruzione";
+import { Gioco } from "@/utils/Gioco";
 
 Vue.use(Vuex);
 

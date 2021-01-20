@@ -102,7 +102,7 @@
 <script>
 
 import {mapActions, mapGetters} from "vuex";
-import networkUtils from "@/store/networkUtils";
+import networkUtils from "@/utils/networkUtils";
 
 export default {
   name: "NuovoGiocoDialog",

@@ -10,13 +10,13 @@
       <div v-else>
 
         <span class="d-block text-body-2 mb-3">Seleziona sulla mappa lo stato di partenza e quello di arrivo</span>
-        <span class="d-block text-subtitle-2">Stato di partenza: {{statoPartenza ? statoPartenza.nome : ""}}</span>
-        <span class="d-block text-subtitle-2">Stato di arrivo: {{statoArrivo ? statoArrivo.nome : ""}}</span>
+        <span class="d-block text-subtitle-2">Stato di partenza: {{statoPartenza.nome}}</span>
+        <span class="d-block text-subtitle-2">Stato di arrivo: {{statoArrivo.nome}}</span>
 
         <v-select label="Armate da spostare"
                   v-model="armate"
                   :items="armateSpostabili"
-                  :disabled="!statoPartenza" />
+                  :disabled="!statoPartenza.id" />
 
         <v-row>
           <v-spacer />
@@ -32,7 +32,8 @@
 
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }" v-on="on" v-bind="attrs">
-              <v-btn color="primary" icon :disabled="!statoPartenza || !statoArrivo || !armate" @click="confermaSpostamento">
+              <v-btn color="primary" icon :disabled="!statoPartenza.id || !statoArrivo.id || !armate"
+                     @click="confermaSpostamento">
                 <v-icon>mdi-check</v-icon>
               </v-btn>
             </template>
@@ -53,8 +54,8 @@ export default {
     name: "GestoreSpostamentoStrategico",
     data() {
         return {
-            statoPartenza: null,
-            statoArrivo: null,
+            statoPartenza: {},
+            statoArrivo: {},
             armate: null
         };
     },
@@ -63,7 +64,7 @@ export default {
         armateSpostabili() {
             const ris = [];
 
-            if (this.statoPartenza) {
+            if (this.statoPartenza.id) {
                 for (let i = 1; i < this.statoPartenza.armate; i++) {
                     ris.push(i);
                 }
@@ -78,8 +79,8 @@ export default {
             this.setSpostamentoInCorso(true);
         },
         chiudi() {
-            this.statoArrivo = null;
-            this.statoPartenza = null;
+            this.statoArrivo = {};
+            this.statoPartenza = {};
             this.armate = null;
             this.setSpostamentoInCorso(false);
         },
@@ -95,13 +96,13 @@ export default {
             this.chiudi();
         },
         onNodeSelected({ id }) {
-            if (!this.statoPartenza) {
+            if (!this.statoPartenza.id) {
                 const stato = this.mappaGioco.trovaStatoId(id);
 
                 if (stato.proprietario === this.giocatoreAttivo && stato.armate > 1) {
                     this.statoPartenza = stato;
                 }
-            } else if (!this.statoArrivo) {
+            } else if (!this.statoArrivo.id) {
                 const stato = this.mappaGioco.trovaStatoId(id);
 
                 if (stato.proprietario === this.giocatoreAttivo && this.mappaGioco.confinanti(stato, this.statoPartenza)) {

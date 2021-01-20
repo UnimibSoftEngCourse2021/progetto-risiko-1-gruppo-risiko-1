@@ -22,7 +22,7 @@
 import {mapGetters} from "vuex";
 import * as visNet from "vis-network";
 import * as visData from "vis-data";
-import networkUtils from "@/store/networkUtils";
+import networkUtils from "@/utils/networkUtils";
 
 let network = null;
 let nodes = null;
@@ -35,6 +35,7 @@ export default {
             hoverNodeInfo: ""
         };
     },
+  props: ["onNodeSelected"],
 
     watch: {
         // update network's nodes when their data change
@@ -79,7 +80,7 @@ export default {
       },
       selectNode(selectedItems) {
           if (selectedItems.nodes.length > 0)
-            this.$emit("nodeSelected", { id: selectedItems.nodes[0] })
+            this.$props.onNodeSelected({ id: selectedItems.nodes[0] })
       },
       hoverNode({ node }) {
         const stato = this.mappaGioco.trovaStatoId(node)

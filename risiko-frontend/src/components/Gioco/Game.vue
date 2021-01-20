@@ -3,12 +3,12 @@
     <v-row>
       <!-- Barra con le informazioni generali sulla partita -->
       <v-col cols="3" class="white d-flex flex-column">
-        <game-info @evidenziaContinente="evidenziaContinente"/>
+        <game-info :board="$refs.board"/>
       </v-col>
 
       <!-- Mappa -->
       <v-col cols="6" class="pa-1">
-        <Board ref="board" @nodeSelected="onNodeSelected"/>
+        <Board ref="board" :onNodeSelected="onNodeSelected"/>
       </v-col>
 
       <!-- Azioni del giocatore -->
@@ -33,13 +33,10 @@ export default {
     name: "Game",
     components: {VittoriaDialog, AzioniGiocatore, Board, GameInfo },
 
-    methods: {
-        evidenziaContinente(id) {
-            this.$refs.board.evidenziaStatiContinente(id);
-        },
-        onNodeSelected({ id }) {
-            this.$refs.azioniGiocatore.onNodeSelected({ id });
-        }
+  methods: {
+      onNodeSelected({ id }) {
+        this.$refs.azioniGiocatore.onNodeSelected({ id })
     }
+  }
 };
 </script>

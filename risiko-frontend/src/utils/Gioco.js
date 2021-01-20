@@ -1,4 +1,4 @@
-import { MappaGioco } from "@/store/MappaGioco";
+import { MappaGioco } from "@/utils/MappaGioco";
 
 export class Gioco {
     constructor(giocatori, coloriGiocatori, strutturaMappa, giocatoreAttivo) {

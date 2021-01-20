@@ -2,11 +2,12 @@
   <div>
     <v-banner color="primary" dark class="text-h5 text-center mb-5">Informazioni sulla partita</v-banner>
 
-    <!-- Obiettivi -->
     <v-row>
+      <!-- Obiettivi -->
       <v-col class="d-flex align-center flex-column" cols="6">
         <span class="text-subtitle-2">OBIETTIVI</span>
-        <v-btn color="primary" rounded x-large @click="showObiettiviDialog = true" class="mb-5" width="wrap-content">
+        <v-btn color="primary" rounded x-large @click="$refs.obiettiviDialog.show()"
+               class="mb-5" width="wrap-content">
           <v-icon x-large >mdi-bullseye-arrow</v-icon>
         </v-btn>
       </v-col>
@@ -14,13 +15,11 @@
       <v-col class="d-flex align-center flex-column" cols="6">
         <!-- Giocatori -->
         <span class="text-subtitle-2">GIOCATORI</span>
-        <v-btn color="primary" rounded x-large @click="showGiocatoriDialog = true">
+        <v-btn color="primary" rounded x-large @click="$refs.giocatoriDialog.show()">
           <v-icon x-large>mdi-account-multiple</v-icon>
         </v-btn>
-
       </v-col>
     </v-row>
-
 
     <!-- Continenti -->
     <v-subheader class="black--text">CONTINENTI</v-subheader>
@@ -48,13 +47,8 @@
       </v-row>
     </v-container>
 
-    <v-dialog v-model="showObiettiviDialog" max-width="700px">
-      <obiettivi-dialog/>
-    </v-dialog>
-
-    <v-dialog v-model="showGiocatoriDialog" max-width="700px">
-      <giocatori-dialog />
-    </v-dialog>
+    <obiettivi-dialog ref="obiettiviDialog" />
+    <giocatori-dialog ref="giocatoriDialog" />
   </div>
 </template>
 
@@ -63,37 +57,16 @@
 import ObiettiviDialog from "@/components/Gioco/ObiettiviDialog";
 import GiocatoriDialog from "@/components/Gioco/GiocatoriDialog";
 import { mapGetters } from "vuex";
+import gameConstants from "@/utils/gameConstants";
 
 export default {
     name: "Info",
     components: { GiocatoriDialog, ObiettiviDialog },
+  props: [ 'board' ],
     data() {
         return {
-            showObiettiviDialog: true,
             selectedContinente: null,
-            showGiocatoriDialog: false,
-            legenda: [
-                {
-                    tris: "3 cannoni",
-                    armate: 4
-                },
-                {
-                    tris: "3 fanti",
-                    armate: 6
-                },
-                {
-                    tris: "3 cavalieri",
-                    armate: 8
-                },
-                {
-                    tris: "Un cannone, un fante, un cavaliere",
-                    armate: 10
-                },
-                {
-                    tris: "Due figure uguali e un jolly",
-                    armate: 12
-                }
-            ]
+            legenda: gameConstants.legendaCarteTerritorio
         };
     },
 
@@ -102,7 +75,7 @@ export default {
             const continente = this.continenti[index];
 
             if (continente) {
-                this.$emit("evidenziaContinente", continente.id);
+              this.$props.board.evidenziaStatiContinente(continente.id)
             }
         }
     },
