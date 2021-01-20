@@ -65,8 +65,12 @@ public class Stato {
     }
 
     public void rimuoviArmate(int n) {
+        // può essere che le armate di uno stato siano 0: oltre alla fase iniziale, ciò può succedere anche brevemente
+        // tra una combattimento con conquista e lo spostamento che ne consegue
+
         if (armate - n < 0)
             throw new ModelDataException("Inserito un numero negativo di armate in Stato.rimuoviArmate");
+
         armate = armate - n;
     }
 

@@ -6,12 +6,12 @@ public class Turno {
     private Combattimento combattimentoInCorso;
     private boolean conquista;
 
-    public enum Fase {NULL, RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
+    public enum Fase {INIZIALIZZAZIONE, RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
 
     public Turno(final int numero) {
         this.numero = numero;
         this.combattimentoInCorso = null;
-        this.fase = Fase.NULL;
+        this.fase = Fase.INIZIALIZZAZIONE;
         conquista = false;
     }
 

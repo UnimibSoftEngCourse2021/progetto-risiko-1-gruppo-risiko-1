@@ -7,11 +7,11 @@ import java.util.List;
 
 public class Partita {
     private final List<Giocatore> giocatori;
-    private Giocatore giocatoreAttivo;
-    private Turno turno;
     private final Mappa mappa;
     private final Modalita modalita;
     private final List<CartaTerritorio> mazzo;
+    private Giocatore giocatoreAttivo;
+    private Turno turno;
     private boolean fasePreparazione;
     private boolean territoriOccupati;
 
@@ -62,9 +62,16 @@ public class Partita {
         return mazzo;
     }
 
-    public boolean isFasePreparazione() { return fasePreparazione; }
+    public boolean isFasePreparazione() {
+        return fasePreparazione;
+    }
 
-    public void setFasePreparazione(boolean fasePreparazione) { this.fasePreparazione = fasePreparazione; }
+    public void setFasePreparazione(boolean fasePreparazione) {
+        if (!territoriOccupati || !this.fasePreparazione || giocatori.stream().anyMatch(g -> g.getTruppeDisponibili() > 0))
+            throw new ModelDataException("Devi prima effettuare la distribuzione degli stati e l'occupazione iniziale");
+
+        this.fasePreparazione = fasePreparazione;
+    }
 
     public void iniziaPrimoTurno() {
         if (fasePreparazione)
@@ -77,6 +84,8 @@ public class Partita {
     public void nuovoTurno() {
         if (fasePreparazione)
             throw new ModelDataException("Devi prima finire la fase di preparazione");
+        if (giocatoreAttivo.getTruppeDisponibili() > 0)
+            throw new ModelDataException("Il giocatore di turno deve prima posizionare le sue armate");
 
         setProssimoGiocatoreAttivo();
         turno = new Turno(turno.getNumero() + 1);

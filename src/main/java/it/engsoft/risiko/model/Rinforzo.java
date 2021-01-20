@@ -2,8 +2,7 @@ package it.engsoft.risiko.model;
 
 import it.engsoft.risiko.exceptions.ModelDataException;
 
-public class
-Rinforzo {
+public class Rinforzo {
     private final int numeroArmate;
     private final Stato target;
     private boolean eseguito;

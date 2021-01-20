@@ -62,8 +62,9 @@ public class PartitaService {
             throw new MossaIllegaleException("Mossa illegale: impossibile iniziare il turno in fase di preparazione");
 
         // blocca iniziaTurno se fase diversa da NULL
-        if (!partita.getTurno().getFase().equals(Turno.Fase.NULL))
+        if (!partita.getTurno().getFase().equals(Turno.Fase.INIZIALIZZAZIONE))
             throw new MossaIllegaleException("Mossa illegale: fase del turno incorretta");
+
         // calcolo armate bonus date al giocatore attivo dagli stati conquistati
         int armateStati = Math.max(1, partita.getGiocatoreAttivo().getStati().size() / 3);
 
