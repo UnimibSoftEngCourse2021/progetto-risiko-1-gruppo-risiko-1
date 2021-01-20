@@ -12,7 +12,6 @@ import java.util.Optional;
 public class CarteTerritorioService {
     /**
      * Genera il mazzo e distribuisce le carte ai giocatori.
-     * Se il mazzo è già stato generato causa MossaIllegaleException.
      */
     public void distribuisciCarte(Partita partita) {
         List<CartaTerritorio> mazzo = partita.getMazzo();
@@ -101,7 +100,7 @@ public class CarteTerritorioService {
 
         // Controlla che le carte siano presenti
         if(optA.isEmpty() || optB.isEmpty() || optC.isEmpty())
-            throw new MossaIllegaleException("Mossa illegale: le carte non sono presenti");
+            throw new MossaIllegaleException("Mossa illegale: le carte non appartengono al giocatore");
 
         CartaTerritorio a = optA.get();
         CartaTerritorio b = optB.get();
@@ -114,7 +113,7 @@ public class CarteTerritorioService {
             throw new MossaIllegaleException("Mossa illegale: tris non valido");
 
         // Rimette le carte usate nel mazzo
-        rimettiNelMazzo(mazzo, a, b, c);
+        rimettiNelMazzo(mazzo, a, b, c, giocatore);
 
         return standard + truppeExtra(a, b, c, giocatore);
     }
@@ -200,10 +199,15 @@ public class CarteTerritorioService {
         return c.getFigura() == CartaTerritorio.Figura.JOLLY;
     }
 
-    private void rimettiNelMazzo(List<CartaTerritorio> mazzo, CartaTerritorio a, CartaTerritorio b, CartaTerritorio c) {
+    private void rimettiNelMazzo(List<CartaTerritorio> mazzo, CartaTerritorio a, CartaTerritorio b, CartaTerritorio c, Giocatore giocatore) {
         // Reinserisce le carte in fondo al mazzo
         mazzo.add(a);
         mazzo.add(b);
         mazzo.add(c);
+
+        // Toglie le carte al giocatore
+        giocatore.rimuoviCartaTerritorio(a);
+        giocatore.rimuoviCartaTerritorio(b);
+        giocatore.rimuoviCartaTerritorio(c);
     }
 }

@@ -57,6 +57,11 @@ public class Giocatore {
         carteTerritorio.add(cartaTerritorio);
     }
 
+    public void rimuoviCartaTerritorio(CartaTerritorio cartaTerritorio) {
+        if(cartaTerritorio != null)
+            carteTerritorio.remove(cartaTerritorio);
+    }
+
     public Obiettivo getObiettivo() {
         return obiettivo;
     }

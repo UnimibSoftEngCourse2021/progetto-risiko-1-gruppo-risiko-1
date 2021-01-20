@@ -13,9 +13,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MappaServiceTest {
+    private final MappaService mappaService;
+    private final Utils utils;
+
     @Autowired
-    private MappaService mappaService;
-    Utils utils = new Utils();
+    public MappaServiceTest(MappaService mappaService, Utils utils) {
+        this.mappaService = mappaService;
+        this.utils = utils;
+    }
 
     @Test
     public void testGetMappa() {

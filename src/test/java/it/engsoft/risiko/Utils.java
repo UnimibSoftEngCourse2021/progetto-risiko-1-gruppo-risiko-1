@@ -3,16 +3,27 @@ package it.engsoft.risiko;
 import it.engsoft.risiko.dto.NuovaMappaDTO;
 import it.engsoft.risiko.dto.NuovoContinenteDTO;
 import it.engsoft.risiko.dto.NuovoStatoDTO;
-import it.engsoft.risiko.model.Mappa;
-import it.engsoft.risiko.model.Stato;
+import it.engsoft.risiko.model.*;
+import it.engsoft.risiko.repository.MappaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Funzioni utili per il testing
  */
+@Component
 public class Utils {
+    private final MappaRepository mappaRepository;
+
+    @Autowired
+    public Utils(MappaRepository mappaRepository) {
+        this.mappaRepository = mappaRepository;
+    }
 
     /**
      * Prende una mappa esistente e la formatta come DTO, modificandone solo le informazioni generali, in modo da poterne
@@ -36,5 +47,16 @@ public class Utils {
         )).collect(Collectors.toList());
 
         return new NuovaMappaDTO(nome, descrizione, numMinGiocatori, numMaxGiocatori, nuoviContinenti);
+    }
+
+    public Partita initPartita() {
+        Modalita modalita = Modalita.COMPLETA;
+        Mappa mappa = mappaRepository.findById(1L).orElse(null);
+        List<Giocatore> giocatori = new ArrayList<>();
+        for(int i = 0; i < 5; i++) {
+            giocatori.add(new Giocatore("Giocatore" + i));
+        }
+
+        return new Partita(mappa, giocatori, modalita);
     }
 }
