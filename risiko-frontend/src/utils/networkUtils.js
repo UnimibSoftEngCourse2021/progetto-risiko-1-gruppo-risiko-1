@@ -120,8 +120,7 @@ const groups = [{
     hover: { border: "#FF3333", background: "#BB0000" }
 }];
 
-const gameNetworkOptions = {
-    groups: { useDefaultGroups: false },
+const basicNetworkOptions = {
     nodes: {
         shape: "dot",
 
@@ -144,9 +143,6 @@ const gameNetworkOptions = {
         width: 2
     },
     interaction: {
-        dragView: false,
-        zoomView: false,
-        dragNodes: false,
         hover: true,
         tooltipDelay: 0
     },
@@ -161,7 +157,33 @@ const gameNetworkOptions = {
     }
 };
 
+const gameNetworkOptions = {
+    ...basicNetworkOptions,
+    ...{
+        groups: { useDefaultGroups: false },
+        interaction: {
+            ...basicNetworkOptions.interaction,
+            dragView: false,
+            zoomView: false,
+            dragNodes: false
+        }
+    }
+}
+
+const anteprimaMappaNetworkOptions = {
+    ...basicNetworkOptions,
+    ...{
+        interaction: {
+            ...basicNetworkOptions.interaction,
+            dragView: true,
+            zoomView: true,
+            dragNodes: true
+        }
+    }
+}
+
 export default {
     groups,
-    gameNetworkOptions
+    gameNetworkOptions,
+    anteprimaMappaNetworkOptions
 };

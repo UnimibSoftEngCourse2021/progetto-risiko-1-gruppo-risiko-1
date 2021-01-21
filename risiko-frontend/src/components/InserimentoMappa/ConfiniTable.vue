@@ -1,10 +1,12 @@
 <template>
   <div class="d-flex flex-column align-center">
+    <!-- Tabella confini -->
     <v-data-table
         :headers="headers"
         :items="confini"
         :items-per-page="5"
     >
+      <!-- Titolo e pulsante inserimento -->
       <template v-slot:top>
         <v-row class="my-4">
           <h4 class="text-h6">Confini</h4>
@@ -13,6 +15,7 @@
         </v-row>
       </template>
 
+      <!-- Slot: azioni -->
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn icon @click="mappaInCostruzione.removeConfine(item.from, item.to)">
           <v-icon>mdi-delete</v-icon>
@@ -20,6 +23,7 @@
       </template>
     </v-data-table>
 
+    <!-- Dialog inserimento confini -->
     <v-dialog max-width="700px" v-model="showDialog">
       <v-card>
         <v-card-title>Aggiungi nuovo confine</v-card-title>
@@ -82,9 +86,10 @@ export default {
             return this.anteprimaNetwork.edges;
         },
         confineValido() {
-            return !!this.nuovoConfine.nomeStato1 && !!this.nuovoConfine.nomeStato2 &&
-          this.nuovoConfine.nomeStato1 !== this.nuovoConfine.nomeStato2 &&
-          !this.mappaInCostruzione.confinanti(this.nuovoConfine.nomeStato1, this.nuovoConfine.nomeStato2);
+            return !!this.nuovoConfine.nomeStato1 &&
+              !!this.nuovoConfine.nomeStato2 &&
+              this.nuovoConfine.nomeStato1 !== this.nuovoConfine.nomeStato2 &&
+              !this.mappaInCostruzione.confinanti(this.nuovoConfine.nomeStato1, this.nuovoConfine.nomeStato2);
         }
     },
     methods: {
@@ -97,6 +102,3 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>

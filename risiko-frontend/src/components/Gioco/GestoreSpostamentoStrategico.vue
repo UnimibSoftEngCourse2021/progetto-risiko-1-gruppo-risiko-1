@@ -8,7 +8,6 @@
       <v-btn color="primary" block rounded @click="iniziaSpostamento" v-if="!spostamentoInCorso">INIZIA SPOSTAMENTO</v-btn>
 
       <div v-else>
-
         <span class="d-block text-body-2 mb-3">Seleziona sulla mappa lo stato di partenza e quello di arrivo</span>
         <span class="d-block text-subtitle-2">Stato di partenza: {{statoPartenza.nome}}</span>
         <span class="d-block text-subtitle-2">Stato di arrivo: {{statoArrivo.nome}}</span>
@@ -62,14 +61,9 @@ export default {
     computed: {
         ...mapGetters(["turno", "giocatoreAttivo", "spostamentoInCorso", "mappaGioco"]),
         armateSpostabili() {
-            const ris = [];
-
-            if (this.statoPartenza.id) {
-                for (let i = 1; i < this.statoPartenza.armate; i++) {
-                    ris.push(i);
-                }
-            }
-            return ris;
+            if (!this.statoPartenza.armate)
+              return [];
+            return [...Array(this.statoPartenza.armate).keys()].map(i => i + 1)
         }
     },
     methods: {
@@ -95,7 +89,7 @@ export default {
             await this.spostamento(spostamentoData);
             this.chiudi();
         },
-        onNodeSelected({ id }) {
+      onStatoSelezionato({ id }) {
             if (!this.statoPartenza.id) {
                 const stato = this.mappaGioco.trovaStatoId(id);
 

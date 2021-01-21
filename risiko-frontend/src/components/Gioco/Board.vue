@@ -56,7 +56,6 @@ export default {
         this.giocatori.forEach(giocatore =>
             this.options.groups[giocatore.nome] = { color: { ...this.gameColors[giocatore.nome] } }
         );
-
         network = new visNet.Network(container, { nodes, edges }, this.options);
         network.on("select", this.selectNode);
         network.on("hoverNode", this.hoverNode);

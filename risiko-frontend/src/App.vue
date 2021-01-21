@@ -17,9 +17,10 @@
           Nuovo gioco
         </v-btn>
 
-        <v-btn text @click="inserisciMappa">
+        <v-btn text @click="inserisciMappa" v-if="!gameActive">
           Inserisci mappa
         </v-btn>
+        <v-btn v-else text @click="terminaPartita">Chiudi partita</v-btn>
       </v-item-group>
     </v-app-bar>
 
@@ -41,7 +42,7 @@
 import Game from "@/components/Gioco/Game";
 import NuovoGiocoDialog from "@/components/Gioco/NuovoGiocoDialog";
 import Loader from "@/components/Common/Loader";
-import { mapGetters } from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 import ErrorDialog from "@/components/Common/ErrorDialog";
 import InserimentoMappaDialog from "@/components/InserimentoMappa/InserimentoMappaDialog";
 
@@ -63,6 +64,7 @@ export default {
     },
 
     methods: {
+      ...mapMutations(["terminaPartita"]),
         async openNewGameDialog() {
             await this.$store.dispatch("downloadMappe");
             this.$refs.nuovoGiocoDialog.show(true);

@@ -78,7 +78,7 @@ export default {
         annullaAttacco() {
             this.clearCombattimento();
         },
-        onNodeSelected({ id }) {
+        onStatoSelezionato({ id }) {
             const stato = this.mappaGioco.trovaStatoId(id);
 
             if (!this.statoAttaccante) {

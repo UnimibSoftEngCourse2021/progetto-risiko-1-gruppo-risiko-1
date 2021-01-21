@@ -30,7 +30,6 @@ export class MappaGioco {
 
     modificaArmateStato(statoId, armate) {
         const stato = this.trovaStatoId(statoId);
-
         stato.armate += armate;
     }
 }

@@ -1,11 +1,12 @@
 <template>
   <div class="d-flex flex-column align-center">
-
+    <!-- Tabella continenti -->
     <v-data-table
         :headers="headers"
         :items="mappaInCostruzione.continenti"
         :items-per-page="5"
     >
+      <!-- Titolo e pulsante inserimento -->
       <template v-slot:top>
         <v-row class="my-4">
           <h4 class="text-h6">Continenti</h4>
@@ -14,6 +15,7 @@
         </v-row>
       </template>
 
+      <!-- Slot: azioni -->
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn icon :disabled="mappaInCostruzione.contieneStati(item.nome)"
                @click="mappaInCostruzione.removeContinente(item.nome)">
@@ -22,6 +24,7 @@
       </template>
     </v-data-table>
 
+    <!-- Inserimento continente dialog -->
     <v-dialog max-width="700px" v-model="showDialog">
       <v-card>
         <v-card-title>Aggiungi nuovo continente</v-card-title>
