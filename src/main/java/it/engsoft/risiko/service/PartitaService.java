@@ -185,6 +185,10 @@ public class PartitaService {
         if (partita.getTurno().getCombattimentoInCorso() != null)
             throw new MossaIllegaleException("Mossa illegale: impossibile attaccare durante un combattimento gia' in corso");
 
+        // blocca l'attacco se lo stato attaccante non ha abbastanza truppe
+        if (toStato(attaccoDTO.getAttaccante(), partita).getArmate() < attaccoDTO.getArmate())
+            throw new DatiErratiException("Dati errati: non si hanno abbastanza truppe sullo stato attaccante");
+
         Giocatore attaccante = toGiocatore(attaccoDTO.getGiocatore(), partita);
         Stato statoAttaccante = toStato(attaccoDTO.getAttaccante(), partita);
         Stato statoDifensore = toStato(attaccoDTO.getDifensore(), partita);
@@ -362,6 +366,7 @@ public class PartitaService {
                     ;
 
         return spostamentoStrategico.getQuantita() <= 0
+
                 ||
                 spostamentoStrategico.getQuantita() >= spostamentoStrategico.getPartenza().getArmate()
                 ;
