@@ -2,7 +2,6 @@ package it.engsoft.risiko.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.engsoft.risiko.dto.*;
-import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +35,11 @@ public class PartitaControllerTest {
         );
         String nuovoGiocoJson = (new ObjectMapper()).writeValueAsString(nuovoGiocoDTO);
 
-        HttpSession httpSession = this.mockMvc.perform(post("/api/gioco")
+        return this.mockMvc.perform(post("/api/gioco")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(nuovoGiocoJson))
                 .andExpect(status().isOk()).andReturn()
                 .getRequest().getSession();
-        return httpSession;
     }
 
     @Test
@@ -74,7 +72,7 @@ public class PartitaControllerTest {
         HttpSession httpSession = creaPartita();
         assertNotNull(httpSession);
         assertNotNull(httpSession.getAttribute("partita"));
-        Partita partita = partita = (Partita) httpSession.getAttribute("partita");
+        Partita partita = (Partita) httpSession.getAttribute("partita");
         assertNotNull(partita);
 
         // rinforzo iniziale
