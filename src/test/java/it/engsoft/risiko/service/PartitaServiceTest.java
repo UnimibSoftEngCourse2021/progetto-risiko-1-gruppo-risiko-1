@@ -30,6 +30,7 @@ public class PartitaServiceTest {
         ArrayList<String> giocatori = new ArrayList<>();
         giocatori.add("uno");
         giocatori.add("due");
+
         // test numero giocatori < minimo consentito
         try {
             NuovoGiocoDTO nuovoGiocoDTO1 = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
@@ -37,6 +38,7 @@ public class PartitaServiceTest {
             fail();
         } catch (DatiErratiException ignored) {
         }
+
         giocatori.add("tre");
         giocatori.add("quattro");
         giocatori.add("cinque");
@@ -80,14 +82,17 @@ public class PartitaServiceTest {
         for(int i = 0; i < partita.getGiocatori().size(); i++) {
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         }
+
         // test fase preparazione
         try {
             partitaService.iniziaTurno(partita);
             fail();
         } catch (MossaIllegaleException ignore) { }
+
         partita.setFasePreparazione(false);
 
         partita.iniziaPrimoTurno();
+
         // test fase diversa da INIZIALIZZAZIONE
         try {
             partita.getTurno().setFase(Turno.Fase.RINFORZI);
