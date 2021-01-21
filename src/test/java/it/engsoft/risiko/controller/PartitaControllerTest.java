@@ -1,6 +1,5 @@
 package it.engsoft.risiko.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.engsoft.risiko.dto.NuovoGiocoDTO;
 import it.engsoft.risiko.model.Partita;
@@ -60,8 +59,10 @@ public class PartitaControllerTest {
     void testMossaIllegale() throws Exception {
         HttpSession httpSession = creaPartita();
 
-        this.mockMvc.perform(post("/api/fine-turno").sessionAttr("partita", httpSession.getAttribute("partita")))
-                .andExpect(status().isForbidden()).andReturn().getRequest().getSession();
+        this.mockMvc.perform(post("/api/fine-turno")
+                .sessionAttr("partita", httpSession.getAttribute("partita")))
+                .andExpect(status().isForbidden())
+                .andReturn().getRequest().getSession();
         assertNotNull(httpSession);
         assertNotNull(httpSession.getAttribute("partita"));
     }

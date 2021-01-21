@@ -1,6 +1,10 @@
 package it.engsoft.risiko.model;
 
+/**
+ * Rappresenta una modalità di gioco.
+ */
 public enum Modalita {
+    /** */
     VELOCE,
     RIDOTTA,
     COMPLETA;

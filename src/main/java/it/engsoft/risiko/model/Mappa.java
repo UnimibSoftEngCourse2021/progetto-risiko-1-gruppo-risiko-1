@@ -1,11 +1,7 @@
 package it.engsoft.risiko.model;
 
-import it.engsoft.risiko.exceptions.ModelDataException;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity(name = "mappe")
@@ -21,15 +17,13 @@ public class Mappa {
     @OneToMany(mappedBy = "mappa", cascade = CascadeType.PERSIST)
     private List<Continente> continenti;
 
-    private static final int NUM_MIN_GIOCATORI = 2;
-    private static final int NUM_MAX_GIOCATORI = 8;
-
-    public Mappa(String nome, String descrizione, int numMinGiocatori, int numMaxGiocatori) {
+    protected Mappa(String nome, String descrizione, int numMinGiocatori, int numMaxGiocatori, List<Continente> continenti) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.numMinGiocatori = numMinGiocatori;
         this.numMaxGiocatori = numMaxGiocatori;
-        this.continenti = new ArrayList<>();
+        this.continenti = continenti;
+        this.continenti.forEach(c -> c.setMappa(this));
     }
 
     public Mappa() {}
@@ -43,26 +37,9 @@ public class Mappa {
         return nome;
     }
 
-    public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty())
-            throw new ModelDataException("Nome mappa in Mappa.setNome nullo o mancante");
-        this.nome = nome;
-    }
-
     // descrizione
     public String getDescrizione() {
         return descrizione;
-    }
-
-    /**
-     * Imposta la descrizione della mappa.
-     *
-     * @param descrizione una breve descrizione testuale della mappa
-     */
-    public void setDescrizione(String descrizione) {
-        if (descrizione == null)
-            throw new ModelDataException("Descrizione mappa in Mappa.setDescrizione nulla");
-        this.descrizione = descrizione;
     }
 
     // numero minimo giocatori
@@ -70,36 +47,35 @@ public class Mappa {
         return numMinGiocatori;
     }
 
-    public void setNumMinGiocatori(int numMinGiocatori) {
-        if (numMinGiocatori < NUM_MIN_GIOCATORI)
-            throw new ModelDataException("Numero giocatori minimo in Mappa.setNumMinGiocatori inferiore a 2");
-        this.numMinGiocatori = numMinGiocatori;
-    }
-
     // numero massimo giocatore
     public int getNumMaxGiocatori() {
         return numMaxGiocatori;
     }
 
-    public void setNumMaxGiocatori(int numMaxGiocatori) {
-        if (numMaxGiocatori > NUM_MAX_GIOCATORI)
-            throw new ModelDataException("Numero giocatori massimo in Mappa.setNumMaxGiocatori superiore a 8");
-        this.numMaxGiocatori = numMaxGiocatori;
-    }
-
     // continenti
     public List<Continente> getContinenti() {
-        return continenti;
+        return Collections.unmodifiableList(continenti);
     }
 
-    public void setContinenti(List<Continente> continenti) {
-        if (continenti == null)
-            throw new ModelDataException("Continenti appartenenti alla mappa in Mappa.setContinenti nulli");
-        this.continenti = continenti;
-    }
+    public void compatta(Modalita modalita) {
+        if (modalita.equals(Modalita.COMPLETA))
+            return;
 
-    public void aggiungiContinente(Continente continente) {
-        continenti.add(continente);
+        for (Continente continente: continenti) {
+            int numStatiDaRimuovere;
+            if (modalita.equals(Modalita.RIDOTTA))
+                numStatiDaRimuovere = continente.getStati().size() / 3;
+            else
+                numStatiDaRimuovere = continente.getStati().size() / 2;
+
+            for (int i = 0; i < numStatiDaRimuovere; i++) {
+                Stato daRimuovere = continente.getStati().get(0);
+                Stato statoCompattato = daRimuovere.getConfinanti().get(0);
+                statoCompattato.merge(daRimuovere);
+                continente.getStati().remove(daRimuovere);
+            }
+
+        }
     }
 
     @Override
@@ -119,5 +95,4 @@ public class Mappa {
                 .flatMap(continente -> continente.getStati().stream())
                 .collect(Collectors.toList());
     }
-
 }

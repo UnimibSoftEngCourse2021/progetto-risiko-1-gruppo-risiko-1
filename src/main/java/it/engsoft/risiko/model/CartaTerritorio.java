@@ -7,7 +7,7 @@ import java.util.Objects;
 public class CartaTerritorio {
     private final int id;
     private final Stato statoRappresentato;
-    private Figura figura;
+    private final Figura figura;
 
     public enum Figura {
         CANNONE,
@@ -17,12 +17,8 @@ public class CartaTerritorio {
     }
 
     public CartaTerritorio(int id, Stato statoRappresentato, Figura figura) {
-        if(id < 0)
+        if (id < 0)
             throw new ModelDataException("ID carta territorio non valido.");
-
-        this.id = id;
-        this.statoRappresentato = statoRappresentato;
-        this.figura = figura;
 
         if (figura == null)
             throw new ModelDataException("Figura carta territorio nulla");
@@ -30,18 +26,21 @@ public class CartaTerritorio {
         if ((statoRappresentato == null && !figura.equals(Figura.JOLLY)) ||
                 (statoRappresentato != null && figura.equals(Figura.JOLLY)))
             throw new ModelDataException("Figura non valida");
+
+        this.id = id;
+        this.statoRappresentato = statoRappresentato;
+        this.figura = figura;
     }
+
 
     public int getId() {
         return id;
     }
 
-    // stato rappresentato
     public Stato getStatoRappresentato() {
         return statoRappresentato;
     }
 
-    // figura
     public Figura getFigura() {
         return figura;
     }

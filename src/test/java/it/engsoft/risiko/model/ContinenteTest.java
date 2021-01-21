@@ -12,7 +12,7 @@ public class ContinenteTest {
         for (int i = 0; i < 6; i++) {
             Stato s = new Stato();
             s.setProprietario(giocatore);
-            continente.aggiungiStato(s);
+            continente.getStati().add(s);
         }
 
         assertEquals(continente.getProprietario(), giocatore);

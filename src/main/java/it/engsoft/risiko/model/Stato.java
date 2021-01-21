@@ -4,6 +4,7 @@ import it.engsoft.risiko.exceptions.ModelDataException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity(name = "stati")
@@ -30,7 +31,7 @@ public class Stato {
     @Transient
     private Giocatore proprietario;
 
-    public Stato(String nome, Continente continente) {
+    protected Stato(String nome, Continente continente) {
         this.nome = nome;
         this.continente = continente;
         this.confinanti = new ArrayList<>();
@@ -45,12 +46,6 @@ public class Stato {
     // nome
     public String getNome() {
         return nome;
-    }
-
-    public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty())
-            throw new ModelDataException("Nome stato in Stato.setNome nullo o mancante");
-        this.nome = nome;
     }
 
     // armate
@@ -74,35 +69,9 @@ public class Stato {
         armate = armate - n;
     }
 
-
     //stati confinanti
     public List<Stato> getConfinanti() {
         return confinanti;
-    }
-
-    public void aggiungiConfinante(Stato stato) {
-        if (stato == null)
-            throw new RuntimeException();
-
-        if(confinanti.stream().noneMatch(c -> c.getNome().equals(stato.getNome())))
-            confinanti.add(stato);
-    }
-
-    public void aggiungiConfinanti(List<Stato> stati) {
-        for (Stato stato : stati) {
-            aggiungiConfinante(stato);
-        }
-    }
-
-    public void rimuoviConfinante(Stato stato) {
-        confinanti.remove(stato);
-    }
-
-    // se uno stato (y) è confinante di un altro (x) dovrebbe valere anche il contrario; con l'attuale setter cio' non avviene
-    public void setConfinanti(ArrayList<Stato> confinanti) {
-        if (confinanti == null)
-            throw new ModelDataException("Stati confinanti in Stato.setConfinanti nulli");
-        this.confinanti = confinanti;
     }
 
     public Continente getContinente() {
@@ -123,6 +92,18 @@ public class Stato {
     // ritorna vero se lo stato è confinante, falso altimenti
     public boolean isConfinante(Stato stato) {
         return confinanti.contains(stato);
+    }
+
+    public void merge(Stato stato) {
+        confinanti.remove(stato);
+        stato.confinanti.remove(this);
+        stato.confinanti.forEach(conf -> {
+            if (!this.confinanti.contains(conf)) {
+                this.confinanti.add(conf);
+                conf.confinanti.add(this);
+            }
+            conf.confinanti.remove(stato);
+        });
     }
 
     @Override

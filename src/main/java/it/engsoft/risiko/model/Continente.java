@@ -4,6 +4,7 @@ import it.engsoft.risiko.exceptions.ModelDataException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class Continente {
     @OneToMany(mappedBy = "continente", cascade = CascadeType.PERSIST)
     private List<Stato> stati;
 
-    public Continente(String nome, int armateBonus) {
+    protected Continente(String nome, int armateBonus) {
         this.nome = nome;
         this.armateBonus = armateBonus;
         this.stati = new ArrayList<>();
@@ -37,12 +38,6 @@ public class Continente {
         return nome;
     }
 
-    public void setNome(String nome) {
-        if (nome == null || nome.trim().isEmpty())
-            throw new ModelDataException("Nome continente nullo o mancante");
-        this.nome = nome;
-    }
-
     // armate bonus
     public int getArmateBonus() {
         return armateBonus;
@@ -52,7 +47,7 @@ public class Continente {
         return mappa;
     }
 
-    public void setMappa(Mappa mappa) {
+    protected void setMappa(Mappa mappa) {
         if (mappa == null)
             throw new ModelDataException("Mappa in Continente.setMappa nulla");
 
@@ -62,20 +57,6 @@ public class Continente {
     // stati
     public List<Stato> getStati() {
         return stati;
-    }
-
-    public void setStati(ArrayList<Stato> stati) {
-        if (stati == null)
-            throw new ModelDataException("Stati apparteneti al continente nulli");
-        this.stati = stati;
-    }
-
-    public void aggiungiStato(Stato stato) {
-        stati.add(stato);
-    }
-
-    public void rimuoviStati(List<Stato> stati) {
-        this.stati.removeAll(stati);
     }
 
     // il metodo ritorna il giocatore che possiede tutti gli stati che compongono un continente.
