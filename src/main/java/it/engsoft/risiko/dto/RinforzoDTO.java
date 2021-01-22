@@ -17,7 +17,7 @@ public final class RinforzoDTO {
         this.rinforzi = rinforzi.entrySet().stream()
                 .collect(Collectors.toMap(
                         e -> Long.parseLong(e.getKey()),
-                        e -> e.getValue()
+                        Map.Entry::getValue
                 ));
     }
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-public class CarteTerritorioServiceTest {
+class CarteTerritorioServiceTest {
     private final CarteTerritorioService carteTerritorioService;
     private final Utils utils;
 
@@ -23,7 +23,7 @@ public class CarteTerritorioServiceTest {
     }
 
     @Test
-    public void testCreazioneMazzo() {
+    void testCreazioneMazzo() {
         Partita partita = init();
 
         assertEquals(44, partita.getMazzo().size());
@@ -31,7 +31,7 @@ public class CarteTerritorioServiceTest {
     }
 
     @Test
-    public void testPesca() {
+    void testPesca() {
         Partita partita = init();
 
         CartaTerritorio cartaValida = carteTerritorioService.pescaCarta(partita.getMazzo(), partita.getGiocatori().get(0));
@@ -44,7 +44,7 @@ public class CarteTerritorioServiceTest {
     }
 
     @Test
-    public void testValutaTrisCorretto() {
+    void testValutaTrisCorretto() {
         Partita partita = init();
         Giocatore giocatore = partita.getGiocatori().get(0);
 
@@ -70,7 +70,7 @@ public class CarteTerritorioServiceTest {
     }
 
     @Test
-    public void testValutaTrisErrato() {
+    void testValutaTrisErrato() {
         Partita partita = init();
         Giocatore giocatore = partita.getGiocatori().get(0);
 

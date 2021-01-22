@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class RinforzoTest {
+class RinforzoTest {
     @Test
     void testCreazione() {
         Stato s = new Stato("Pippo", null);
@@ -34,7 +34,7 @@ public class RinforzoTest {
         Rinforzo rinforzo = new Rinforzo(s, 4);
         rinforzo.esegui();
 
-        assertEquals(s.getArmate(), 5);
+        assertEquals(5, s.getArmate());
 
         // prova ad eseguire lo stesso rinforzo più di una volta
         try {

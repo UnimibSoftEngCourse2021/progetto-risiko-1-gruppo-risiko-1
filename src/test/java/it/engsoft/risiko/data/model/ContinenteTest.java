@@ -3,7 +3,7 @@ package it.engsoft.risiko.data.model;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ContinenteTest {
+class ContinenteTest {
 
     @Test
     void testProprietario() {
@@ -15,7 +15,7 @@ public class ContinenteTest {
             continente.getStati().add(s);
         }
 
-        assertEquals(continente.getProprietario(), giocatore);
+        assertEquals(giocatore, continente.getProprietario());
 
         Giocatore altroGioc = new Giocatore("pluto");
         continente.getStati().get(0).setProprietario(altroGioc);

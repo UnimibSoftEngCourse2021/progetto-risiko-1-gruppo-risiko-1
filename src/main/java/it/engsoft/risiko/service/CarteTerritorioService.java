@@ -69,7 +69,7 @@ public class CarteTerritorioService {
     }
 
     public CartaTerritorio pescaCarta(List<CartaTerritorio> mazzo, Giocatore giocatore) {
-        if(mazzo.size() == 0)
+        if(mazzo.isEmpty())
             return null;
 
         CartaTerritorio carta = mazzo.remove(0);

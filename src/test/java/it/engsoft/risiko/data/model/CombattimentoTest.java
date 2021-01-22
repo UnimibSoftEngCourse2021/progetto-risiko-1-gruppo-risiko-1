@@ -8,12 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class CombattimentoTest {
+class CombattimentoTest {
     @Autowired
     MappaRepository mappaRepository;
 
     @Test
-    public void testCostruzione() {
+    void testCostruzione() {
         Giocatore giocAttaccante = new Giocatore("Pippo");
         Giocatore giocDifensore = new Giocatore("Pluto");
 
@@ -27,9 +27,9 @@ public class CombattimentoTest {
 
         // costruzione corretta
         Combattimento combattimento = new Combattimento(attaccante, difensore, 3);
-        assertEquals(combattimento.getStatoAttaccante(), attaccante);
-        assertEquals(combattimento.getStatoDifensore(), difensore);
-        assertEquals(combattimento.getArmateAttaccante(), 3);
+        assertEquals(attaccante, combattimento.getStatoAttaccante());
+        assertEquals(difensore, combattimento.getStatoDifensore());
+        assertEquals(3, combattimento.getArmateAttaccante());
 
         // attaccante null
         try {
@@ -131,8 +131,8 @@ public class CombattimentoTest {
 
         combattimento.simulaCombattimento(2);
 
-        assertEquals(combattimento.getTiriAttaccante().size(), 3);
-        assertEquals(combattimento.getTiriDifensore().size(), 2);
+        assertEquals(3, combattimento.getTiriAttaccante().size());
+        assertEquals(2, combattimento.getTiriDifensore().size());
 
         combattimento.getTiriAttaccante().forEach(tiro -> {
             assertTrue(tiro >= 1 && tiro <= 6);
@@ -142,8 +142,8 @@ public class CombattimentoTest {
             assertTrue(tiro >= 1 && tiro <= 6);
         });
 
-        assertEquals(combattimento.getVittimeAttaccante() + combattimento.getVittimeDifensore(), 2);
+        assertEquals(2, combattimento.getVittimeAttaccante() + combattimento.getVittimeDifensore());
 
-        assertEquals(combattimento.getConquista(), combattimento.getVittimeDifensore() == 2);
+        assertEquals(combattimento.getVittimeDifensore() == 2, combattimento.getConquista());
     }
 }

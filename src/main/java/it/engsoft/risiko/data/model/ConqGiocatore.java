@@ -6,7 +6,7 @@ import it.engsoft.risiko.exceptions.ModelDataException;
  * Un obiettivo che impone ad un giocatore di distruggere tutte le armate di un altro giocatore. Se ciò non è possibile,
  * l'obiettivo di ripiego diventa conquistare un certo numero di territori della mappa.
  */
-public class ConqGiocatore extends Obiettivo {
+public class ConqGiocatore implements Obiettivo {
     private final Giocatore target;
     private final ConqTerritori obSecondario;
 

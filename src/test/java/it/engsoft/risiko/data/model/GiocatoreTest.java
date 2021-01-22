@@ -9,12 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class GiocatoreTest {
+class GiocatoreTest {
     @Autowired
     MappaRepository mappaRepository;
 
     @Test
-    public void testNomeVuoto() {
+    void testNomeVuoto() {
         try {
             Giocatore giocatore = new Giocatore("");
             fail("Non ha lanciato l'eccezione");
@@ -22,13 +22,13 @@ public class GiocatoreTest {
     }
 
     @Test
-    public void testCreazione() {
+    void testCreazione() {
         Giocatore giocatore = new Giocatore("Pippo");
-        assertEquals(giocatore.getNome(), "Pippo");
+        assertEquals("Pippo", giocatore.getNome());
     }
 
     @Test
-    public void testGestioneStati() {
+    void testGestioneStati() {
         Giocatore giocatore = new Giocatore("Pippo");
         Mappa mappa = mappaRepository.findById(1L).orElse(null);
         Stato stato1 = mappa.getStati().get(0);
@@ -36,7 +36,7 @@ public class GiocatoreTest {
 
         // aggiungi uno stato valido
         giocatore.aggiungiStato(stato1);
-        assertEquals(giocatore.getStati().size(), 1);
+        assertEquals(1, giocatore.getStati().size());
 
         // aggiungi uno stato non valido
         try {
@@ -52,11 +52,11 @@ public class GiocatoreTest {
 
         // aggiungi un altro stato
         giocatore.aggiungiStato(stato2);
-        assertEquals(giocatore.getStati().size(), 2);
+        assertEquals(2, giocatore.getStati().size());
 
         // rimuovi stato presente
         giocatore.rimuoviStato(stato1);
-        assertEquals(giocatore.getStati().size(), 1);
+        assertEquals(1, giocatore.getStati().size());
 
         // rimuovi stato non presente
         try {
@@ -66,7 +66,7 @@ public class GiocatoreTest {
     }
 
     @Test
-    public void testEliminato() {
+    void testEliminato() {
         Giocatore giocatore = new Giocatore("Pippo");
         Mappa mappa = mappaRepository.findById(1L).orElse(null);
         Stato stato = mappa.getStati().get(0);
@@ -80,7 +80,7 @@ public class GiocatoreTest {
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         Giocatore gioc1 = new Giocatore("Pippo");
         Giocatore gioc2 = new Giocatore("Pluto");
         Giocatore gioc3 = new Giocatore("Pippo");
@@ -89,14 +89,14 @@ public class GiocatoreTest {
 
         gioc1.setTruppeDisponibili(2);
         gioc3.setTruppeDisponibili(1);
-        assertEquals(gioc3, gioc1);
+        assertEquals(gioc1, gioc3);
     }
 
     @Test
-    public void testGestioneArmate() {
+    void testGestioneArmate() {
         Giocatore g = new Giocatore("Pippo");
         g.setTruppeDisponibili(10);
-        assertEquals(g.getTruppeDisponibili(), 10);
+        assertEquals(10, g.getTruppeDisponibili());
 
         try {
             g.setTruppeDisponibili(-10);
@@ -104,10 +104,10 @@ public class GiocatoreTest {
         } catch (ModelDataException ignored) { }
 
         g.modificaTruppeDisponibili(10);
-        assertEquals(g.getTruppeDisponibili(), 20);
+        assertEquals(20, g.getTruppeDisponibili());
 
         g.modificaTruppeDisponibili(-5);
-        assertEquals(g.getTruppeDisponibili(), 15);
+        assertEquals(15, g.getTruppeDisponibili());
 
         try {
             g.modificaTruppeDisponibili(-16);
@@ -116,7 +116,7 @@ public class GiocatoreTest {
     }
 
     @Test
-    public void testUccisore() {
+    void testUccisore() {
         Giocatore pippo = new Giocatore("Pippo");
         Giocatore pluto = new Giocatore("Pluto");
         Stato s = new Stato();
@@ -143,7 +143,7 @@ public class GiocatoreTest {
         // valido
         pippo.rimuoviStato(s);
         pippo.setUccisore(pluto);
-        assertEquals(pippo.getUccisore(), pluto);
+        assertEquals(pluto, pippo.getUccisore());
     }
 
 }

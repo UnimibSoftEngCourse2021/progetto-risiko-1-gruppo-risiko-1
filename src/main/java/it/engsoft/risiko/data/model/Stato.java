@@ -5,6 +5,7 @@ import it.engsoft.risiko.exceptions.ModelDataException;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "stati")
 public class Stato {
@@ -111,5 +112,10 @@ public class Stato {
         if (o == null || getClass() != o.getClass()) return false;
         Stato stato = (Stato) o;
         return id.equals(stato.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

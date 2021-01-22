@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class PartitaTest {
+class PartitaTest {
     @Autowired
     MappaRepository mappaRepository;
     @Autowired
@@ -77,7 +77,7 @@ public class PartitaTest {
         } catch (ModelDataException ignored) { }
 
         partita.occupazioneInizialeTerritori();
-        assertEquals(partita.getGiocatoreAttivo(), partita.getGiocatori().get(0));
+        assertEquals(partita.getGiocatori().get(0), partita.getGiocatoreAttivo());
 
         // se esegue di nuovo il metodo da errore
         try {
@@ -150,19 +150,19 @@ public class PartitaTest {
         partita.occupazioneInizialeTerritori();
 
         Giocatore giocatoreAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocatoreAttivo, giocatori.get(0));
+        assertEquals(giocatori.get(0), giocatoreAttivo);
         partita.setProssimoGiocatoreAttivo();
 
         giocatoreAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocatoreAttivo, giocatori.get(1));
+        assertEquals(giocatori.get(1), giocatoreAttivo);
         partita.setProssimoGiocatoreAttivo();
 
         giocatoreAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocatoreAttivo, giocatori.get(2));
+        assertEquals(giocatori.get(2), giocatoreAttivo);
         partita.setProssimoGiocatoreAttivo();
 
         giocatoreAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocatoreAttivo, giocatori.get(0));
+        assertEquals(giocatori.get(0), giocatoreAttivo);
     }
 
     @Test
@@ -187,21 +187,21 @@ public class PartitaTest {
         partita.iniziaPrimoTurno();
 
         Giocatore giocAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocAttivo, giocatori.get(0));
+        assertEquals(giocatori.get(0), giocAttivo);
 
         // TODO: considerare l'assegnazione delle truppe alla creazione del turno
 
         partita.nuovoTurno();
         giocAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocAttivo, giocatori.get(1));
+        assertEquals(giocatori.get(1), giocAttivo);
 
         partita.nuovoTurno();
         giocAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocAttivo, giocatori.get(2));
+        assertEquals(giocatori.get(2), giocAttivo);
 
         partita.nuovoTurno();
         giocAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocAttivo, giocatori.get(0));
+        assertEquals(giocatori.get(0), giocAttivo);
 
         // eliminiamo il giocatore 1
         Giocatore eliminato = giocatori.get(1);
@@ -210,6 +210,6 @@ public class PartitaTest {
         }
         partita.nuovoTurno();
         giocAttivo = partita.getGiocatoreAttivo();
-        assertEquals(giocAttivo, giocatori.get(2));
+        assertEquals(giocatori.get(2), giocAttivo);
     }
 }

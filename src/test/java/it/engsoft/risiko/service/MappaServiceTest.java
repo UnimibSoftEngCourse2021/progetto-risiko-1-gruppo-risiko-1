@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class MappaServiceTest {
+class MappaServiceTest {
     private final MappaService mappaService;
     private final Utils utils;
 
@@ -23,16 +23,16 @@ public class MappaServiceTest {
     }
 
     @Test
-    public void testGetMappa() {
+    void testGetMappa() {
         Mappa mappa = mappaService.getMappa(1L, Modalita.COMPLETA);
-        assertEquals(mappa.getNome(), "Risiko Test");
+        assertEquals("Risiko Test", mappa.getNome());
 
-        assertEquals(mappa.getContinenti().size(), 6);
-        assertEquals(mappa.getStati().size(), 42);
+        assertEquals(6, mappa.getContinenti().size());
+        assertEquals(42, mappa.getStati().size());
     }
 
     @Test
-    public void testCompattamentoMappe() {
+    void testCompattamentoMappe() {
         Mappa mappaCompleta = mappaService.getMappa(1L, Modalita.COMPLETA);
         Mappa mappaRidotta = mappaService.getMappa(1L, Modalita.RIDOTTA);
         Mappa mappaVeloce = mappaService.getMappa(1L, Modalita.VELOCE);
@@ -51,14 +51,14 @@ public class MappaServiceTest {
     }
 
     @Test
-    public void testInserisciMappa() {
+    void testInserisciMappa() {
         // prendiamo la mappa standard, la formattiamo come dto e proviamo a reinserirla con un nome diverso
         Mappa mappaStandard = mappaService.getMappa(1L, Modalita.COMPLETA);
         NuovaMappaDTO nuovaMappa = utils.dtoFromMappa(mappaStandard, "Nuova mappa", "nuova desc", 2, 8);
 
         mappaService.nuovaMappa(nuovaMappa);
 
-        assertEquals(mappaService.mappe().size(), 2);
+        assertEquals(2, mappaService.mappe().size());
         assertNotNull(mappaService.getMappa(2L, Modalita.COMPLETA));
     }
 }

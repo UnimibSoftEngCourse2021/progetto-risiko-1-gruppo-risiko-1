@@ -5,16 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StatoTest {
+class StatoTest {
     @Test
     void testModificaArmate() {
         Stato s = new Stato("s", null);
 
         s.aggiungiArmate(3);
-        assertEquals(s.getArmate(), 3);
+        assertEquals(3, s.getArmate());
 
         s.rimuoviArmate(2);
-        assertEquals(s.getArmate(), 1);
+        assertEquals(1, s.getArmate());
 
         try {
             s.rimuoviArmate(2);

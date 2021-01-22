@@ -70,7 +70,7 @@ public class ObiettivoFactory {
      * @return un obiettivo valido
      */
     public Obiettivo getNuovoObiettivo() {
-        if (obiettivi.size() == 0)
+        if (obiettivi.isEmpty())
             throw new ModelDataException("Obiettivi terminati");
         return obiettivi.remove(0);
     }

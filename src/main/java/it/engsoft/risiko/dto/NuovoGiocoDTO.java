@@ -1,16 +1,15 @@
 package it.engsoft.risiko.dto;
 
 import it.engsoft.risiko.exceptions.DatiErratiException;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public final class NuovoGiocoDTO {
-    private final ArrayList<String> giocatori;
+    private final List<String> giocatori;
     private final long mappaId;
     private final String mod;
     private final boolean unicoObiettivo;
 
-    public NuovoGiocoDTO(ArrayList<String> giocatori, Long mappaId, String mod, boolean unicoObiettivo) {
+    public NuovoGiocoDTO(List<String> giocatori, Long mappaId, String mod, boolean unicoObiettivo) {
         if(giocatori == null)
             throw new DatiErratiException("Dati errati: lista giocatori nulla");
         this.giocatori = giocatori;
@@ -26,7 +25,7 @@ public final class NuovoGiocoDTO {
         this.unicoObiettivo = unicoObiettivo;
     }
 
-    public ArrayList<String> getGiocatori() {
+    public List<String> getGiocatori() {
         return giocatori;
     }
 

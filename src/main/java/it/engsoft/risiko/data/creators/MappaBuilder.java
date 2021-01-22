@@ -50,12 +50,14 @@ public class MappaBuilder {
                 continenti.stream().anyMatch(c -> c.getNome().equals(nome)))
             throw new DatiErratiException("Nome duplicato");
 
-        Continente cont = continenti.stream().filter(c -> c.getNome().equals(nomeContinente))
-                .findFirst()
-                .or(() -> {
-                    throw new DatiErratiException("Continente non trovato");
-                })
-                .get();
+        Optional<Continente> optCont = continenti.stream()
+                .filter(c -> c.getNome().equals(nomeContinente))
+                .findFirst();
+
+        if(optCont.isEmpty())
+            throw new DatiErratiException("Continente non trovato");
+
+        Continente cont = optCont.get();
 
         Stato s = new Stato(nome, cont);
         stati.add(s);
@@ -63,14 +65,15 @@ public class MappaBuilder {
     }
 
     public void addConfine(String nomeStato1, String nomeStato2) {
-        Stato stato1 = stati.stream().filter(s -> s.getNome().equals(nomeStato1)).findFirst()
-                .or(() -> {
-                    throw new DatiErratiException("Stato non trovato");
-                }).get();
-        Stato stato2 = stati.stream().filter(s -> s.getNome().equals(nomeStato2)).findFirst()
-                .or(() -> {
-                    throw new DatiErratiException("Stato non trovato");
-                }).get();
+        Optional<Stato> optStato1 = stati.stream().filter(s -> s.getNome().equals(nomeStato1)).findFirst();
+        Optional<Stato> optStato2 = stati.stream().filter(s -> s.getNome().equals(nomeStato2)).findFirst();
+
+        if(optStato1.isEmpty() || optStato2.isEmpty())
+            throw new DatiErratiException("Stato non trovato");
+
+        Stato stato1 = optStato1.get();
+        Stato stato2 = optStato2.get();
+
         // inserisci solo se non è già stato inserito
         if (stato1.getConfinanti().stream().noneMatch(conf1 -> conf1.getNome().equals(nomeStato2)) &&
                 stato2.getConfinanti().stream().noneMatch(conf2 -> conf2.getNome().equals(nomeStato1))) {

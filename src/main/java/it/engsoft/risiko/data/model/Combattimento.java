@@ -4,17 +4,21 @@ import it.engsoft.risiko.exceptions.ModelDataException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Combattimento {
-    private final Stato statoAttaccante, statoDifensore;
+    private final Stato statoAttaccante;
+    private final Stato statoDifensore;
     private final int armateAttaccante;
     private boolean conquista;
-    private int vittimeAttaccante, vittimeDifensore;
+    private int vittimeAttaccante;
+    private int vittimeDifensore;
 
     private final Random randomGenerator;
 
-    private final ArrayList<Integer> tiriAttaccante, tiriDifensore;
+    private final List<Integer> tiriAttaccante;
+    private final List<Integer> tiriDifensore;
 
     public Combattimento(Stato statoAttaccante, Stato statoDifensore, int armateAttaccante) {
         if (statiNonCompatibili(statoAttaccante, statoDifensore) || armateAttaccanteNonValide(statoAttaccante, armateAttaccante)) {
@@ -96,11 +100,11 @@ public class Combattimento {
 
     public int getArmateAttaccante() { return armateAttaccante; }
 
-    public ArrayList<Integer> getTiriAttaccante() {
+    public List<Integer> getTiriAttaccante() {
         return tiriAttaccante;
     }
 
-    public ArrayList<Integer> getTiriDifensore() {
+    public List<Integer> getTiriDifensore() {
         return tiriDifensore;
     }
 

@@ -3,7 +3,8 @@ package it.engsoft.risiko.data.model;
 import it.engsoft.risiko.exceptions.ModelDataException;
 
 public class SpostamentoStrategico {
-    private final Stato partenza, destinazione;
+    private final Stato partenza;
+    private final Stato destinazione;
     private final int quantita;
     private boolean eseguito;
 

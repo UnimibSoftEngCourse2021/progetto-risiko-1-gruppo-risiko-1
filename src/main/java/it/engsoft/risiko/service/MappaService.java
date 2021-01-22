@@ -83,9 +83,9 @@ public class MappaService {
             }
         }
 
-        nuovaMappaDTO.getContinenti().forEach(c -> c.getStati().forEach(stato -> {
-            stato.getConfinanti().forEach(nomeConf -> builder.addConfine(stato.getNome(), nomeConf));
-        }));
+        nuovaMappaDTO.getContinenti().forEach(c -> c.getStati().forEach(stato ->
+            stato.getConfinanti().forEach(nomeConf -> builder.addConfine(stato.getNome(), nomeConf))
+        ));
 
         Mappa nuovaMappa = builder.build();
         mappaRepository.save(nuovaMappa);

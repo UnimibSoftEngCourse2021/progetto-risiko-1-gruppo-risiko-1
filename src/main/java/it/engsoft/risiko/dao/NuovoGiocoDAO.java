@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class NuovoGiocoDAO {
-    public List<GiocatoreDAO> giocatori;
-    public String giocatoreAttivo;
-    public MappaDAO mappa;
+    private final List<GiocatoreDAO> giocatori;
+    private final String giocatoreAttivo;
+    private final MappaDAO mappa;
 
     public NuovoGiocoDAO(Partita partita) {
         this.giocatori = partita.getGiocatori().stream()

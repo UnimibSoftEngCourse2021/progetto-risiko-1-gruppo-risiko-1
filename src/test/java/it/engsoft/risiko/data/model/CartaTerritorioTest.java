@@ -12,9 +12,9 @@ class CartaTerritorioTest {
 
         // creazione corretta
         CartaTerritorio cartaTerritorio = new CartaTerritorio(1, stato, CartaTerritorio.Figura.CANNONE);
-        assertEquals(cartaTerritorio.getId(), 1);
-        assertEquals(cartaTerritorio.getStatoRappresentato(), stato);
-        assertEquals(cartaTerritorio.getFigura(), CartaTerritorio.Figura.CANNONE);
+        assertEquals(1, cartaTerritorio.getId());
+        assertEquals(stato, cartaTerritorio.getStatoRappresentato());
+        assertEquals(CartaTerritorio.Figura.CANNONE, cartaTerritorio.getFigura());
 
         // id non valido
         try {
@@ -39,6 +39,5 @@ class CartaTerritorioTest {
             cartaTerritorio = new CartaTerritorio(1, null, CartaTerritorio.Figura.CAVALLO);
             fail();
         } catch (ModelDataException ignored) { }
-
     }
 }

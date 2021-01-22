@@ -2,16 +2,16 @@ package it.engsoft.risiko.dao;
 
 import it.engsoft.risiko.data.model.Combattimento;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class DifesaDAO {
-    private ArrayList<Integer> dadoAtt;
-    private ArrayList<Integer> dadoDif;
-    private int vittimeAtt;
-    private int vittimeDif;
-    private boolean obiettivoRaggiuntoAtt;
-    private boolean vittoriaAtt;
-    private boolean eliminato;
+    private final List<Integer> dadoAtt;
+    private final List<Integer> dadoDif;
+    private final int vittimeAtt;
+    private final int vittimeDif;
+    private final boolean obiettivoRaggiuntoAtt;
+    private final boolean vittoriaAtt;
+    private final boolean eliminato;
 
     public DifesaDAO(Combattimento combattimento, boolean obiettivoRaggiuntoAtt, boolean difensoreEliminato) {
         this.dadoAtt = combattimento.getTiriAttaccante();
@@ -23,11 +23,11 @@ public class DifesaDAO {
         this.eliminato = difensoreEliminato;
     }
 
-    public ArrayList<Integer> getDadoAtt() {
+    public List<Integer> getDadoAtt() {
         return dadoAtt;
     }
 
-    public ArrayList<Integer> getDadoDif() {
+    public List<Integer> getDadoDif() {
         return dadoDif;
     }
 

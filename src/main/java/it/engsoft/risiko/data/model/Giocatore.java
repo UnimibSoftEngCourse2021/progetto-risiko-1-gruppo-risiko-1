@@ -3,11 +3,13 @@ package it.engsoft.risiko.data.model;
 import it.engsoft.risiko.exceptions.ModelDataException;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Giocatore {
-    private final ArrayList<Stato> stati = new ArrayList<>();
+    private final List<Stato> stati = new ArrayList<>();
     private String nome;
-    private final ArrayList<CartaTerritorio> carteTerritorio = new ArrayList<>();
+    private final List<CartaTerritorio> carteTerritorio = new ArrayList<>();
     private Obiettivo obiettivo;
     private Giocatore uccisore;
     private int truppeDisponibili = 0;
@@ -26,7 +28,7 @@ public class Giocatore {
         this.nome = nome;
     }
 
-    public ArrayList<Stato> getStati() {
+    public List<Stato> getStati() {
         return stati;
     }
 
@@ -46,7 +48,7 @@ public class Giocatore {
         stati.remove(stato);
     }
 
-    public ArrayList<CartaTerritorio> getCarteTerritorio() {
+    public List<CartaTerritorio> getCarteTerritorio() {
         return carteTerritorio;
     }
 
@@ -82,7 +84,7 @@ public class Giocatore {
             throw new ModelDataException("Uccisore è null");
         if (equals(uccisore))
             throw new ModelDataException("Un giocatore non può sconfiggere se stesso");
-        if (stati.size() > 0)
+        if (!stati.isEmpty())
             throw new ModelDataException("Il giocatore su cui è chiamato setUccisore non è ancora eliminato");
 
         this.uccisore = uccisore;
@@ -104,7 +106,7 @@ public class Giocatore {
         this.truppeDisponibili = this.truppeDisponibili + truppeDisponibili;
     }
 
-    public boolean isEliminato() { return stati.size() == 0; }
+    public boolean isEliminato() { return stati.isEmpty(); }
 
     public boolean obRaggiunto() {
         return obiettivo.raggiunto(this);
@@ -116,5 +118,10 @@ public class Giocatore {
         if (o == null || getClass() != o.getClass()) return false;
         Giocatore giocatore = (Giocatore) o;
         return nome.equals(giocatore.nome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nome);
     }
 }

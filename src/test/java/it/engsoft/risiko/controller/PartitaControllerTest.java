@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PartitaControllerTest {
+class PartitaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -54,7 +54,7 @@ public class PartitaControllerTest {
         assertTrue(partita.getGiocatori().stream().anyMatch(g -> g.getNome().equals("pippo")));
         assertTrue(partita.getGiocatori().stream().anyMatch(g -> g.getNome().equals("pluto")));
 
-        assertEquals(partita.getMappa().getId(), 1L);
+        assertEquals(1L, partita.getMappa().getId());
     }
 
     @Test
@@ -442,7 +442,7 @@ public class PartitaControllerTest {
     }
 
     @Test
-    public void testSpostamento() throws Exception {
+    void testSpostamento() throws Exception {
         HttpSession httpSession = creaPartita();
         assertNotNull(httpSession);
         assertNotNull(httpSession.getAttribute("partita"));
@@ -525,7 +525,7 @@ public class PartitaControllerTest {
     }
 
     @Test
-    public void testSpostamentoAttacco() throws Exception {
+    void testSpostamentoAttacco() throws Exception {
         HttpSession httpSession = creaPartita();
         assertNotNull(httpSession);
         assertNotNull(httpSession.getAttribute("partita"));
@@ -598,7 +598,7 @@ public class PartitaControllerTest {
     }
 
     @Test
-    public void testFineTurno() throws Exception {
+    void testFineTurno() throws Exception {
         HttpSession httpSession = creaPartita();
         assertNotNull(httpSession);
         assertNotNull(httpSession.getAttribute("partita"));

@@ -115,7 +115,7 @@ public class Partita {
     }
 
     private boolean territoriAssegnati() {
-        return giocatori.stream().noneMatch(g -> g.getStati().size() == 0);
+        return giocatori.stream().noneMatch(g -> g.getStati().isEmpty());
     }
 
     public void occupazioneInizialeTerritori() {

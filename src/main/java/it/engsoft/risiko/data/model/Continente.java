@@ -75,4 +75,9 @@ public class Continente {
         Continente that = (Continente) o;
         return Objects.equals(id, that.id);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -78,14 +78,6 @@ public class Mappa {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Mappa mappa = (Mappa) o;
-        return Objects.equals(id, mappa.id);
-    }
-
     /**
      * Ritorna un elenco di tutti gli stati compresi nella mappa.
      * @return la lista degli stati
@@ -94,5 +86,18 @@ public class Mappa {
         return continenti.stream()
                 .flatMap(continente -> continente.getStati().stream())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mappa mappa = (Mappa) o;
+        return Objects.equals(id, mappa.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

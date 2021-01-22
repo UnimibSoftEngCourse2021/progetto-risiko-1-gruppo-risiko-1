@@ -12,24 +12,24 @@ import static org.hamcrest.Matchers.containsString;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class MappaControllerTest {
+class MappaControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void testGetMappe() throws Exception{
+    void testGetMappe() throws Exception{
         this.mockMvc.perform(get("/api/mappe")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Risiko Test")));
     }
 
     @Test
-    public void testGetMappaSingola() throws Exception{
+    void testGetMappaSingola() throws Exception{
         this.mockMvc.perform(get("/api/mappe/1")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Risiko Test")));
     }
 
     @Test
-    public void testGetMappaSingolaNonEsistente() throws Exception{
+    void testGetMappaSingolaNonEsistente() throws Exception{
         this.mockMvc.perform(get("/api/mappe/2")).andExpect(status().isNotFound());
     }
 }

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class PartitaServiceTest {
+class PartitaServiceTest {
     private final PartitaService partitaService;
     private final Utils utils;
 
@@ -26,7 +26,7 @@ public class PartitaServiceTest {
     }
 
     @Test
-    public void testNuovoGioco() {
+    void testNuovoGioco() {
         ArrayList<String> giocatori = new ArrayList<>();
         giocatori.add("uno");
         giocatori.add("due");
@@ -47,8 +47,8 @@ public class PartitaServiceTest {
         NuovoGiocoDTO nuovoGiocoDTO = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
         Partita partita = partitaService.nuovoGioco(nuovoGiocoDTO);
 
-        assertEquals(partita.getModalita().toString(), "COMPLETA");
-        assertEquals(partita.getMappa().getId(), 1L);
+        assertEquals("COMPLETA", partita.getModalita().toString());
+        assertEquals(1L, partita.getMappa().getId());
 
         // test sulla creazione dei giocatori
         for (int i = 0; i < partita.getGiocatori().size(); i++) {
@@ -71,7 +71,7 @@ public class PartitaServiceTest {
     }
 
     @Test
-    public void testIniziaTurno() {
+    void testIniziaTurno() {
         ArrayList<String> giocatori = new ArrayList<>();
         giocatori.add("uno");
         giocatori.add("due");
@@ -103,7 +103,7 @@ public class PartitaServiceTest {
         partita.getTurno().setFase(Turno.Fase.INIZIALIZZAZIONE);
         partitaService.iniziaTurno(partita);
         assertNotEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
-        assertEquals(partita.getTurno().getFase(), Turno.Fase.RINFORZI);
+        assertEquals(Turno.Fase.RINFORZI, partita.getTurno().getFase());
     }
 
 }

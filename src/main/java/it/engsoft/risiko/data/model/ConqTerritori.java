@@ -6,7 +6,7 @@ import it.engsoft.risiko.exceptions.ModelDataException;
  * Un obiettivo che impone ad un giocatore di conquistare un certo numero di territori della mappa, specificando
  * anche con quante armate ciascuno di esse deve essere occupato.
  */
-public class ConqTerritori extends Obiettivo {
+public class ConqTerritori implements Obiettivo {
     private final int numeroTerritori;
     private final int numeroArmate;
 

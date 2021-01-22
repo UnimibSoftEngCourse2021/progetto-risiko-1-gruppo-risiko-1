@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Un obiettivo che impone al giocatore di conquistare un certo numero di continenti, specificati o meno.
  */
-public class ConqContinenti extends Obiettivo {
+public class ConqContinenti implements Obiettivo {
     private final Mappa mappa;
     private final List<Continente> targetContinenti;
     private final int continentiExtra;
