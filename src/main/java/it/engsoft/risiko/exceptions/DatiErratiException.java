@@ -8,7 +8,4 @@ public class DatiErratiException extends RuntimeException {
     public DatiErratiException(String message) {
         super(message);
     }
-
-    public DatiErratiException() {
-    }
 }

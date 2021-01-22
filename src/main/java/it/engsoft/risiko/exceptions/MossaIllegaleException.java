@@ -8,7 +8,4 @@ public class MossaIllegaleException extends RuntimeException {
     public MossaIllegaleException(String message) {
         super(message);
     }
-
-    public MossaIllegaleException() {
-    }
 }
