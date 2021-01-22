@@ -1,6 +1,6 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.Stato;
+import it.engsoft.risiko.data.model.Stato;
 
 import java.util.List;
 import java.util.stream.Collectors;

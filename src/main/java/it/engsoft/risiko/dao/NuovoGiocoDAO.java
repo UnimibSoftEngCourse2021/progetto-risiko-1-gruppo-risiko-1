@@ -1,6 +1,6 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.Partita;
+import it.engsoft.risiko.data.model.Partita;
 
 import java.util.List;
 import java.util.stream.Collectors;

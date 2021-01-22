@@ -1,6 +1,6 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.Combattimento;
+import it.engsoft.risiko.data.model.Combattimento;
 
 import java.util.ArrayList;
 

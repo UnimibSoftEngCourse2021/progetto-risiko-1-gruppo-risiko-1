@@ -1,6 +1,6 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.Giocatore;
+import it.engsoft.risiko.data.model.Giocatore;
 
 import java.util.ArrayList;
 import java.util.List;

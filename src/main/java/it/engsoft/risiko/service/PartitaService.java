@@ -1,9 +1,10 @@
 package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.dao.*;
+import it.engsoft.risiko.data.creators.ObiettivoFactory;
 import it.engsoft.risiko.dto.*;
 import it.engsoft.risiko.exceptions.*;
-import it.engsoft.risiko.model.*;
+import it.engsoft.risiko.data.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +15,11 @@ import java.util.stream.Collectors;
 public class PartitaService {
     private final MappaService mappaService;
     private final CarteTerritorioService carteTerritorioService;
-    private final CarteObiettivoService carteObiettivoService;
 
     @Autowired
-    public PartitaService( MappaService mappaService, CarteObiettivoService carteObiettivoService,
-                          CarteTerritorioService carteTerritorioService) {
+    public PartitaService( MappaService mappaService, CarteTerritorioService carteTerritorioService) {
         this.mappaService = mappaService;
         this.carteTerritorioService = carteTerritorioService;
-        this.carteObiettivoService = carteObiettivoService;
     }
 
     public Partita nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
@@ -42,7 +40,8 @@ public class PartitaService {
                 .collect(Collectors.toList());
 
         // assegna gli obiettivi ai giocatori
-        this.carteObiettivoService.setObiettiviGiocatori(mappa, giocatori, nuovoGiocoDTO.isUnicoObiettivo());
+        ObiettivoFactory obFactory = new ObiettivoFactory(mappa, giocatori, nuovoGiocoDTO.isUnicoObiettivo());
+        giocatori.forEach(g -> g.setObiettivo(obFactory.getNuovoObiettivo()));
 
         // scegliamo casualmente un ordine di giocatori
         Collections.shuffle(giocatori);

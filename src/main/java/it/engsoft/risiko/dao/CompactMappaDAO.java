@@ -1,6 +1,6 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.Mappa;
+import it.engsoft.risiko.data.model.Mappa;
 
 public class CompactMappaDAO {
     private Long id;

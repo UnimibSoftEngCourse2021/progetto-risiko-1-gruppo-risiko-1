@@ -1,11 +1,12 @@
 package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.dao.*;
+import it.engsoft.risiko.data.creators.MappaBuilder;
 import it.engsoft.risiko.dto.*;
 import it.engsoft.risiko.exceptions.NotFoundException;
-import it.engsoft.risiko.model.*;
+import it.engsoft.risiko.data.model.*;
 import it.engsoft.risiko.exceptions.DatiErratiException;
-import it.engsoft.risiko.repository.MappaRepository;
+import it.engsoft.risiko.data.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

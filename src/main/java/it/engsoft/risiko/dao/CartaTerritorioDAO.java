@@ -1,6 +1,6 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.CartaTerritorio;
+import it.engsoft.risiko.data.model.CartaTerritorio;
 
 public class CartaTerritorioDAO {
     private int id;

@@ -4,7 +4,7 @@ import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.service.PartitaService;
 import it.engsoft.risiko.dto.*;
 import it.engsoft.risiko.dao.*;
-import it.engsoft.risiko.model.Partita;
+import it.engsoft.risiko.data.model.Partita;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

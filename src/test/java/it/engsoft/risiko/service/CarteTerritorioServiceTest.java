@@ -2,7 +2,7 @@ package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.Utils;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
-import it.engsoft.risiko.model.*;
+import it.engsoft.risiko.data.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

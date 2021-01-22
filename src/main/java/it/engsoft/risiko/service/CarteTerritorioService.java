@@ -1,6 +1,6 @@
 package it.engsoft.risiko.service;
 
-import it.engsoft.risiko.model.*;
+import it.engsoft.risiko.data.model.*;
 import it.engsoft.risiko.exceptions.*;
 import org.springframework.stereotype.Service;
 

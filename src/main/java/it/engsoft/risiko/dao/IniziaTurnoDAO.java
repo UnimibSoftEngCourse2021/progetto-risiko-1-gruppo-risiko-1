@@ -1,8 +1,5 @@
 package it.engsoft.risiko.dao;
 
-import it.engsoft.risiko.model.Giocatore;
-import it.engsoft.risiko.model.Turno;
-
 public class IniziaTurnoDAO {
     private int numeroTurno;
     private String giocatore;

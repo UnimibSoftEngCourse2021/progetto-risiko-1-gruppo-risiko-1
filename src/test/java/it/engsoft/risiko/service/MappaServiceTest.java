@@ -2,9 +2,9 @@ package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.Utils;
 import it.engsoft.risiko.dto.NuovaMappaDTO;
-import it.engsoft.risiko.model.Continente;
-import it.engsoft.risiko.model.Mappa;
-import it.engsoft.risiko.model.Modalita;
+import it.engsoft.risiko.data.model.Continente;
+import it.engsoft.risiko.data.model.Mappa;
+import it.engsoft.risiko.data.model.Modalita;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
