@@ -61,8 +61,10 @@ public class PartitaControllerTest {
     void testMossaIllegale() throws Exception {
         HttpSession httpSession = creaPartita();
 
-        this.mockMvc.perform(post("/api/fine-turno").sessionAttr("partita", httpSession.getAttribute("partita")))
-                .andExpect(status().isForbidden()).andReturn().getRequest().getSession();
+        this.mockMvc.perform(post("/api/fine-turno")
+                .sessionAttr("partita", httpSession.getAttribute("partita")))
+                .andExpect(status().isForbidden())
+                .andReturn().getRequest().getSession();
         assertNotNull(httpSession);
         assertNotNull(httpSession.getAttribute("partita"));
     }

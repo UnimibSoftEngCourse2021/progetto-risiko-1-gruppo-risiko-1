@@ -43,5 +43,4 @@ public class Turno {
     public boolean conquistaAvvenuta() {
         return conquista;
     }
-
 }

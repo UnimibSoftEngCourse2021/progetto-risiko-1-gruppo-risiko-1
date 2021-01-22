@@ -9,7 +9,6 @@ import java.util.Random;
 public class Combattimento {
     private final Stato statoAttaccante, statoDifensore;
     private final int armateAttaccante;
-
     private boolean conquista;
     private int vittimeAttaccante, vittimeDifensore;
 

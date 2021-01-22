@@ -268,7 +268,6 @@ public class PartitaService {
         if (!partita.getTurno().getCombattimentoInCorso().getConquista())
             partita.getTurno().setCombattimentoInCorso(null);
 
-
         return difesaDAO;
     }
 
