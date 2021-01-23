@@ -1,4 +1,4 @@
-package it.engsoft.risiko.dao;
+package it.engsoft.risiko.rest.dao;
 
 public class RinforzoDAO {
     private final String giocatore;

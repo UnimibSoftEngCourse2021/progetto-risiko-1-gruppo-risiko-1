@@ -1,7 +1,7 @@
 package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.Utils;
-import it.engsoft.risiko.dto.NuovaMappaDTO;
+import it.engsoft.risiko.rest.dto.NuovaMappaDTO;
 import it.engsoft.risiko.data.model.Continente;
 import it.engsoft.risiko.data.model.Mappa;
 import it.engsoft.risiko.data.model.Modalita;

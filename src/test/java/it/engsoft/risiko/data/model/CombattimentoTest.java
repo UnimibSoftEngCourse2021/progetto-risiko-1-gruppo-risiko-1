@@ -2,6 +2,7 @@ package it.engsoft.risiko.data.model;
 
 import it.engsoft.risiko.exceptions.ModelDataException;
 import it.engsoft.risiko.data.repository.MappaRepository;
+import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,7 +48,7 @@ class CombattimentoTest {
         try {
             combattimento = new Combattimento(attaccante, attaccante, 3);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
 
         // non confinante
         try {
@@ -56,19 +57,19 @@ class CombattimentoTest {
             nonConf.setProprietario(giocDifensore);
             combattimento = new Combattimento(attaccante, nonConf, 3);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
 
         // troppe poche armate
         try {
             combattimento = new Combattimento(attaccante, difensore, 0);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
 
         // più di 3 armate
         try {
             combattimento = new Combattimento(attaccante, difensore, 4);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
 
 
         // più armate di quelle a disposizione
@@ -76,7 +77,7 @@ class CombattimentoTest {
         try {
             combattimento = new Combattimento(attaccante, difensore, 3);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
     }
 
     @Test
@@ -97,22 +98,22 @@ class CombattimentoTest {
 
         // più di 3 armate dif
         try {
-            combattimento.simulaCombattimento(4);
+            combattimento.esegui(4);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
 
         // armate negative dif
         try {
-            combattimento.simulaCombattimento(-1);
+            combattimento.esegui(-1);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
 
         // troppe armate dif
         difensore.rimuoviArmate(2);
         try {
-            combattimento.simulaCombattimento(3);
+            combattimento.esegui(3);
             fail();
-        } catch (ModelDataException ignored) { }
+        } catch (MossaIllegaleException ignored) { }
     }
 
     @Test
@@ -127,9 +128,12 @@ class CombattimentoTest {
         Stato difensore = attaccante.getConfinanti().get(0);
         difensore.aggiungiArmate(2);
         difensore.setProprietario(giocDifensore);
+        giocAttaccante.aggiungiStato(attaccante);
+        giocDifensore.aggiungiStato(difensore);
+
         Combattimento combattimento = new Combattimento(attaccante, difensore, 3);
 
-        combattimento.simulaCombattimento(2);
+        combattimento.esegui(2);
 
         assertEquals(3, combattimento.getTiriAttaccante().size());
         assertEquals(2, combattimento.getTiriDifensore().size());

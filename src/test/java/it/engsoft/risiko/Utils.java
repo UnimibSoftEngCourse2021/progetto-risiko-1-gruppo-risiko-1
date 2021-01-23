@@ -1,8 +1,8 @@
 package it.engsoft.risiko;
 
-import it.engsoft.risiko.dto.NuovaMappaDTO;
-import it.engsoft.risiko.dto.NuovoContinenteDTO;
-import it.engsoft.risiko.dto.NuovoStatoDTO;
+import it.engsoft.risiko.rest.dto.NuovaMappaDTO;
+import it.engsoft.risiko.rest.dto.NuovoContinenteDTO;
+import it.engsoft.risiko.rest.dto.NuovoStatoDTO;
 import it.engsoft.risiko.data.model.*;
 import it.engsoft.risiko.data.repository.MappaRepository;
 import org.springframework.beans.factory.annotation.Autowired;

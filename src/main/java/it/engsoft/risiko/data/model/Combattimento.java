@@ -1,6 +1,7 @@
 package it.engsoft.risiko.data.model;
 
 import it.engsoft.risiko.exceptions.ModelDataException;
+import it.engsoft.risiko.exceptions.MossaIllegaleException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,51 +12,59 @@ public class Combattimento {
     private final Stato statoAttaccante;
     private final Stato statoDifensore;
     private final int armateAttaccante;
-    private boolean conquista;
-    private int vittimeAttaccante;
-    private int vittimeDifensore;
+    private int armateDifensore;
+    private boolean eseguito = false;
+    private boolean conquista = false;
+    private int vittimeAttaccante = 0;
+    private int vittimeDifensore = 0;
 
     private final Random randomGenerator;
 
-    private final List<Integer> tiriAttaccante;
-    private final List<Integer> tiriDifensore;
+    private final List<Integer> tiriAttaccante = new ArrayList<>();
+    private final List<Integer> tiriDifensore = new ArrayList<>();
 
     public Combattimento(Stato statoAttaccante, Stato statoDifensore, int armateAttaccante) {
-        if (statiNonCompatibili(statoAttaccante, statoDifensore) || armateAttaccanteNonValide(statoAttaccante, armateAttaccante)) {
-            throw new ModelDataException("Combattimento constructor: not valid parameters!");
+        if (statoAttaccante == null || statoDifensore == null)
+            throw new ModelDataException("Stati combattimento non disponibili");
+
+        if (statiNonCompatibili(statoAttaccante, statoDifensore) ||
+                armateAttaccanteNonValide(statoAttaccante, armateAttaccante)) {
+            throw new MossaIllegaleException("Parametri combattimento non validi!");
         }
 
         this.statoAttaccante = statoAttaccante;
         this.statoDifensore = statoDifensore;
         this.armateAttaccante = armateAttaccante;
         randomGenerator = new Random();
-        tiriAttaccante = new ArrayList<>();
-        tiriDifensore = new ArrayList<>();
     }
 
-    private boolean statiNonCompatibili(Stato statoAttaccante, Stato statoDifensore) {
-        return statoAttaccante == null
-                || statoDifensore == null
-                || statoAttaccante.getProprietario().equals(statoDifensore.getProprietario())
-                || !statoAttaccante.isConfinante(statoDifensore);
-    }
+    public void esegui(final int armateDifensore) {
+        if (eseguito)
+            throw new ModelDataException("Combattimento già eseguito");
 
-    private boolean armateAttaccanteNonValide(Stato statoAttaccante, int nArmate) {
-        return statoAttaccante == null || statoAttaccante.getArmate() <= nArmate || nArmate < 1 || nArmate > 3;
-    }
-
-    private boolean armateDifensoreNonValide(Stato statoDifensore, int nArmate) {
-        return statoDifensore == null || nArmate < 1 || nArmate > statoDifensore.getArmate() || nArmate > 3;
-    }
-
-    public void simulaCombattimento(final int armateDifensore) {
         if (statiNonCompatibili(statoAttaccante, statoDifensore)
                 || armateAttaccanteNonValide(statoAttaccante, armateAttaccante)
                 || armateDifensoreNonValide(statoDifensore, armateDifensore)) {
-            throw new ModelDataException("Impostazioni simulaCombattimento non valide");
+            throw new MossaIllegaleException("Impostazioni combattimento non valide");
         }
 
+        this.armateDifensore = armateDifensore;
 
+        simulazioneLancioDadi();
+
+        conquista = (vittimeDifensore == statoDifensore.getArmate());
+        statoAttaccante.rimuoviArmate(vittimeAttaccante);
+        statoDifensore.rimuoviArmate(vittimeDifensore);
+        if (conquista) {
+            statoDifensore.getProprietario().rimuoviStato(statoDifensore);
+            statoDifensore.setProprietario(statoAttaccante.getProprietario());
+            statoAttaccante.getProprietario().aggiungiStato(statoDifensore);
+        }
+
+        eseguito = true;
+    }
+
+    private void simulazioneLancioDadi() {
         for (int i = 0; i < armateAttaccante; i++) {
             tiriAttaccante.add(lanciaDado());
         }
@@ -79,7 +88,6 @@ public class Combattimento {
                 vittimeAttaccante++;
             }
         }
-        this.conquista = (vittimeDifensore == statoDifensore.getArmate());
     }
 
     private Integer lanciaDado() {
@@ -112,4 +120,18 @@ public class Combattimento {
 
     public Stato getStatoDifensore() { return statoDifensore; }
 
+    public boolean isEseguito() { return eseguito; }
+
+    private boolean statiNonCompatibili(Stato statoAttaccante, Stato statoDifensore) {
+        return statoAttaccante.getProprietario().equals(statoDifensore.getProprietario())
+                || !statoAttaccante.isConfinante(statoDifensore);
+    }
+
+    private boolean armateAttaccanteNonValide(Stato statoAttaccante, int nArmate) {
+        return statoAttaccante == null || statoAttaccante.getArmate() <= nArmate || nArmate < 1 || nArmate > 3;
+    }
+
+    private boolean armateDifensoreNonValide(Stato statoDifensore, int nArmate) {
+        return statoDifensore == null || nArmate < 1 || nArmate > statoDifensore.getArmate() || nArmate > 3;
+    }
 }

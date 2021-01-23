@@ -1,7 +1,7 @@
 package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.Utils;
-import it.engsoft.risiko.dto.NuovoGiocoDTO;
+import it.engsoft.risiko.rest.dto.NuovoGiocoDTO;
 import it.engsoft.risiko.exceptions.DatiErratiException;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.data.model.Partita;

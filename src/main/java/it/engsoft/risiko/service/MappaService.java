@@ -1,8 +1,8 @@
 package it.engsoft.risiko.service;
 
-import it.engsoft.risiko.dao.*;
+import it.engsoft.risiko.rest.dao.*;
 import it.engsoft.risiko.data.creators.MappaBuilder;
-import it.engsoft.risiko.dto.*;
+import it.engsoft.risiko.rest.dto.*;
 import it.engsoft.risiko.exceptions.NotFoundException;
 import it.engsoft.risiko.data.model.*;
 import it.engsoft.risiko.exceptions.DatiErratiException;

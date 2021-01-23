@@ -1,4 +1,4 @@
-package it.engsoft.risiko.dao;
+package it.engsoft.risiko.rest.dao;
 
 import it.engsoft.risiko.data.model.Partita;
 

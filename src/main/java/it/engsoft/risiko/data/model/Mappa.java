@@ -1,5 +1,7 @@
 package it.engsoft.risiko.data.model;
 
+import it.engsoft.risiko.exceptions.NotFoundException;
+
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,6 +88,18 @@ public class Mappa {
         return continenti.stream()
                 .flatMap(continente -> continente.getStati().stream())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Ritorna lo stato della mappa corrispondente all'id passato come parametro.
+     * @param id l'id dello stato da cercare
+     * @return lo stato cercato
+     */
+    public Stato getStatoById(Long id) {
+        return getStati().stream().filter(s -> s.getId().equals(id)).findFirst()
+                .or(() -> {
+                    throw new NotFoundException("Stato non trovato");
+                }).get();
     }
 
     @Override
