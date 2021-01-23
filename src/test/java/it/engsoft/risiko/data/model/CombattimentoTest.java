@@ -51,10 +51,10 @@ class CombattimentoTest {
         } catch (MossaIllegaleException ignored) { }
 
         // non confinante
+        Stato nonConf = mappa.getStati().stream().filter(s -> !attaccante.getConfinanti().contains(s)).findFirst().get();
+        nonConf.aggiungiArmate(4);
+        nonConf.setProprietario(giocDifensore);
         try {
-            Stato nonConf = mappa.getStati().stream().filter(s -> !attaccante.getConfinanti().contains(s)).findFirst().get();
-            nonConf.aggiungiArmate(4);
-            nonConf.setProprietario(giocDifensore);
             combattimento = new Combattimento(attaccante, nonConf, 3);
             fail();
         } catch (MossaIllegaleException ignored) { }

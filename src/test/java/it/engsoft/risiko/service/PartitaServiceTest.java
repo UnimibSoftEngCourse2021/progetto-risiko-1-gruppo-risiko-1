@@ -32,8 +32,8 @@ class PartitaServiceTest {
         giocatori.add("due");
 
         // test numero giocatori < minimo consentito
+        NuovoGiocoDTO nuovoGiocoDTO1 = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
         try {
-            NuovoGiocoDTO nuovoGiocoDTO1 = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
             partitaService.nuovoGioco(nuovoGiocoDTO1);
             fail();
         } catch (DatiErratiException ignored) {
@@ -61,9 +61,9 @@ class PartitaServiceTest {
         }
 
         // test numero giocatori > massimo consentito
+        giocatori.add("sette");
+        nuovoGiocoDTO = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
         try {
-            giocatori.add("sette");
-            nuovoGiocoDTO = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
             partitaService.nuovoGioco(nuovoGiocoDTO);
             fail();
         } catch (DatiErratiException ignored) {
@@ -92,8 +92,8 @@ class PartitaServiceTest {
         partita.setNuovoGiocatoreAttivoPreparazione();
 
         // test fase diversa da INIZIALIZZAZIONE
+        partita.getTurno().setFase(Turno.Fase.RINFORZI);
         try {
-            partita.getTurno().setFase(Turno.Fase.RINFORZI);
             partitaService.iniziaTurno(partita);
             fail();
         } catch (MossaIllegaleException ignore) { }

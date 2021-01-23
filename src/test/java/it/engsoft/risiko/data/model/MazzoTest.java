@@ -84,15 +84,17 @@ class MazzoTest {
         giocatore.aggiungiCartaTerritorio(carta3);
 
         // test tris non valido
+        Mazzo mazzo = partita.getMazzo();
+        assertNotNull(mazzo);
         MossaIllegaleException e = assertThrows(MossaIllegaleException.class, () -> {
-            partita.getMazzo().valutaTris(tris, giocatore);
+            mazzo.valutaTris(tris, giocatore);
         });
         assertEquals("Mossa illegale: tris non valido", e.getMessage());
 
         // test carta non appartenente al giocatore
         giocatore.rimuoviCartaTerritorio(carta3);
         e = assertThrows(MossaIllegaleException.class, () -> {
-            partita.getMazzo().valutaTris(tris, giocatore);
+            mazzo.valutaTris(tris, giocatore);
         });
         assertEquals("Mossa illegale: le carte non appartengono al giocatore", e.getMessage());
 
