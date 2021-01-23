@@ -162,9 +162,9 @@ export default new Vuex.Store({
 
                 // se in fase preparazione, bisogna valutare se essa è terminata e qual è il prossimo giocatore attivo
                 commit("finePreparazione");
-                const { data } = await giocoService.nuovoTurno();
+                const response = await giocoService.nuovoTurno();
 
-                commit("setTurno", { turno: data, pescato: false });
+                commit("setTurno", { turno: response.data, pescato: false });
             } else if (preparazione) {
                 commit("setActivePlayer", giocatore);
             }

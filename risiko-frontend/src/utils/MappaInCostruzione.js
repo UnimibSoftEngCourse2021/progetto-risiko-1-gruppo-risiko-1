@@ -144,7 +144,7 @@ export class MappaInCostruzione {
             const v = queue.shift();
 
             for (const nomeConf of v.confinanti) {
-                const u = vertici.find(v => v.nome === nomeConf);
+                const u = vertici.find(vert => vert.nome === nomeConf);
 
                 if (!u.visitato) {
                     u.visitato = true;
@@ -153,11 +153,7 @@ export class MappaInCostruzione {
             }
         }
 
-        if (verticiVisitati < vertici.length) {
-            return false;
-        }
-
-        return true;
+        return verticiVisitati >= vertici.length;
     }
 
     asHierarchy() {

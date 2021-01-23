@@ -1,11 +1,11 @@
 import { vueApp } from "@/main.js";
 import axios from "axios";
 
-const config = {
+const axiosConfig = {
     baseURL: process.env.baseURL
 };
 
-const _axios = axios.create(config);
+const _axios = axios.create(axiosConfig);
 
 _axios.interceptors.request.use(
     config => {
