@@ -73,35 +73,42 @@ public class Partita {
         this.fasePreparazione = fasePreparazione;
     }
 
-    public void iniziaPrimoTurno() {
-        if (fasePreparazione)
-            throw new ModelDataException("Devi prima finire la fase di preparazione");
-
-        giocatoreAttivo = giocatori.get(0);
-        turno = new Turno(1);
-    }
-
     public void nuovoTurno() {
         if (fasePreparazione)
             throw new ModelDataException("Devi prima finire la fase di preparazione");
         if (giocatoreAttivo.getTruppeDisponibili() > 0)
             throw new ModelDataException("Il giocatore di turno deve prima posizionare le sue armate");
 
-        setProssimoGiocatoreAttivo();
+        giocatoreAttivo = prossimoGiocatoreDisponibile();
         turno = new Turno(turno.getNumero() + 1);
     }
 
-    public void setProssimoGiocatoreAttivo() {
-        int index = giocatori.indexOf(giocatoreAttivo);
+    public void setNuovoGiocatoreAttivoPreparazione() {
+        if (!fasePreparazione)
+            throw new ModelDataException("La fase di preparazione è finita");
+        Giocatore prossimo = prossimoGiocatoreDisponibile();
 
+        if (prossimo.getTruppeDisponibili() == 0) {
+            fasePreparazione = false;
+            giocatoreAttivo = giocatori.get(0);
+            turno = new Turno(1);
+        } else {
+            giocatoreAttivo = prossimo;
+        }
+    }
+
+    private Giocatore prossimoGiocatoreDisponibile() {
+        int index = giocatori.indexOf(giocatoreAttivo);
+        Giocatore ris = null;
         boolean set = false;
         while (!set) {
             index = (index + 1) % giocatori.size();
             if (!giocatori.get(index).isEliminato()) {
-                giocatoreAttivo = giocatori.get(index);
+                ris = giocatori.get(index);
                 set = true;
             }
         }
+        return ris;
     }
 
     private void assegnaArmateIniziali() {

@@ -89,9 +89,7 @@ class PartitaServiceTest {
             fail();
         } catch (MossaIllegaleException ignore) { }
 
-        partita.setFasePreparazione(false);
-
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
 
         // test fase diversa da INIZIALIZZAZIONE
         try {

@@ -110,8 +110,7 @@ class PartitaControllerTest {
         // rinforzo normale
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
 
 
 
@@ -147,8 +146,7 @@ class PartitaControllerTest {
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
 
         // partita null
         this.mockMvc.perform(post("/api/inizia-turno"))
@@ -170,8 +168,7 @@ class PartitaControllerTest {
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
         partita.getTurno().setFase(Turno.Fase.RINFORZI);
 
         assertFalse(partita.isFasePreparazione());
@@ -222,8 +219,7 @@ class PartitaControllerTest {
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
         partita.getTurno().setFase(Turno.Fase.RINFORZI);
         partita.getTurno().setCombattimentoInCorso(null);
 
@@ -320,8 +316,7 @@ class PartitaControllerTest {
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
         partita.getTurno().setFase(Turno.Fase.RINFORZI);
         partita.getTurno().setCombattimentoInCorso(null);
 
@@ -450,8 +445,7 @@ class PartitaControllerTest {
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
         partita.getTurno().setFase(Turno.Fase.RINFORZI);
 
         assertNull(partita.getTurno().getCombattimentoInCorso());
@@ -533,8 +527,7 @@ class PartitaControllerTest {
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
         partita.getTurno().setFase(Turno.Fase.RINFORZI);
         partita.getTurno().setCombattimentoInCorso(null);
 
@@ -606,8 +599,7 @@ class PartitaControllerTest {
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
         partita.getTurno().setFase(Turno.Fase.RINFORZI);
         partita.getTurno().registraConquista();
 

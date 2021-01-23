@@ -89,14 +89,7 @@ public class PartitaService {
             int armateDaPiazzare = Math.min(3, giocatore.getTruppeDisponibili());
             eseguiRinforzo(rinforzoDTO, armateDaPiazzare, partita);
 
-            // imposta il prossimo giocatore attivo
-            partita.setProssimoGiocatoreAttivo();
-
-            // se il prossimo giocatore non ha armate da piazzare allora la preparazione è finita: inizia la partita
-            if (partita.getGiocatoreAttivo().getTruppeDisponibili() == 0) {
-                partita.setFasePreparazione(false);
-                partita.iniziaPrimoTurno();
-            }
+            partita.setNuovoGiocatoreAttivoPreparazione();
 
         } else { // è un rinforzo di inizio turno
             if (!partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
@@ -162,19 +155,16 @@ public class PartitaService {
     }
 
     public void attacco(AttaccoDTO attaccoDTO, Partita partita) {
-        if (partita.isFasePreparazione())
-            throw new MossaIllegaleException("Mossa illegale: impossibile attaccare in fase di preparazione");
-
-        if (partita.getTurno().getFase().equals(Turno.Fase.SPOSTAMENTO))
-            throw new MossaIllegaleException("Mossa illegale: impossibile attaccare in fase di spostamento");
+        if (partita.isFasePreparazione() || partita.getTurno().getFase().equals(Turno.Fase.SPOSTAMENTO))
+            throw new MossaIllegaleException("Mossa illegale: impossibile attaccare in questa fase di gioco");
 
         if (partita.getTurno().getCombattimentoInCorso() != null)
-            throw new MossaIllegaleException("Mossa illegale: impossibile attaccare durante un combattimento gia' in corso");
+            throw new MossaIllegaleException("Mossa illegale: un combattimento è già in corso");
 
         Giocatore giocatoreAtt = partita.getGiocatoreAttivo();
 
         if (giocatoreAtt.getTruppeDisponibili() != 0)
-            throw new MossaIllegaleException("Mossa illegale: impossibile attaccare se ci sono ancora truppe da posizionare");
+            throw new MossaIllegaleException("Mossa illegale: impossibile attaccare prima di aver completato i rinforzi");
 
         if (!giocatoreAtt.getNome().equals(attaccoDTO.getGiocatore()))
             throw new MossaIllegaleException("Mossa illegale: non è il tuo turno");
@@ -192,15 +182,6 @@ public class PartitaService {
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
-        if (partita.isFasePreparazione())
-            throw new MossaIllegaleException("Mossa illegale: si e' in fase di preparazione");
-
-        if (partita.getGiocatoreAttivo().getTruppeDisponibili() != 0)
-            throw new MossaIllegaleException("Mossa illegale: il giocatore attivo ha ancora truppe da posizionare");
-
-        if (!partita.getTurno().getFase().equals(Turno.Fase.COMBATTIMENTI))
-            throw new MossaIllegaleException("Mossa illegale: non si e' in fase di combattimento");
-
         Combattimento combattimento = partita.getTurno().getCombattimentoInCorso();
         if (combattimento == null || combattimento.isEseguito())
             throw new MossaIllegaleException("Mossa illegale: non c'e' un combattimento in corso");
@@ -242,12 +223,6 @@ public class PartitaService {
         if (!giocatore.getNome().equals(spostamentoDTO.getGiocatore()))
             throw new MossaIllegaleException("Mossa illegale: spostamento non chiamato dal giocatore attivo");
 
-        if (!statoArrivo.getProprietario().equals(statoPartenza.getProprietario()))
-            throw new MossaIllegaleException("Mossa illegale: stati non appartenenti allo stesso giocatore");
-
-        if (!statoPartenza.isConfinante(statoArrivo))
-            throw new MossaIllegaleException("Mossa illegale: Stati non confinanti");
-
         Combattimento combattimento = partita.getTurno().getCombattimentoInCorso();
 
         int minimoArmate = 1;
@@ -261,10 +236,9 @@ public class PartitaService {
         if (spostamentoDTO.getArmate() < minimoArmate || spostamentoDTO.getArmate() >= statoPartenza.getArmate())
             throw new MossaIllegaleException("Numero armate non valido");
 
-        statoPartenza.rimuoviArmate(spostamentoDTO.getArmate());
-        statoArrivo.aggiungiArmate(spostamentoDTO.getArmate());
+        // controlla che siano confinanti e dello stesso giocatore prima di eseguire lo spostamento
+        statoPartenza.spostaArmate(statoArrivo, spostamentoDTO.getArmate());
         partita.getTurno().setCombattimentoInCorso(null);
-
         return giocatore.obRaggiunto();
     }
 

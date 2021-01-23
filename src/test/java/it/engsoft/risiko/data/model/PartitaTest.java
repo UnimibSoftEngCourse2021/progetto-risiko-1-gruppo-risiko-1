@@ -87,12 +87,6 @@ class PartitaTest {
 
         assertTrue(partita.isFasePreparazione());
 
-        // prova a impostare il turno mentre in fase di preparazione
-        try {
-            partita.iniziaPrimoTurno();
-            fail();
-        } catch (ModelDataException ignored) { }
-
         // prova a iniziare il nuovo turno mentre in fase di preparazione
         try {
             partita.nuovoTurno();
@@ -151,15 +145,15 @@ class PartitaTest {
 
         Giocatore giocatoreAttivo = partita.getGiocatoreAttivo();
         assertEquals(giocatori.get(0), giocatoreAttivo);
-        partita.setProssimoGiocatoreAttivo();
+        partita.setNuovoGiocatoreAttivoPreparazione();
 
         giocatoreAttivo = partita.getGiocatoreAttivo();
         assertEquals(giocatori.get(1), giocatoreAttivo);
-        partita.setProssimoGiocatoreAttivo();
+        partita.setNuovoGiocatoreAttivoPreparazione();
 
         giocatoreAttivo = partita.getGiocatoreAttivo();
         assertEquals(giocatori.get(2), giocatoreAttivo);
-        partita.setProssimoGiocatoreAttivo();
+        partita.setNuovoGiocatoreAttivoPreparazione();
 
         giocatoreAttivo = partita.getGiocatoreAttivo();
         assertEquals(giocatori.get(0), giocatoreAttivo);
@@ -183,8 +177,8 @@ class PartitaTest {
             g.setTruppeDisponibili(0);
         }
 
-        partita.setFasePreparazione(false);
-        partita.iniziaPrimoTurno();
+        partita.setNuovoGiocatoreAttivoPreparazione();
+        assertFalse(partita.isFasePreparazione());
 
         Giocatore giocAttivo = partita.getGiocatoreAttivo();
         assertEquals(giocatori.get(0), giocAttivo);

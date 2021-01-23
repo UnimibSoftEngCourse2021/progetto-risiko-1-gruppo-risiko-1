@@ -1,6 +1,7 @@
 package it.engsoft.risiko.data.model;
 
 import it.engsoft.risiko.exceptions.ModelDataException;
+import it.engsoft.risiko.exceptions.MossaIllegaleException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -104,6 +105,23 @@ public class Stato {
             }
             conf.confinanti.remove(stato);
         });
+    }
+
+    /**
+     * Sposta un certo numero di armate verso uno stato confinante ed appartenente allo stesso giocatore.
+     * @param destinazione lo stato destinazione dello spostamento
+     * @param quantita il numero di armate da spostare
+     */
+    public void spostaArmate(Stato destinazione, int quantita) {
+        if (!confinanti.contains(destinazione))
+            throw new MossaIllegaleException("Non puoi spostare le armate tra stati non confinanti");
+        if (!proprietario.equals(destinazione.getProprietario()))
+            throw new MossaIllegaleException("Non puoi spostare le armate verso uno stato che non ti appartiene");
+        if (quantita < 1 || quantita >= armate)
+            throw new MossaIllegaleException("Numero di armate dello spostamento non valide");
+
+        this.rimuoviArmate(quantita);
+        destinazione.aggiungiArmate(quantita);
     }
 
     @Override
