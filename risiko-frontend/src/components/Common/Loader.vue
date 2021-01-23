@@ -1,14 +1,16 @@
 <template>
-  <v-overlay>
+  <v-overlay v-if="loading">
     <v-progress-circular color="white" indeterminate size="100"/>
   </v-overlay>
 </template>
 
 <script>
-export default {
-name: "Loader"
-}
-</script>
+import {mapGetters} from "vuex";
 
-<style scoped>
-</style>
+export default {
+    name: "Loader",
+  computed: {
+      ...mapGetters(["loading"])
+  }
+};
+</script>

@@ -1,11 +1,12 @@
 <template>
   <div class="d-flex flex-column align-center">
-
+    <!-- Tabella continenti -->
     <v-data-table
         :headers="headers"
         :items="mappaInCostruzione.continenti"
         :items-per-page="5"
     >
+      <!-- Titolo e pulsante inserimento -->
       <template v-slot:top>
         <v-row class="my-4">
           <h4 class="text-h6">Continenti</h4>
@@ -14,7 +15,8 @@
         </v-row>
       </template>
 
-      <template v-slot:item.actions="{ item }">
+      <!-- Slot: azioni -->
+      <template v-slot:[`item.actions`]="{ item }">
         <v-btn icon :disabled="mappaInCostruzione.contieneStati(item.nome)"
                @click="mappaInCostruzione.removeContinente(item.nome)">
           <v-icon>mdi-delete</v-icon>
@@ -22,6 +24,7 @@
       </template>
     </v-data-table>
 
+    <!-- Inserimento continente dialog -->
     <v-dialog max-width="700px" v-model="showDialog">
       <v-card>
         <v-card-title>Aggiungi nuovo continente</v-card-title>
@@ -58,52 +61,50 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
-  name: "ContinentiTable",
-  data() {
-    return {
-      headers: [
-        {
-          text: "Nome",
-          value: "nome"
-        },
-        {
-          text: "Armate bonus",
-          value: "armateBonus"
-        },
-        {
-          text: "Operazioni",
-          value: "actions",
-          sortable: false
-        }
-      ],
-      nuovoContinente: { nome: "", armateBonus: 3 },
-      showDialog: false,
-      formValid: false
-    }
-  },
-  computed: {
-    ...mapGetters(["mappaInCostruzione"])
-  },
-  methods: {
-    nomeValido(nome) {
-      if (!nome)
-        return "Oggetto obbligatorio"
-      if (this.mappaInCostruzione.continentePresente(nome))
-        return "Nome già utilizzato"
-      return true
+    name: "ContinentiTable",
+    data() {
+        return {
+            headers: [
+                {
+                    text: "Nome",
+                    value: "nome"
+                },
+                {
+                    text: "Armate bonus",
+                    value: "armateBonus"
+                },
+                {
+                    text: "Operazioni",
+                    value: "actions",
+                    sortable: false
+                }
+            ],
+            nuovoContinente: { nome: "", armateBonus: 3 },
+            showDialog: false,
+            formValid: false
+        };
     },
-    aggiungiContinente() {
-      this.mappaInCostruzione.addContinente(this.nuovoContinente.nome, this.nuovoContinente.armateBonus)
-      this.nuovoContinente = { nome: "", armateBonus: 3 }
-      this.showDialog = false
+    computed: {
+        ...mapGetters(["mappaInCostruzione"])
+    },
+    methods: {
+        nomeValido(nome) {
+            if (!nome) {
+                return "Oggetto obbligatorio";
+            }
+            if (this.mappaInCostruzione.continentePresente(nome)) {
+                return "Nome già utilizzato";
+            }
+            return true;
+        },
+        aggiungiContinente() {
+            this.mappaInCostruzione.addContinente(this.nuovoContinente.nome, this.nuovoContinente.armateBonus);
+            this.nuovoContinente = { nome: "", armateBonus: 3 };
+            this.showDialog = false;
+        }
     }
-  }
-}
+};
 </script>
-
-<style scoped>
-
-</style>

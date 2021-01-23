@@ -20,127 +20,79 @@
 <script>
 
 import {mapGetters} from "vuex";
-
-let network = null;
-let nodes = null
 import * as visNet from "vis-network";
 import * as visData from "vis-data";
-import utils from "@/store/utils";
+import networkUtils from "@/utils/networkUtils";
+
+let network = null;
+let nodes = null;
 
 export default {
-  name: "Board",
-  data() {
-    return {
-      options: {
-        groups: { useDefaultGroups: false },
-        nodes: {
-          shape: "dot",
+    name: "Board",
+    data() {
+        return {
+            options: networkUtils.gameNetworkOptions,
+            hoverNodeInfo: ""
+        };
+    },
+  props: ["onNodeSelected"],
 
-          size: 30,
-          font: {
-            size: 38,
-            color: "#ffffff",
-            align: "center"
-          },
-          borderWidth: 2,
-
-          chosen: {
-            node: function (values) { values.size = 35; values.color = "black" }
-          }
-        },
-        edges: {
-          width: 2,
-        },
-        interaction: {
-          dragView: false,
-          zoomView: false,
-          dragNodes: false,
-          hover: true,
-          tooltipDelay: 0
-        },
-        physics: {
-          solver: "forceAtlas2Based",
-          stabilization: {
-            iterations: 2000
-          },
-          forceAtlas2Based: {
-            avoidOverlap: 1
-          }
+    watch: {
+        // update network's nodes when their data change
+        mapNetwork: {
+            handler(value) {
+              value.nodes.forEach(node => nodes.update(node))
+            },
+            deep: true
         }
+    },
+
+    mounted() {
+        const container = document.getElementById("network");
+
+        nodes = new visData.DataSet(this.mapNetwork.nodes);
+        const edges = new visData.DataSet(this.mapNetwork.edges);
+
+        this.giocatori.forEach(giocatore =>
+            this.options.groups[giocatore.nome] = { color: { ...this.gameColors[giocatore.nome] } }
+        );
+        network = new visNet.Network(container, { nodes, edges }, this.options);
+        network.on("select", this.selectNode);
+        network.on("hoverNode", this.hoverNode);
+        network.on("blurNode", this.blurNode);
+    },
+
+    computed: {
+        ...mapGetters(["mapNetwork", "mappaGioco", "giocatori", "giocatoreAttivo", "gameColors"]),
+        colors() {
+          return this.giocatori.map(g => { return {
+            giocatore: g.nome,
+            color: this.gameColors[g.nome].background
+          }})
+        }
+    },
+
+    methods: {
+      evidenziaStatiContinente(continenteId) {
+        const idStati = this.mappaGioco.stati.filter(stato => stato.continente === continenteId).map(stato => stato.id);
+        network.selectNodes(idStati, false);
       },
-      hoverNodeInfo: ""
-    }
-  },
-
-  watch: {
-    mapNetwork: {
-      handler: function (value) {
-        value.nodes.forEach(node => {
-          let {id, label, group} = node
-          nodes.update({id, label, group})
-        })
+      selectNode(selectedItems) {
+          if (selectedItems.nodes.length > 0)
+            this.$props.onNodeSelected({ id: selectedItems.nodes[0] })
       },
-      deep: true
-    }
-  },
-
-  mounted() {
-    // create a network
-    let container = document.getElementById('network');
-    nodes = new visData.DataSet(this.mapNetwork.nodes)
-    let edges = new visData.DataSet(this.mapNetwork.edges)
-
-    for (let giocatore of this.giocatori) {
-      this.options.groups[giocatore.nome] = { color: { ...this.gameColors[giocatore.nome] } }
-    }
-
-    network = new visNet.Network(container, {nodes, edges}, this.options)
-    network.on("select", (data) => {
-      if (data.nodes.length > 0)
-        this.$emit("nodeSelected", {id: data.nodes[0]})
-    })
-
-    network.on("hoverNode", ({ node }) => {
-      let continente = this.trovaContinente(node)
-      this.evidenziaStatiContinente(continente.id)
-      let stato = utils.trovaStatoId(this.mappaGioco, node)
-      this.hoverNodeInfo = continente.nome.toUpperCase() + " - " + stato.nome
-    })
-
-    network.on("blurNode", () => {
-      network.unselectAll()
-      this.hoverNodeInfo = ""
-    })
-  },
-
-  computed: {
-    ...mapGetters(["mapNetwork", "mappaGioco", "giocatori", "giocatoreAttivo", "gameColors"]),
-    colors() {
-      let ris = []
-      for (let giocatore of this.giocatori) {
-        ris.push({
-          giocatore: giocatore.nome,
-          color: this.gameColors[giocatore.nome].background
-        })
+      hoverNode({ node }) {
+        const stato = this.mappaGioco.trovaStatoId(node)
+        const continente = this.mappaGioco.continenti.find(c => c.id === stato.continente);
+        this.evidenziaStatiContinente(continente.id);
+        this.hoverNodeInfo = `${continente.nome.toUpperCase()} - ${stato.nome}`;
+      },
+      blurNode() {
+        network.unselectAll();
+        this.hoverNodeInfo = "";
       }
-      return ris
     }
-  },
-
-  methods: {
-    trovaStatiInContinente(continenteId) {
-      return this.mappaGioco.stati.filter(stato => stato.continente === continenteId).map(stato => stato.id)
-    },
-    trovaContinente(statoId) {
-      let continenteId = this.mappaGioco.stati.find(stato => stato.id === statoId).continente
-      return this.mappaGioco.continenti.find(c => c.id === continenteId)
-    },
-    evidenziaStatiContinente(continenteId) {
-      let nodeIds = this.trovaStatiInContinente(continenteId)
-      network.selectNodes(nodeIds, false)
-    }
-  }
-}
+};
 </script>
 
 <style scoped lang="scss">

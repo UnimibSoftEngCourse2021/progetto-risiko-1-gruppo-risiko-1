@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import './plugins/axios'
-import App from './App.vue'
-import store from './store'
-import vuetify from './plugins/vuetify';
+import Vue from "vue";
+import "./plugins/axios";
+import App from "./App.vue";
+import store from "./store";
+import vuetify from "./plugins/vuetify";
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
-let vueApp = new Vue({
-  store,
-  vuetify,
-  render: h => h(App)
-})
+const vueApp = new Vue({
+    store,
+    vuetify,
+    render: h => h(App)
+});
 
-vueApp.$mount('#app')
+vueApp.$mount("#app");
 
 export { vueApp };
