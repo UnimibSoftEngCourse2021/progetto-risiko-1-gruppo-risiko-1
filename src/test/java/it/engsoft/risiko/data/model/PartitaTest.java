@@ -65,7 +65,7 @@ class PartitaTest {
             fail();
         } catch (ModelDataException ignored) { }
 
-        partita.getMazzo().distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita.getGiocatori());
 
         // prova a chiedere il giocatore attivo prima di aver occupato i territori
         try {
@@ -113,7 +113,7 @@ class PartitaTest {
                 giocatori.stream().anyMatch(g -> g.getTruppeDisponibili() != armateIniziali)
         );
 
-        partita.getMazzo().distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita.getGiocatori());
         partita.occupazioneInizialeTerritori();
 
         // ogni stato ha esattamente un'armata
@@ -137,7 +137,7 @@ class PartitaTest {
         }
 
         Partita partita = new Partita(mappa, giocatori, modalita);
-        partita.getMazzo().distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita.getGiocatori());
         partita.occupazioneInizialeTerritori();
 
         Giocatore giocatoreAttivo = partita.getGiocatoreAttivo();
@@ -165,7 +165,7 @@ class PartitaTest {
             giocatori.add(new Giocatore("Giocatore" + i));
         }
         Partita partita = new Partita(mappa, giocatori, modalita);
-        partita.getMazzo().distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita.getGiocatori());
         partita.occupazioneInizialeTerritori();
 
         // prima assegniamo arbitrariamente i rinforzi

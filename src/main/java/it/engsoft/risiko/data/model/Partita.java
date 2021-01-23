@@ -25,12 +25,13 @@ public class Partita {
         this.mappa = mappa;
         this.modalita = modalita;
         this.giocatori = giocatori;
-        this.faseTurno = FaseTurno.INIZIALIZZAZIONE;
-        this.fasePreparazione = true;
-        this.conquista = false;
+        faseTurno = FaseTurno.INIZIALIZZAZIONE;
+        fasePreparazione = true;
+        conquista = false;
+        combattimento = null;
 
         territoriOccupati = false;
-        mazzo = new Mazzo();
+        mazzo = new Mazzo(mappa.getStati());
         assegnaArmateIniziali();
     }
 

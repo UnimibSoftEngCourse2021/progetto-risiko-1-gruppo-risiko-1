@@ -47,7 +47,7 @@ public class PartitaService {
         Partita partita = new Partita(mappa, giocatori, modalita);
 
         // distribuisci le carte territorio, comprende assegnazione degli stati
-        partita.getMazzo().distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(giocatori);
 
         partita.occupazioneInizialeTerritori();
 

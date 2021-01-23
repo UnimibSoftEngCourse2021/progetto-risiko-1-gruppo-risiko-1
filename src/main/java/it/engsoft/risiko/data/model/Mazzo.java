@@ -10,15 +10,16 @@ import java.util.Optional;
 public class Mazzo {
     private final List<CartaTerritorio> carte = new ArrayList<>();
 
+    public Mazzo(List<Stato> stati) {
+        generaMazzo(stati);
+    }
+
     public List<CartaTerritorio> getCarte() { return carte; }
 
     /**
      * Genera il mazzo e distribuisce le carte ai giocatori.
      */
-    public void distribuisciCarte(Partita partita) {
-
-        // Generazione mazzo
-        generaMazzo(this.carte, partita.getMappa());
+    public void distribuisciCarte(List<Giocatore> giocatori) {
 
         // mescola il mazzo
         Collections.shuffle(this.carte);
@@ -29,34 +30,33 @@ public class Mazzo {
         for (CartaTerritorio cartaTerritorio : this.carte) {
             if (cartaTerritorio.getFigura() != CartaTerritorio.Figura.JOLLY) {
                 // Assegna lo stato rappresentato dalla carta al giocatore
-                partita.getGiocatori().get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
-                cartaTerritorio.getStatoRappresentato().setProprietario(partita.getGiocatori().get(g));
+                giocatori.get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
+                cartaTerritorio.getStatoRappresentato().setProprietario(giocatori.get(g));
 
-                g = (g + 1) % partita.getGiocatori().size();
+                g = (g + 1) % giocatori.size();
             }
         }
 
         // inverte l'ordine dei giocatori in modo che per primi ci siano quelli con meno territori
         // (ossia più armate da posizionare)
-        Collections.reverse(partita.getGiocatori());
+        Collections.reverse(giocatori);
     }
 
     /**
      * Crea le carte e le aggiunge al mazzo.
-     *
-     * @param mappa: la mappa su cui si svolge la partita
+     * @param stati la lista degli stati a cui associare le carte territorio
      */
-    private void generaMazzo(List<CartaTerritorio> mazzo, Mappa mappa) {
+    private void generaMazzo(List<Stato> stati) {
         // numStati viene utilizzato per contare gli stati e come ID per inizializzare le carte
         int idCount = 0;
 
-        for (Stato stato: mappa.getStati()) {
+        for (Stato stato: stati) {
             if (idCount % 3 == 0)
-                mazzo.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.CANNONE));
+                carte.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.CANNONE));
             else if (idCount % 3 == 1)
-                mazzo.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.CAVALLO));
+                carte.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.CAVALLO));
             else
-                mazzo.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.FANTE));
+                carte.add(new CartaTerritorio(idCount, stato, CartaTerritorio.Figura.FANTE));
             idCount++;
         }
 
@@ -65,7 +65,7 @@ public class Mazzo {
         // aggiunge i jolly al mazzo
         for (int i = 0; i < numJolly; i++) {
             CartaTerritorio jolly = new CartaTerritorio(idCount + i, null, CartaTerritorio.Figura.JOLLY);
-            mazzo.add(jolly);
+            carte.add(jolly);
         }
     }
 

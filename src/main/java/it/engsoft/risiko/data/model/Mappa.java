@@ -96,10 +96,10 @@ public class Mappa {
      * @return lo stato cercato
      */
     public Stato getStatoById(Long id) {
-        return getStati().stream().filter(s -> s.getId().equals(id)).findFirst()
-                .or(() -> {
-                    throw new NotFoundException("Stato non trovato");
-                }).get();
+        Optional<Stato> stato = getStati().stream().filter(s -> s.getId().equals(id)).findFirst();
+        if (stato.isEmpty())
+            throw new NotFoundException("Stato non trovato");
+        return stato.get();
     }
 
     @Override

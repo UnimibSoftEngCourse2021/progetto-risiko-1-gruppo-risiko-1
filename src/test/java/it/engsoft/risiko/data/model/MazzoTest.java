@@ -103,7 +103,7 @@ class MazzoTest {
 
     private Partita init() {
         Partita partita = utils.initPartita();
-        partita.getMazzo().distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita.getGiocatori());
 
         return partita;
     }
