@@ -2,14 +2,13 @@ package it.engsoft.risiko.data.model;
 
 import it.engsoft.risiko.exceptions.ModelDataException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Partita {
     private final List<Giocatore> giocatori;
     private final Mappa mappa;
     private final Modalita modalita;
-    private final List<CartaTerritorio> mazzo;
+    private final Mazzo mazzo;
     private Giocatore giocatoreAttivo;
     private Turno turno;
     private boolean fasePreparazione;
@@ -24,7 +23,7 @@ public class Partita {
         this.modalita = modalita;
         fasePreparazione = true;
         territoriOccupati = false;
-        mazzo = new ArrayList<>();
+        mazzo = new Mazzo();
         assegnaArmateIniziali();
     }
 
@@ -50,6 +49,8 @@ public class Partita {
         this.turno = turno;
     }
 
+
+
     public Mappa getMappa() {
         return mappa;
     }
@@ -58,9 +59,7 @@ public class Partita {
         return modalita;
     }
 
-    public List<CartaTerritorio> getMazzo() {
-        return mazzo;
-    }
+    public Mazzo getMazzo() { return mazzo; }
 
     public boolean isFasePreparazione() {
         return fasePreparazione;

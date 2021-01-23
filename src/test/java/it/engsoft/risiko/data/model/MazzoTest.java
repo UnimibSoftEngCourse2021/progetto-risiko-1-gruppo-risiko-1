@@ -1,8 +1,7 @@
-package it.engsoft.risiko.service;
+package it.engsoft.risiko.data.model;
 
 import it.engsoft.risiko.Utils;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
-import it.engsoft.risiko.data.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,13 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-class CarteTerritorioServiceTest {
-    private final CarteTerritorioService carteTerritorioService;
+class MazzoTest {
     private final Utils utils;
 
     @Autowired
-    public CarteTerritorioServiceTest(CarteTerritorioService carteTerritorioService, Utils utils) {
-        this.carteTerritorioService = carteTerritorioService;
+    public MazzoTest(Utils utils) {
         this.utils = utils;
     }
 
@@ -26,7 +23,7 @@ class CarteTerritorioServiceTest {
     void testCreazioneMazzo() {
         Partita partita = init();
 
-        assertEquals(44, partita.getMazzo().size());
+        assertEquals(44, partita.getMazzo().getCarte().size());
         assertEquals(8, partita.getGiocatori().get(0).getStati().size(), 1);
     }
 
@@ -34,13 +31,11 @@ class CarteTerritorioServiceTest {
     void testPesca() {
         Partita partita = init();
 
-        CartaTerritorio cartaValida = carteTerritorioService.pescaCarta(partita.getMazzo(), partita.getGiocatori().get(0));
-        CartaTerritorio cartaNull = carteTerritorioService.pescaCarta(new ArrayList<CartaTerritorio>(), partita.getGiocatori().get(0));
+        CartaTerritorio cartaValida = partita.getMazzo().pescaCarta(partita.getGiocatori().get(0));
 
-        assertEquals(43, partita.getMazzo().size());
+        assertEquals(43, partita.getMazzo().getCarte().size());
         assertEquals(1, partita.getGiocatori().get(0).getCarteTerritorio().size());
         assertNotNull(cartaValida);
-        assertNull(cartaNull);
     }
 
     @Test
@@ -50,21 +45,21 @@ class CarteTerritorioServiceTest {
 
         List<Integer> tris = new ArrayList<>();
 
-        CartaTerritorio carta1 = findCarta(partita.getMazzo(), CartaTerritorio.Figura.CANNONE);
+        CartaTerritorio carta1 = findCarta(partita.getMazzo().getCarte(), CartaTerritorio.Figura.CANNONE);
         tris.add(carta1.getId());
         giocatore.aggiungiCartaTerritorio(carta1);
 
-        CartaTerritorio carta2 = findCarta(partita.getMazzo(), CartaTerritorio.Figura.CANNONE);
+        CartaTerritorio carta2 = findCarta(partita.getMazzo().getCarte(), CartaTerritorio.Figura.CANNONE);
         tris.add(carta2.getId());
         giocatore.aggiungiCartaTerritorio(carta2);
 
-        CartaTerritorio carta3 = findCarta(partita.getMazzo(), CartaTerritorio.Figura.JOLLY);
+        CartaTerritorio carta3 = findCarta(partita.getMazzo().getCarte(), CartaTerritorio.Figura.JOLLY);
         tris.add(carta3.getId());
         giocatore.aggiungiCartaTerritorio(carta3);
 
-        carteTerritorioService.valutaTris(partita.getMazzo(), tris, giocatore);
+        partita.getMazzo().valutaTris(tris, giocatore);
 
-        assertEquals(44, partita.getMazzo().size());
+        assertEquals(44, partita.getMazzo().getCarte().size());
         assertEquals(0, giocatore.getCarteTerritorio().size());
         assertTrue(giocatore.getTruppeDisponibili() >= 12);
     }
@@ -76,37 +71,37 @@ class CarteTerritorioServiceTest {
 
         List<Integer> tris = new ArrayList<>();
 
-        CartaTerritorio carta1 = findCarta(partita.getMazzo(), CartaTerritorio.Figura.CANNONE);
+        CartaTerritorio carta1 = findCarta(partita.getMazzo().getCarte(), CartaTerritorio.Figura.CANNONE);
         tris.add(carta1.getId());
         giocatore.aggiungiCartaTerritorio(carta1);
 
-        CartaTerritorio carta2 = findCarta(partita.getMazzo(), CartaTerritorio.Figura.CANNONE);
+        CartaTerritorio carta2 = findCarta(partita.getMazzo().getCarte(), CartaTerritorio.Figura.CANNONE);
         tris.add(carta2.getId());
         giocatore.aggiungiCartaTerritorio(carta2);
 
-        CartaTerritorio carta3 = findCarta(partita.getMazzo(), CartaTerritorio.Figura.FANTE);
+        CartaTerritorio carta3 = findCarta(partita.getMazzo().getCarte(), CartaTerritorio.Figura.FANTE);
         tris.add(carta3.getId());
         giocatore.aggiungiCartaTerritorio(carta3);
 
         // test tris non valido
         MossaIllegaleException e = assertThrows(MossaIllegaleException.class, () -> {
-            carteTerritorioService.valutaTris(partita.getMazzo(), tris, giocatore);
+            partita.getMazzo().valutaTris(tris, giocatore);
         });
         assertEquals("Mossa illegale: tris non valido", e.getMessage());
 
         // test carta non appartenente al giocatore
         giocatore.rimuoviCartaTerritorio(carta3);
         e = assertThrows(MossaIllegaleException.class, () -> {
-            carteTerritorioService.valutaTris(partita.getMazzo(), tris, giocatore);
+            partita.getMazzo().valutaTris(tris, giocatore);
         });
         assertEquals("Mossa illegale: le carte non appartengono al giocatore", e.getMessage());
 
-        assertEquals(41, partita.getMazzo().size());
+        assertEquals(41, partita.getMazzo().getCarte().size());
     }
 
     private Partita init() {
         Partita partita = utils.initPartita();
-        carteTerritorioService.distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita);
 
         return partita;
     }

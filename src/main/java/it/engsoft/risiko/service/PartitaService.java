@@ -14,12 +14,10 @@ import java.util.stream.Collectors;
 @Service
 public class PartitaService {
     private final MappaService mappaService;
-    private final CarteTerritorioService carteTerritorioService;
 
     @Autowired
-    public PartitaService( MappaService mappaService, CarteTerritorioService carteTerritorioService) {
+    public PartitaService( MappaService mappaService) {
         this.mappaService = mappaService;
-        this.carteTerritorioService = carteTerritorioService;
     }
 
     public Partita nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
@@ -49,7 +47,7 @@ public class PartitaService {
         Partita partita = new Partita(mappa, giocatori, modalita);
 
         // distribuisci le carte territorio, comprende assegnazione degli stati
-        this.carteTerritorioService.distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita);
 
         partita.occupazioneInizialeTerritori();
 
@@ -148,7 +146,7 @@ public class PartitaService {
         if (!giocatore.getNome().equals(trisDTO.getGiocatore()))
             throw new MossaIllegaleException("Mossa illegale: gioca tris chiamato da giocatore non attivo");
 
-        int nArmateBonus = carteTerritorioService.valutaTris(partita.getMazzo(), trisDTO.getTris(), giocatore);
+        int nArmateBonus = partita.getMazzo().valutaTris(trisDTO.getTris(), giocatore);
         partita.getGiocatoreAttivo().modificaTruppeDisponibili(nArmateBonus);
 
         return nArmateBonus;
@@ -255,7 +253,7 @@ public class PartitaService {
         // pesca una carta territorio se conquistato
         CartaTerritorio cartaTerritorio = null;
         if (partita.getTurno().conquistaAvvenuta()) {
-            cartaTerritorio = carteTerritorioService.pescaCarta(partita.getMazzo(), partita.getGiocatoreAttivo());
+            cartaTerritorio = partita.getMazzo().pescaCarta(partita.getGiocatoreAttivo());
         }
 
         partita.nuovoTurno();

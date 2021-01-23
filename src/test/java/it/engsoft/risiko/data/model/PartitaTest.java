@@ -2,7 +2,6 @@ package it.engsoft.risiko.data.model;
 
 import it.engsoft.risiko.exceptions.ModelDataException;
 import it.engsoft.risiko.data.repository.MappaRepository;
-import it.engsoft.risiko.service.CarteTerritorioService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,8 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class PartitaTest {
     @Autowired
     MappaRepository mappaRepository;
-    @Autowired
-    CarteTerritorioService carteTerritorioService;
 
     @Test
     void testCreazione() {
@@ -68,7 +65,7 @@ class PartitaTest {
             fail();
         } catch (ModelDataException ignored) { }
 
-        carteTerritorioService.distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita);
 
         // prova a chiedere il giocatore attivo prima di aver occupato i territori
         try {
@@ -116,7 +113,7 @@ class PartitaTest {
                 giocatori.stream().anyMatch(g -> g.getTruppeDisponibili() != armateIniziali)
         );
 
-        carteTerritorioService.distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita);
         partita.occupazioneInizialeTerritori();
 
         // ogni stato ha esattamente un'armata
@@ -140,7 +137,7 @@ class PartitaTest {
         }
 
         Partita partita = new Partita(mappa, giocatori, modalita);
-        carteTerritorioService.distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita);
         partita.occupazioneInizialeTerritori();
 
         Giocatore giocatoreAttivo = partita.getGiocatoreAttivo();
@@ -168,7 +165,7 @@ class PartitaTest {
             giocatori.add(new Giocatore("Giocatore" + i));
         }
         Partita partita = new Partita(mappa, giocatori, modalita);
-        carteTerritorioService.distribuisciCarte(partita);
+        partita.getMazzo().distribuisciCarte(partita);
         partita.occupazioneInizialeTerritori();
 
         // prima assegniamo arbitrariamente i rinforzi

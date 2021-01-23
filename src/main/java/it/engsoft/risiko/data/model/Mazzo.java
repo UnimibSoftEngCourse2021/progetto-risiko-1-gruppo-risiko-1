@@ -1,31 +1,32 @@
-package it.engsoft.risiko.service;
+package it.engsoft.risiko.data.model;
 
-import it.engsoft.risiko.data.model.*;
 import it.engsoft.risiko.exceptions.*;
-import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class CarteTerritorioService {
+public class Mazzo {
+    private final List<CartaTerritorio> carte = new ArrayList<>();
+
+    public List<CartaTerritorio> getCarte() { return carte; }
+
     /**
      * Genera il mazzo e distribuisce le carte ai giocatori.
      */
     public void distribuisciCarte(Partita partita) {
-        List<CartaTerritorio> mazzo = partita.getMazzo();
 
         // Generazione mazzo
-        generaMazzo(mazzo, partita.getMappa());
+        generaMazzo(this.carte, partita.getMappa());
 
         // mescola il mazzo
-        Collections.shuffle(mazzo);
+        Collections.shuffle(this.carte);
 
         int g = 0; // indice giocatori
 
         // La carta 'c' viene assegnata al giocatore 'g'
-        for (CartaTerritorio cartaTerritorio : mazzo) {
+        for (CartaTerritorio cartaTerritorio : this.carte) {
             if (cartaTerritorio.getFigura() != CartaTerritorio.Figura.JOLLY) {
                 // Assegna lo stato rappresentato dalla carta al giocatore
                 partita.getGiocatori().get(g).aggiungiStato(cartaTerritorio.getStatoRappresentato());
@@ -68,11 +69,11 @@ public class CarteTerritorioService {
         }
     }
 
-    public CartaTerritorio pescaCarta(List<CartaTerritorio> mazzo, Giocatore giocatore) {
-        if(mazzo.isEmpty())
+    public CartaTerritorio pescaCarta(Giocatore giocatore) {
+        if(this.carte.isEmpty())
             return null;
 
-        CartaTerritorio carta = mazzo.remove(0);
+        CartaTerritorio carta = this.carte.remove(0);
         giocatore.aggiungiCartaTerritorio(carta);
 
         return carta;
@@ -86,7 +87,7 @@ public class CarteTerritorioService {
      * @param giocatore : il giocatore che gioca il tris
      * @return numero di armate che spettano al giocatore
      */
-    public int valutaTris(List<CartaTerritorio> mazzo, List<Integer> tris, Giocatore giocatore) {
+    public int valutaTris(List<Integer> tris, Giocatore giocatore) {
         // Ottiene le carte corrispondenti agli id
         Optional<CartaTerritorio> optA = giocatore.getCarteTerritorio().stream()
                 .filter(carta -> carta.getId() == tris.get(0))
@@ -113,7 +114,7 @@ public class CarteTerritorioService {
             throw new MossaIllegaleException("Mossa illegale: tris non valido");
 
         // Rimette le carte usate nel mazzo
-        rimettiNelMazzo(mazzo, a, b, c, giocatore);
+        rimettiNelMazzo(this.carte, a, b, c, giocatore);
 
         return standard + truppeExtra(a, b, c, giocatore);
     }
