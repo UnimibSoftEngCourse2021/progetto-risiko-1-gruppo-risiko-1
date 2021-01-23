@@ -10,18 +10,25 @@ public class Partita {
     private final Modalita modalita;
     private final Mazzo mazzo;
     private Giocatore giocatoreAttivo;
-    private Turno turno;
+    private FaseTurno faseTurno;
+    private Combattimento combattimento;
     private boolean fasePreparazione;
     private boolean territoriOccupati;
+    private boolean conquista;
+
+    public enum FaseTurno {INIZIALIZZAZIONE, RINFORZI, COMBATTIMENTI, SPOSTAMENTO}
 
     public Partita(Mappa mappa, List<Giocatore> giocatori, Modalita modalita) {
         if (mappa == null || giocatori == null || modalita == null)
             throw new ModelDataException("Parametri del costruttore null (partita)");
 
         this.mappa = mappa;
-        this.giocatori = giocatori;
         this.modalita = modalita;
-        fasePreparazione = true;
+        this.giocatori = giocatori;
+        this.faseTurno = FaseTurno.INIZIALIZZAZIONE;
+        this.fasePreparazione = true;
+        this.conquista = false;
+
         territoriOccupati = false;
         mazzo = new Mazzo();
         assegnaArmateIniziali();
@@ -41,16 +48,6 @@ public class Partita {
         return giocatoreAttivo;
     }
 
-    public Turno getTurno() {
-        return turno;
-    }
-
-    public void setTurno(Turno turno) {
-        this.turno = turno;
-    }
-
-
-
     public Mappa getMappa() {
         return mappa;
     }
@@ -60,6 +57,22 @@ public class Partita {
     }
 
     public Mazzo getMazzo() { return mazzo; }
+
+    public FaseTurno getFaseTurno() {
+        return faseTurno;
+    }
+
+    public void setFaseTurno(FaseTurno faseTurno) {
+        this.faseTurno = faseTurno;
+    }
+
+    public Combattimento getCombattimento() {
+        return combattimento;
+    }
+
+    public void setCombattimento(Combattimento combattimento) {
+        this.combattimento = combattimento;
+    }
 
     public boolean isFasePreparazione() {
         return fasePreparazione;
@@ -72,6 +85,14 @@ public class Partita {
         this.fasePreparazione = fasePreparazione;
     }
 
+    public boolean getConquista() {
+        return conquista;
+    }
+
+    public void setConquista() {
+        conquista = true;
+    }
+
     public void nuovoTurno() {
         if (fasePreparazione)
             throw new ModelDataException("Devi prima finire la fase di preparazione");
@@ -79,7 +100,8 @@ public class Partita {
             throw new ModelDataException("Il giocatore di turno deve prima posizionare le sue armate");
 
         giocatoreAttivo = prossimoGiocatoreDisponibile();
-        turno = new Turno(turno.getNumero() + 1);
+        faseTurno = FaseTurno.INIZIALIZZAZIONE;
+        conquista = false;
     }
 
     public void setNuovoGiocatoreAttivoPreparazione() {
@@ -90,7 +112,6 @@ public class Partita {
         if (prossimo.getTruppeDisponibili() == 0) {
             fasePreparazione = false;
             giocatoreAttivo = giocatori.get(0);
-            turno = new Turno(1);
         } else {
             giocatoreAttivo = prossimo;
         }

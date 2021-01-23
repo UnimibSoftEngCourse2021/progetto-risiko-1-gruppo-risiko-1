@@ -58,7 +58,7 @@ public class PartitaService {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: impossibile iniziare il turno in fase di preparazione");
 
-        if (!partita.getTurno().getFase().equals(Turno.Fase.INIZIALIZZAZIONE))
+        if (!partita.getFaseTurno().equals(Partita.FaseTurno.INIZIALIZZAZIONE))
             throw new MossaIllegaleException("Mossa illegale: turno già iniziato");
 
         Giocatore giocatore = partita.getGiocatoreAttivo();
@@ -74,8 +74,8 @@ public class PartitaService {
         }
 
         giocatore.modificaTruppeDisponibili(armateContinenti + armateStati);
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
-        return new IniziaTurnoDAO(partita.getTurno().getNumero(), giocatore.getNome(), armateStati, armateContinenti);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        return new IniziaTurnoDAO(giocatore.getNome(), armateStati, armateContinenti);
     }
 
     public RinforzoDAO rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
@@ -90,7 +90,7 @@ public class PartitaService {
             partita.setNuovoGiocatoreAttivoPreparazione();
 
         } else { // è un rinforzo di inizio turno
-            if (!partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
+            if (!partita.getFaseTurno().equals(Partita.FaseTurno.RINFORZI))
                 throw new MossaIllegaleException("Mossa illegale: rinforzo illegale se non in fase di rinforzi");
 
             if (giocatore.getTruppeDisponibili() == 0)
@@ -135,7 +135,7 @@ public class PartitaService {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: impossibile giocare un tris in fase di preparazione");
 
-        if (!partita.getTurno().getFase().equals(Turno.Fase.RINFORZI))
+        if (!partita.getFaseTurno().equals(Partita.FaseTurno.RINFORZI))
             throw new MossaIllegaleException("Mossa illegale: impossibile giocare un tris in fase di rinforzo");
 
         if (trisDTO.getTris().size() != 3)
@@ -153,10 +153,10 @@ public class PartitaService {
     }
 
     public void attacco(AttaccoDTO attaccoDTO, Partita partita) {
-        if (partita.isFasePreparazione() || partita.getTurno().getFase().equals(Turno.Fase.SPOSTAMENTO))
+        if (partita.isFasePreparazione() || partita.getFaseTurno().equals(Partita.FaseTurno.SPOSTAMENTO))
             throw new MossaIllegaleException("Mossa illegale: impossibile attaccare in questa fase di gioco");
 
-        if (partita.getTurno().getCombattimentoInCorso() != null)
+        if (partita.getCombattimento() != null)
             throw new MossaIllegaleException("Mossa illegale: un combattimento è già in corso");
 
         Giocatore giocatoreAtt = partita.getGiocatoreAttivo();
@@ -175,12 +175,12 @@ public class PartitaService {
 
         // il costruttore verifica che gli stati siano compatibili per un attacco e che il n di armate sia valido
         Combattimento combattimento = new Combattimento(statoAttaccante, statoDifensore, attaccoDTO.getArmate());
-        partita.getTurno().setFase(Turno.Fase.COMBATTIMENTI);
-        partita.getTurno().setCombattimentoInCorso(combattimento);
+        partita.setFaseTurno(Partita.FaseTurno.COMBATTIMENTI);
+        partita.setCombattimento(combattimento);
     }
 
     public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
-        Combattimento combattimento = partita.getTurno().getCombattimentoInCorso();
+        Combattimento combattimento = partita.getCombattimento();
         if (combattimento == null || combattimento.isEseguito())
             throw new MossaIllegaleException("Mossa illegale: non c'e' un combattimento in corso");
 
@@ -193,7 +193,7 @@ public class PartitaService {
         combattimento.esegui(difesaDTO.getArmate());
 
         if (combattimento.getConquista()) {
-            partita.getTurno().registraConquista(); // setta true conquista avvenuta in turno
+            partita.setConquista(); // setta true conquista avvenuta in turno
 
             // gestione difensore eliminato
             if (giocatoreDif.isEliminato())
@@ -202,7 +202,7 @@ public class PartitaService {
 
         // se l'attaccante non ha conquistato il territorio, il combattimento è terminato
         if (!combattimento.getConquista())
-            partita.getTurno().setCombattimentoInCorso(null);
+            partita.setCombattimento(null);
 
         return new DifesaDAO(
                 combattimento,
@@ -221,7 +221,7 @@ public class PartitaService {
         if (!giocatore.getNome().equals(spostamentoDTO.getGiocatore()))
             throw new MossaIllegaleException("Mossa illegale: spostamento non chiamato dal giocatore attivo");
 
-        Combattimento combattimento = partita.getTurno().getCombattimentoInCorso();
+        Combattimento combattimento = partita.getCombattimento();
 
         int minimoArmate = 1;
         if (combattimento != null) {
@@ -236,7 +236,7 @@ public class PartitaService {
 
         // controlla che siano confinanti e dello stesso giocatore prima di eseguire lo spostamento
         statoPartenza.spostaArmate(statoArrivo, spostamentoDTO.getArmate());
-        partita.getTurno().setCombattimentoInCorso(null);
+        partita.setCombattimento(null);
         return giocatore.obRaggiunto();
     }
 
@@ -244,7 +244,7 @@ public class PartitaService {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: si e' ancora in fase di preparazione");
 
-        if (partita.getTurno().getCombattimentoInCorso() != null)
+        if (partita.getCombattimento() != null)
             throw new MossaIllegaleException("Mossa illegale: c'e' ancora un combattimento in corso");
 
         if (partita.getGiocatoreAttivo().getTruppeDisponibili() != 0)
@@ -252,7 +252,7 @@ public class PartitaService {
 
         // pesca una carta territorio se conquistato
         CartaTerritorio cartaTerritorio = null;
-        if (partita.getTurno().conquistaAvvenuta()) {
+        if (partita.getConquista()) {
             cartaTerritorio = partita.getMazzo().pescaCarta(partita.getGiocatoreAttivo());
         }
 

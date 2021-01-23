@@ -5,7 +5,6 @@ import it.engsoft.risiko.rest.dto.NuovoGiocoDTO;
 import it.engsoft.risiko.exceptions.DatiErratiException;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.data.model.Partita;
-import it.engsoft.risiko.data.model.Turno;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -92,16 +91,16 @@ class PartitaServiceTest {
         partita.setNuovoGiocatoreAttivoPreparazione();
 
         // test fase diversa da INIZIALIZZAZIONE
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
         try {
             partitaService.iniziaTurno(partita);
             fail();
         } catch (MossaIllegaleException ignore) { }
 
-        partita.getTurno().setFase(Turno.Fase.INIZIALIZZAZIONE);
+        partita.setFaseTurno(Partita.FaseTurno.INIZIALIZZAZIONE);
         partitaService.iniziaTurno(partita);
         assertNotEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
-        assertEquals(Turno.Fase.RINFORZI, partita.getTurno().getFase());
+        assertEquals(Partita.FaseTurno.RINFORZI, partita.getFaseTurno());
     }
 
 }

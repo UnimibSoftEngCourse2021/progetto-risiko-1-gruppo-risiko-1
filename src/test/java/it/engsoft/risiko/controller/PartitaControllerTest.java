@@ -155,8 +155,6 @@ class PartitaControllerTest {
         this.mockMvc.perform(post("/api/inizia-turno")
                 .sessionAttr("partita", httpSession.getAttribute("partita")))
                 .andExpect(status().isOk());
-
-        assertNotNull(partita.getTurno());
     }
 
     @Test
@@ -169,10 +167,10 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
 
         assertFalse(partita.isFasePreparazione());
-        assertEquals(Turno.Fase.RINFORZI, partita.getTurno().getFase());
+        assertEquals(Partita.FaseTurno.RINFORZI, partita.getFaseTurno());
 
 
         CartaTerritorio uno = new CartaTerritorio(1, partita.getMappa().getStati().get(0), CartaTerritorio.Figura.CANNONE);
@@ -220,13 +218,13 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
-        partita.getTurno().setCombattimentoInCorso(null);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        partita.setCombattimento(null);
 
         assertFalse(partita.isFasePreparazione());
-        assertNotEquals(Turno.Fase.SPOSTAMENTO, partita.getTurno().getFase());
+        assertNotEquals(Partita.FaseTurno.SPOSTAMENTO, partita.getFaseTurno());
         assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
-        assertNull(partita.getTurno().getCombattimentoInCorso());
+        assertNull(partita.getCombattimento());
 
         Stato attaccante = new Stato();
         Stato difensore = new Stato();
@@ -267,17 +265,17 @@ class PartitaControllerTest {
                 .content(attaccoJson))
                 .andExpect(status().isOk());
 
-        assertNotNull(partita.getTurno().getCombattimentoInCorso());
-        assertTrue(partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getArmate() >
+        assertNotNull(partita.getCombattimento());
+        assertTrue(partita.getCombattimento().getStatoAttaccante().getArmate() >
                 attaccoDTO.getArmate());
-        assertEquals(Turno.Fase.COMBATTIMENTI, partita.getTurno().getFase());
+        assertEquals(Partita.FaseTurno.COMBATTIMENTI, partita.getFaseTurno());
 
         // attaccante e difensore hanno lo stesso proprietario
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.nuovoTurno();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
-        partita.getTurno().setCombattimentoInCorso(null);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        partita.setCombattimento(null);
 
         for (int j=0; j< partita.getGiocatoreAttivo().getStati().size(); j++){
             for (int i=0; i< partita.getGiocatoreAttivo().getStati().get(j).getConfinanti().size(); i++) {
@@ -304,7 +302,7 @@ class PartitaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(attaccoJson1))
                 .andExpect(status().isForbidden());
-        assertNull(partita.getTurno().getCombattimentoInCorso());
+        assertNull(partita.getCombattimento());
     }
 
     @Test
@@ -317,13 +315,13 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
-        partita.getTurno().setCombattimentoInCorso(null);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        partita.setCombattimento(null);
 
         assertFalse(partita.isFasePreparazione());
-        assertNotEquals(Turno.Fase.SPOSTAMENTO, partita.getTurno().getFase());
+        assertNotEquals(Partita.FaseTurno.SPOSTAMENTO, partita.getFaseTurno());
         assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
-        assertNull(partita.getTurno().getCombattimentoInCorso());
+        assertNull(partita.getCombattimento());
 
         Stato attaccante = new Stato();
         Stato difensore = new Stato();
@@ -370,10 +368,10 @@ class PartitaControllerTest {
                 .content(attaccoJson))
                 .andExpect(status().isOk());
 
-        assertNotNull(partita.getTurno().getCombattimentoInCorso());
-        assertTrue(partita.getTurno().getCombattimentoInCorso().getStatoAttaccante().getArmate() >
+        assertNotNull(partita.getCombattimento());
+        assertTrue(partita.getCombattimento().getStatoAttaccante().getArmate() >
                 attaccoDTO.getArmate());
-        assertEquals(Turno.Fase.COMBATTIMENTI, partita.getTurno().getFase());
+        assertEquals(Partita.FaseTurno.COMBATTIMENTI, partita.getFaseTurno());
 
         this.mockMvc.perform(post("/api/difesa")
                 .sessionAttr("partita", httpSession.getAttribute("partita"))
@@ -381,7 +379,7 @@ class PartitaControllerTest {
                 .content(difesaJson))
                 .andExpect(status().isOk());
 
-        if (partita.getTurno().getCombattimentoInCorso() != null) {
+        if (partita.getCombattimento() != null) {
             assertEquals(attaccante.getProprietario(), difensore.getProprietario());
             if (difensore.getProprietario().isEliminato())
                 assertEquals(attaccante.getProprietario(), difensore.getProprietario().getUccisore());
@@ -393,8 +391,8 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.nuovoTurno();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
-        partita.getTurno().setCombattimentoInCorso(null);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        partita.setCombattimento(null);
 
         for (int j=0; j< partita.getGiocatoreAttivo().getStati().size(); j++){
             for (int i=0; i< partita.getGiocatoreAttivo().getStati().get(j).getConfinanti().size(); i++) {
@@ -427,7 +425,7 @@ class PartitaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(attaccoJson1))
                 .andExpect(status().isForbidden());
-        assertNull(partita.getTurno().getCombattimentoInCorso());
+        assertNull(partita.getCombattimento());
 
         this.mockMvc.perform(post("/api/difesa")
                 .sessionAttr("partita", httpSession.getAttribute("partita"))
@@ -446,9 +444,9 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
 
-        assertNull(partita.getTurno().getCombattimentoInCorso());
+        assertNull(partita.getCombattimento());
         assertFalse(partita.isFasePreparazione());
 
         Stato partenza = new Stato();
@@ -491,7 +489,7 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.nuovoTurno();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
 
         for (int j=0; j< partita.getGiocatoreAttivo().getStati().size(); j++){
             for (int i=0; i< partita.getGiocatoreAttivo().getStati().get(j).getConfinanti().size(); i++) {
@@ -528,8 +526,8 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
-        partita.getTurno().setCombattimentoInCorso(null);
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        partita.setCombattimento(null);
 
         Stato attaccante = new Stato();
         Stato difensore = new Stato();
@@ -571,12 +569,12 @@ class PartitaControllerTest {
                 .content(difesaJson))
                 .andExpect(status().isOk());
 
-        if (partita.getTurno().getCombattimentoInCorso() != null) {
+        if (partita.getCombattimento() != null) {
             SpostamentoDTO spostamentoDTO = new SpostamentoDTO(
                     partita.getGiocatoreAttivo().getNome(),
                     attaccante.getId(),
                     difensore.getId(),
-                    partita.getTurno().getCombattimentoInCorso().getArmateAttaccante()
+                    partita.getCombattimento().getArmateAttaccante()
             );
             String spostamentoJson = (new ObjectMapper()).writeValueAsString(spostamentoDTO);
 
@@ -586,7 +584,7 @@ class PartitaControllerTest {
                     .content(spostamentoJson))
                     .andExpect(status().isOk());
 
-            assertNull(partita.getTurno().getCombattimentoInCorso());
+            assertNull(partita.getCombattimento());
         }
     }
 
@@ -600,10 +598,10 @@ class PartitaControllerTest {
         for (int i = 0; i < partita.getGiocatori().size(); i++)
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
-        partita.getTurno().setFase(Turno.Fase.RINFORZI);
-        partita.getTurno().registraConquista();
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        partita.setConquista();
 
-        assertNull(partita.getTurno().getCombattimentoInCorso());
+        assertNull(partita.getCombattimento());
         assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
 
         Giocatore giocatoreAttivo = partita.getGiocatoreAttivo();

@@ -1,20 +1,14 @@
 package it.engsoft.risiko.rest.dao;
 
 public class IniziaTurnoDAO {
-    private int numeroTurno;
-    private String giocatore;
-    private int armateStati;
-    private int armateContinenti;
+    private final String giocatore;
+    private final int armateStati;
+    private final int armateContinenti;
 
-    public IniziaTurnoDAO(int numeroTurno, String giocatore, int armateStati, int armateContinenti) {
-        this.numeroTurno = numeroTurno;
+    public IniziaTurnoDAO(String giocatore, int armateStati, int armateContinenti) {
         this.giocatore = giocatore;
         this.armateStati = armateStati;
         this.armateContinenti = armateContinenti;
-    }
-
-    public int getNumeroTurno() {
-        return numeroTurno;
     }
 
     public String getGiocatore() {
