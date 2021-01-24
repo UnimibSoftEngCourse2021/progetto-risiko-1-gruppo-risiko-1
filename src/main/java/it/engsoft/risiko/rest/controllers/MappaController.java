@@ -11,27 +11,36 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+/**
+ * Questa classe si occupa di gestire le richieste Http in ingresso relative alla gestione delle mappe.
+ */
 @RestController
 @RequestMapping("api")
-@Scope(WebApplicationContext.SCOPE_SESSION)
 public class MappaController {
     private final MappaService mappaService;
 
+    /**
+     * Istanzia un nuovo MappaController facendo la dependency injection.
+     * @param mappaService il service per la gestione delle mappe
+     */
     @Autowired
     public MappaController(MappaService mappaService) {
         this.mappaService = mappaService;
     }
 
+    /**
+     * Ritorna l'elenco delle mappe esistenti con le informazioni essenziali.
+     * @return l'elenco delle mappe
+     */
     @GetMapping(path = "/mappe")
     public List<CompactMappaDTO> mappe() {
         return mappaService.mappe();
     }
 
-    @GetMapping(path = "/mappe/{id}")
-    public MappaDTO mappa(@PathVariable("id") Long mappaId) {
-        return mappaService.mappa(mappaId);
-    }
-
+    /**
+     * Crea a salva una nuova mappa basata sulle informazioni ricevute in ingresso.
+     * @param nuovaMappaDTO le informazioni della nuova mappa da salvare
+     */
     @PostMapping(path = "/mappe")
     public void nuovaMappa(@RequestBody NuovaMappaDTO nuovaMappaDTO) {
         mappaService.nuovaMappa(nuovaMappaDTO);

@@ -12,10 +12,17 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Questo service gestisce operazioni relative alla gestione delle mappe.
+ */
 @Service
 public class MappaService {
     private final MappaRepository mappaRepository;
 
+    /**
+     * Crea un'istanza del MappaService e passa come parametro le dipendenze tramite dependency injection.
+     * @param mappaRepository il repository che gestisce le mappe
+     */
     @Autowired
     public MappaService(MappaRepository mappaRepository) {
         this.mappaRepository = mappaRepository;
@@ -32,20 +39,6 @@ public class MappaService {
         return mappe.stream()
                 .map(CompactMappaDTO::new)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Restituisce la mappa avente l'id specificato.
-     *
-     * @param mappaId: l'id della mappa da restituire
-     * @return dati della mappa da visualizzare a front-end
-     */
-    public MappaDTO mappa(Long mappaId) {
-        Optional<Mappa> optMappa = mappaRepository.findById(mappaId);
-        if (optMappa.isEmpty())
-            throw new NotFoundException("Mappa non trovata");
-
-        return new MappaDTO(optMappa.get());
     }
 
     /**
