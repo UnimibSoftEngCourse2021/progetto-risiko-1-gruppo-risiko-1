@@ -1,16 +1,16 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.Stato;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StatoDAO {
-    private Long id;
-    private String nome;
-    private List<Long> confinanti;
+public final class StatoDTO {
+    private final Long id;
+    private final String nome;
+    private final List<Long> confinanti;
 
-    public StatoDAO(Stato stato) {
+    public StatoDTO(Stato stato) {
         this.id = stato.getId();
         this.nome = stato.getNome();
         this.confinanti = stato.getConfinanti().stream()

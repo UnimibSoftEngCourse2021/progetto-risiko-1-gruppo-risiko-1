@@ -1,11 +1,11 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
-public class IniziaTurnoDAO {
+public final class IniziaTurnoDTO {
     private final String giocatore;
     private final int armateStati;
     private final int armateContinenti;
 
-    public IniziaTurnoDAO(String giocatore, int armateStati, int armateContinenti) {
+    public IniziaTurnoDTO(String giocatore, int armateStati, int armateContinenti) {
         this.giocatore = giocatore;
         this.armateStati = armateStati;
         this.armateContinenti = armateContinenti;

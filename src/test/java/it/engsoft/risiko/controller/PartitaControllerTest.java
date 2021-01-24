@@ -1,7 +1,7 @@
 package it.engsoft.risiko.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.engsoft.risiko.rest.dto.*;
+import it.engsoft.risiko.rest.DTO.*;
 import it.engsoft.risiko.data.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +27,13 @@ class PartitaControllerTest {
     private MockMvc mockMvc;
 
     private HttpSession creaPartita() throws Exception {
-        NuovoGiocoDTO nuovoGiocoDTO = new NuovoGiocoDTO(
+        NuovoGiocoRequest nuovoGiocoRequest = new NuovoGiocoRequest(
                 new ArrayList<>(Arrays.asList("marco", "pippo", "pluto")),
                 1L,
                 "COMPLETA",
                 false
         );
-        String nuovoGiocoJson = (new ObjectMapper()).writeValueAsString(nuovoGiocoDTO);
+        String nuovoGiocoJson = (new ObjectMapper()).writeValueAsString(nuovoGiocoRequest);
 
         return this.mockMvc.perform(post("/api/gioco")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,14 +81,14 @@ class PartitaControllerTest {
         HashMap<String, Integer> rinforzo = new HashMap<>();
         rinforzo.put(partita.getGiocatoreAttivo().getStati().get(0).getId().toString(),
                 Math.min(partita.getGiocatoreAttivo().getTruppeDisponibili(), 3));
-        RinforzoDTO rinforzoDTO = new RinforzoDTO(
+        RinforzoRequest rinforzoRequest = new RinforzoRequest(
                 partita.getGiocatoreAttivo().getNome(),
                 rinforzo
         );
 
-        assertEquals(partita.getGiocatoreAttivo().getNome(), rinforzoDTO.getGiocatore());
+        assertEquals(partita.getGiocatoreAttivo().getNome(), rinforzoRequest.getGiocatore());
 
-        String rinforzoJson = (new ObjectMapper()).writeValueAsString(rinforzoDTO);
+        String rinforzoJson = (new ObjectMapper()).writeValueAsString(rinforzoRequest);
 
         // partita null
         this.mockMvc.perform(post("/api/rinforzi")
@@ -104,7 +104,7 @@ class PartitaControllerTest {
 
 
         assertTrue(partita.isFasePreparazione());
-        assertNotEquals(partita.getGiocatoreAttivo().getNome(), rinforzoDTO.getGiocatore());
+        assertNotEquals(partita.getGiocatoreAttivo().getNome(), rinforzoRequest.getGiocatore());
         assertNotEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
 
         // rinforzo normale
@@ -120,11 +120,11 @@ class PartitaControllerTest {
 
         rinforzo.put(partita.getGiocatoreAttivo().getStati().get(0).getId().toString(),
                 partita.getGiocatoreAttivo().getTruppeDisponibili());
-        RinforzoDTO rinforzoDTO1 = new RinforzoDTO(
+        RinforzoRequest rinforzoRequest1 = new RinforzoRequest(
                 partita.getGiocatoreAttivo().getNome(),
                 rinforzo
         );
-        String rinforzoJson1 = (new ObjectMapper()).writeValueAsString(rinforzoDTO1);
+        String rinforzoJson1 = (new ObjectMapper()).writeValueAsString(rinforzoRequest1);
 
         this.mockMvc.perform(post("/api/rinforzi")
                 .sessionAttr("partita", httpSession.getAttribute("partita"))
@@ -133,7 +133,7 @@ class PartitaControllerTest {
                 .andExpect(status().isOk());
 
         assertFalse(partita.isFasePreparazione());
-        assertEquals(partita.getGiocatoreAttivo().getNome(), rinforzoDTO.getGiocatore());
+        assertEquals(partita.getGiocatoreAttivo().getNome(), rinforzoRequest.getGiocatore());
         assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
     }
 
@@ -343,7 +343,7 @@ class PartitaControllerTest {
                 3
         );
 
-        DifesaDTO difesaDTO = new DifesaDTO(
+        DifesaRequest difesaRequest = new DifesaRequest(
                 difensore.getProprietario().getNome(),
                 1
         );
@@ -352,7 +352,7 @@ class PartitaControllerTest {
         assertEquals(partita.getGiocatoreAttivo(), attaccante.getProprietario());
 
         String attaccoJson = (new ObjectMapper()).writeValueAsString(attaccoDTO);
-        String difesaJson = (new ObjectMapper()).writeValueAsString(difesaDTO);
+        String difesaJson = (new ObjectMapper()).writeValueAsString(difesaRequest);
 
         // partita null
         this.mockMvc.perform(post("/api/difesa")
@@ -412,13 +412,13 @@ class PartitaControllerTest {
                 3
         );
 
-        DifesaDTO difesaDTO1 = new DifesaDTO(
+        DifesaRequest difesaRequest1 = new DifesaRequest(
                 difensore.getProprietario().getNome(),
                 3
         );
 
         String attaccoJson1 = (new ObjectMapper()).writeValueAsString(attaccoDTO1);
-        String difesaJson1 = (new ObjectMapper()).writeValueAsString(difesaDTO1);
+        String difesaJson1 = (new ObjectMapper()).writeValueAsString(difesaRequest1);
         assertEquals(attaccante.getProprietario(), difensore.getProprietario());
         this.mockMvc.perform(post("/api/attacco")
                 .sessionAttr("partita", httpSession.getAttribute("partita"))
@@ -549,13 +549,13 @@ class PartitaControllerTest {
                 3
         );
 
-        DifesaDTO difesaDTO = new DifesaDTO(
+        DifesaRequest difesaRequest = new DifesaRequest(
                 difensore.getProprietario().getNome(),
                 1
         );
 
         String attaccoJson = (new ObjectMapper()).writeValueAsString(attaccoDTO);
-        String difesaJson = (new ObjectMapper()).writeValueAsString(difesaDTO);
+        String difesaJson = (new ObjectMapper()).writeValueAsString(difesaRequest);
 
         this.mockMvc.perform(post("/api/attacco")
                 .sessionAttr("partita", httpSession.getAttribute("partita"))

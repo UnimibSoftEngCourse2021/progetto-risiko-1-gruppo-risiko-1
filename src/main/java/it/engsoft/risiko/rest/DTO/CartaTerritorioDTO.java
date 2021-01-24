@@ -1,13 +1,13 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.CartaTerritorio;
 
-public class CartaTerritorioDAO {
-    private int id;
-    private String statoRappresentato;
-    private String figura;
+public final class CartaTerritorioDTO {
+    private final int id;
+    private final String statoRappresentato;
+    private final String figura;
 
-    public CartaTerritorioDAO(CartaTerritorio cartaTerritorio) {
+    public CartaTerritorioDTO(CartaTerritorio cartaTerritorio) {
         this.id = cartaTerritorio.getId();
         this.statoRappresentato = cartaTerritorio.getStatoRappresentato() == null ?
                 "" : cartaTerritorio.getStatoRappresentato().getNome();

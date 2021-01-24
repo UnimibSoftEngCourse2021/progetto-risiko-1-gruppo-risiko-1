@@ -1,12 +1,12 @@
-package it.engsoft.risiko.rest.dto;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.exceptions.DatiErratiException;
 
-public final class DifesaDTO {
+public final class DifesaRequest {
     private final String giocatore;
     private final int armate;
 
-    public DifesaDTO(String giocatore, int armate) {
+    public DifesaRequest(String giocatore, int armate) {
         if(giocatore == null || giocatore.trim().isEmpty())
             throw new DatiErratiException("Dati errati: giocatore nullo o vuoto");
         this.giocatore = giocatore;

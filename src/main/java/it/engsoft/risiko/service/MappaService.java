@@ -1,8 +1,7 @@
 package it.engsoft.risiko.service;
 
-import it.engsoft.risiko.rest.dao.*;
 import it.engsoft.risiko.data.creators.MappaBuilder;
-import it.engsoft.risiko.rest.dto.*;
+import it.engsoft.risiko.rest.DTO.*;
 import it.engsoft.risiko.exceptions.NotFoundException;
 import it.engsoft.risiko.data.model.*;
 import it.engsoft.risiko.exceptions.DatiErratiException;
@@ -27,11 +26,11 @@ public class MappaService {
      *
      * @return dati riassuntivi di tutte le mappe
      */
-    public List<CompactMappaDAO> mappe() {
+    public List<CompactMappaDTO> mappe() {
         List<Mappa> mappe = mappaRepository.findAll();
 
         return mappe.stream()
-                .map(CompactMappaDAO::new)
+                .map(CompactMappaDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -41,12 +40,12 @@ public class MappaService {
      * @param mappaId: l'id della mappa da restituire
      * @return dati della mappa da visualizzare a front-end
      */
-    public MappaDAO mappa(Long mappaId) {
+    public MappaDTO mappa(Long mappaId) {
         Optional<Mappa> optMappa = mappaRepository.findById(mappaId);
         if (optMappa.isEmpty())
             throw new NotFoundException("Mappa non trovata");
 
-        return new MappaDAO(optMappa.get());
+        return new MappaDTO(optMappa.get());
     }
 
     /**

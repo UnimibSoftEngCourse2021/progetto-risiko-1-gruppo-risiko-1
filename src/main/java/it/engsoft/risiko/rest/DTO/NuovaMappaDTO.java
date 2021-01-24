@@ -1,10 +1,10 @@
-package it.engsoft.risiko.rest.dto;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.exceptions.DatiErratiException;
 
 import java.util.List;
 
-public class NuovaMappaDTO {
+public final class NuovaMappaDTO {
     private final String nome;
     private final String descrizione;
     private final int numMinGiocatori;

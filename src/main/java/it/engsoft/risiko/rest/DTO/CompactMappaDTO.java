@@ -1,16 +1,16 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.Mappa;
 
-public class CompactMappaDAO {
-    private Long id;
-    private String nome;
-    private String descrizione;
-    private int numMinGiocatori;
-    private int numMaxGiocatori;
-    private int numContinenti;
+public final class CompactMappaDTO {
+    private final Long id;
+    private final String nome;
+    private final String descrizione;
+    private final int numMinGiocatori;
+    private final int numMaxGiocatori;
+    private final int numContinenti;
 
-    public CompactMappaDAO(Mappa mappa) {
+    public CompactMappaDTO(Mappa mappa) {
         this.id = mappa.getId();
         this.nome = mappa.getNome();
         this.descrizione = mappa.getDescrizione();

@@ -1,24 +1,24 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.Partita;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NuovoGiocoDAO {
-    private final List<GiocatoreDAO> giocatori;
+public final class NuovoGiocoResponse {
+    private final List<GiocatoreDTO> giocatori;
     private final String giocatoreAttivo;
-    private final MappaDAO mappa;
+    private final MappaDTO mappa;
 
-    public NuovoGiocoDAO(Partita partita) {
+    public NuovoGiocoResponse(Partita partita) {
         this.giocatori = partita.getGiocatori().stream()
-                .map(GiocatoreDAO::new)
+                .map(GiocatoreDTO::new)
                 .collect(Collectors.toList());
         this.giocatoreAttivo = partita.getGiocatoreAttivo().getNome();
-        this.mappa = new MappaDAO(partita.getMappa());
+        this.mappa = new MappaDTO(partita.getMappa());
     }
 
-    public List<GiocatoreDAO> getGiocatori() {
+    public List<GiocatoreDTO> getGiocatori() {
         return giocatori;
     }
 
@@ -26,7 +26,7 @@ public class NuovoGiocoDAO {
         return giocatoreAttivo;
     }
 
-    public MappaDAO getMappa() {
+    public MappaDTO getMappa() {
         return mappa;
     }
 }

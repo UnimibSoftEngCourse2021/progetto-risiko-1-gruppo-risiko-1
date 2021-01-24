@@ -1,7 +1,7 @@
 package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.Utils;
-import it.engsoft.risiko.rest.dto.NuovoGiocoDTO;
+import it.engsoft.risiko.rest.DTO.NuovoGiocoRequest;
 import it.engsoft.risiko.exceptions.DatiErratiException;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.data.model.Partita;
@@ -31,9 +31,9 @@ class PartitaServiceTest {
         giocatori.add("due");
 
         // test numero giocatori < minimo consentito
-        NuovoGiocoDTO nuovoGiocoDTO1 = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
+        NuovoGiocoRequest nuovoGiocoRequest1 = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
         try {
-            partitaService.nuovoGioco(nuovoGiocoDTO1);
+            partitaService.nuovoGioco(nuovoGiocoRequest1);
             fail();
         } catch (DatiErratiException ignored) {
         }
@@ -43,8 +43,8 @@ class PartitaServiceTest {
         giocatori.add("cinque");
         giocatori.add("sei");
 
-        NuovoGiocoDTO nuovoGiocoDTO = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
-        Partita partita = partitaService.nuovoGioco(nuovoGiocoDTO);
+        NuovoGiocoRequest nuovoGiocoRequest = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
+        Partita partita = partitaService.nuovoGioco(nuovoGiocoRequest);
 
         assertEquals("COMPLETA", partita.getModalita().toString());
         assertEquals(1L, partita.getMappa().getId());
@@ -61,9 +61,9 @@ class PartitaServiceTest {
 
         // test numero giocatori > massimo consentito
         giocatori.add("sette");
-        nuovoGiocoDTO = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
+        nuovoGiocoRequest = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
         try {
-            partitaService.nuovoGioco(nuovoGiocoDTO);
+            partitaService.nuovoGioco(nuovoGiocoRequest);
             fail();
         } catch (DatiErratiException ignored) {
         }
@@ -76,8 +76,8 @@ class PartitaServiceTest {
         giocatori.add("due");
         giocatori.add("tre");
 
-        NuovoGiocoDTO nuovoGiocoDTO = new NuovoGiocoDTO(giocatori, 1L, "COMPLETA", false);
-        Partita partita = partitaService.nuovoGioco(nuovoGiocoDTO);
+        NuovoGiocoRequest nuovoGiocoRequest = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
+        Partita partita = partitaService.nuovoGioco(nuovoGiocoRequest);
         for(int i = 0; i < partita.getGiocatori().size(); i++) {
             partita.getGiocatori().get(i).setTruppeDisponibili(0);
         }

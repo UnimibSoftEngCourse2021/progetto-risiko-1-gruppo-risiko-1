@@ -1,23 +1,23 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.Continente;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ContinenteDAO {
-    private Long id;
-    private String nome;
-    private int armateBonus;
-    private List<StatoDAO> stati;
+public final class ContinenteDTO {
+    private final Long id;
+    private final String nome;
+    private final int armateBonus;
+    private final List<StatoDTO> stati;
 
-    public ContinenteDAO(Continente continente) {
+    public ContinenteDTO(Continente continente) {
         this.id = continente.getId();
         this.nome = continente.getNome();
         this.armateBonus = continente.getArmateBonus();
         this.stati = continente.getStati()
                 .stream()
-                .map(StatoDAO::new)
+                .map(StatoDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +33,7 @@ public class ContinenteDAO {
         return armateBonus;
     }
 
-    public List<StatoDAO> getStati() {
+    public List<StatoDTO> getStati() {
         return stati;
     }
 }

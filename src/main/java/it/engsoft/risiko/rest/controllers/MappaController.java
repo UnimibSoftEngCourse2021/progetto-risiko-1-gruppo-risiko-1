@@ -1,8 +1,9 @@
 package it.engsoft.risiko.rest.controllers;
 
-import it.engsoft.risiko.rest.dto.NuovaMappaDTO;
+import it.engsoft.risiko.rest.DTO.CompactMappaDTO;
+import it.engsoft.risiko.rest.DTO.MappaDTO;
+import it.engsoft.risiko.rest.DTO.NuovaMappaDTO;
 import it.engsoft.risiko.service.MappaService;
-import it.engsoft.risiko.rest.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,12 @@ public class MappaController {
     }
 
     @GetMapping(path = "/mappe")
-    public List<CompactMappaDAO> mappe() {
+    public List<CompactMappaDTO> mappe() {
         return mappaService.mappe();
     }
 
     @GetMapping(path = "/mappe/{id}")
-    public MappaDAO mappa(@PathVariable("id") Long mappaId) {
+    public MappaDTO mappa(@PathVariable("id") Long mappaId) {
         return mappaService.mappa(mappaId);
     }
 
