@@ -9,7 +9,7 @@
         <v-row class="my-4">
           <h4 class="text-h6">Stati</h4>
           <v-spacer/>
-          <v-btn color="primary" @click="showDialog = true">Inserisci</v-btn>
+          <v-btn color="primary" @click="showDialogStati = true">Inserisci</v-btn>
         </v-row>
       </template>
 
@@ -20,7 +20,7 @@
       </template>
     </v-data-table>
 
-    <v-dialog max-width="700px" v-model="showDialog">
+    <v-dialog max-width="700px" v-model="showDialogStati">
       <v-card>
         <v-card-title>Aggiungi nuovo stato</v-card-title>
         <v-card-text>
@@ -41,14 +41,17 @@
               </v-col>
             </v-row>
           </v-form>
+          <span class="d-block text-caption red--text" v-if="maxStatoPerContinenteRaggiunto">
+            Per questo continente hai già raggiunto il numero massimo di
+           stati</span>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" text @click="showDialog = false">
+          <v-btn color="primary" text @click="showDialogStati = false">
             Annulla
           </v-btn>
-          <v-btn color="primary" text @click="aggiungiStato" :disabled="!formValid">
+          <v-btn color="primary" text @click="aggiungiStato" :disabled="!formValid || maxStatoPerContinenteRaggiunto">
             OK
           </v-btn>
         </v-card-actions>
@@ -78,19 +81,26 @@ export default {
                     value: "actions"
                 }
             ],
-            showDialog: false,
+            showDialogStati: false,
             nuovoStato: { nome: "", continente: "" },
-            formValid: false
+            formValid: false,
+          numMaxStatiPerContinente: 12
         };
     },
     computed: {
-        ...mapGetters(["mappaInCostruzione"])
+        ...mapGetters(["mappaInCostruzione"]),
+      maxStatoPerContinenteRaggiunto() {
+          if (!this.nuovoStato.continente)
+            return false;
+          const nStati = this.mappaInCostruzione.stati.filter(s => s.continente === this.nuovoStato.continente).length
+        return (nStati === this.numMaxStatiPerContinente)
+      }
     },
     methods: {
         aggiungiStato() {
             this.mappaInCostruzione.addStato(this.nuovoStato.nome, this.nuovoStato.continente);
             this.nuovoStato = { nome: "", continente: "" };
-            this.showDialog = false;
+            this.showDialogStati = false;
         },
         nomeValido(nome) {
             if (!nome) {

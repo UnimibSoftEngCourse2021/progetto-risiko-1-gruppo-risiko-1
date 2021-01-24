@@ -30,7 +30,7 @@
     </v-main>
 
     <nuovo-gioco-dialog ref="nuovoGiocoDialog" @gameStarted="gameKey++" />
-    <inserimento-mappa-dialog ref="inserimentoMappaDialog" />
+    <inserimento-mappa-dialog ref="inserimentoMappaDialog"/>
 
     <loader/>
     <error-dialog />

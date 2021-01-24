@@ -11,7 +11,7 @@
         <v-row class="my-4">
           <h4 class="text-h6">Confini</h4>
           <v-spacer/>
-          <v-btn color="primary" @click="showDialog = true">Inserisci</v-btn>
+          <v-btn color="primary" @click="showDialogConfini = true">Inserisci</v-btn>
         </v-row>
       </template>
 
@@ -24,7 +24,7 @@
     </v-data-table>
 
     <!-- Dialog inserimento confini -->
-    <v-dialog max-width="700px" v-model="showDialog">
+    <v-dialog max-width="700px" v-model="showDialogConfini">
       <v-card>
         <v-card-title>Aggiungi nuovo confine</v-card-title>
         <v-card-text>
@@ -43,7 +43,7 @@
 
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" text @click="showDialog = false">
+          <v-btn color="primary" text @click="showDialogConfini = false">
             Annulla
           </v-btn>
           <v-btn color="primary" text @click="aggiungiConfine" :disabled="!confineValido">
@@ -76,7 +76,7 @@ export default {
                     value: "actions"
                 }
             ],
-            showDialog: false,
+            showDialogConfini: false,
             nuovoConfine: { nomeStato1: "", nomeStato2: "" }
         };
     },
@@ -96,7 +96,7 @@ export default {
         aggiungiConfine() {
             this.mappaInCostruzione.addConfine(this.nuovoConfine.nomeStato1, this.nuovoConfine.nomeStato2);
             this.nuovoConfine = { nomeStato1: "", nomeStato2: "" };
-            this.showDialog = false;
+            this.showDialogConfini = false;
         }
     }
 };

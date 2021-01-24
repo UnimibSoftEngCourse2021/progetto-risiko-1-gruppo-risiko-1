@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="showDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+  <v-dialog v-model="showDialog" fullscreen hide-overlay persistent transition="dialog-bottom-transition">
   <v-card v-if="showDialog">
     <v-app-bar color="primary" dark width="100%">
       <v-btn icon @click="chiudi">

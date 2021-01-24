@@ -11,7 +11,8 @@
         <v-row class="my-4">
           <h4 class="text-h6">Continenti</h4>
           <v-spacer/>
-          <v-btn color="primary" @click="showDialog = true">Inserisci</v-btn>
+          <span class="text-caption red--text" v-if="raggiuntoMaxContinenti">Numero massimo di continenti raggiunto</span>
+          <v-btn color="primary" @click="showDialogContinenti = true" :disabled="raggiuntoMaxContinenti">Inserisci</v-btn>
         </v-row>
       </template>
 
@@ -25,7 +26,7 @@
     </v-data-table>
 
     <!-- Inserimento continente dialog -->
-    <v-dialog max-width="700px" v-model="showDialog">
+    <v-dialog max-width="700px" v-model="showDialogContinenti">
       <v-card>
         <v-card-title>Aggiungi nuovo continente</v-card-title>
         <v-card-text>
@@ -48,7 +49,7 @@
 
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" text @click="showDialog = false">
+          <v-btn color="primary" text @click="showDialogContinenti = false">
             Annulla
           </v-btn>
           <v-btn color="primary" text @click="aggiungiContinente" :disabled="!formValid">
@@ -83,12 +84,16 @@ export default {
                 }
             ],
             nuovoContinente: { nome: "", armateBonus: 3 },
-            showDialog: false,
-            formValid: false
+            showDialogContinenti: false,
+            formValid: false,
+          numMaxContinenti: 8
         };
     },
     computed: {
-        ...mapGetters(["mappaInCostruzione"])
+        ...mapGetters(["mappaInCostruzione"]),
+      raggiuntoMaxContinenti() {
+          return this.mappaInCostruzione.continenti.length === this.numMaxContinenti
+      }
     },
     methods: {
         nomeValido(nome) {
@@ -103,7 +108,7 @@ export default {
         aggiungiContinente() {
             this.mappaInCostruzione.addContinente(this.nuovoContinente.nome, this.nuovoContinente.armateBonus);
             this.nuovoContinente = { nome: "", armateBonus: 3 };
-            this.showDialog = false;
+            this.showDialogContinenti = false;
         }
     }
 };
