@@ -35,11 +35,6 @@ public class ConqContinenti implements Obiettivo {
         return desc;
     }
 
-    /**
-     * Ritorna il numero di continenti extra da conquistare.
-     * @return il numero di continenti extra
-     */
-
     @Override
     public boolean raggiunto(Giocatore giocatore) {
         if (giocatore == null)
