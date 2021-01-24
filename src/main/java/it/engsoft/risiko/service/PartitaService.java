@@ -1,7 +1,7 @@
 package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.data.creators.ObiettivoFactory;
-import it.engsoft.risiko.rest.DTO.*;
+import it.engsoft.risiko.rest.dto.*;
 import it.engsoft.risiko.exceptions.*;
 import it.engsoft.risiko.data.model.*;
 import org.springframework.beans.factory.annotation.Autowired;

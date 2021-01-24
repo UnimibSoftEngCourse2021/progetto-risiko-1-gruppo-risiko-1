@@ -1,4 +1,4 @@
-package it.engsoft.risiko.rest.DTO;
+package it.engsoft.risiko.rest.dto;
 
 public final class RinforzoResponse {
     private final String giocatore;

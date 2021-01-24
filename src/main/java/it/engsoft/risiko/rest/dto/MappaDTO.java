@@ -1,22 +1,26 @@
-package it.engsoft.risiko.rest.DTO;
+package it.engsoft.risiko.rest.dto;
 
 import it.engsoft.risiko.data.model.Mappa;
 
-public final class CompactMappaDTO {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public final class MappaDTO {
     private final Long id;
     private final String nome;
     private final String descrizione;
     private final int numMinGiocatori;
     private final int numMaxGiocatori;
-    private final int numContinenti;
+    private final List<ContinenteDTO> continenti;
 
-    public CompactMappaDTO(Mappa mappa) {
+    public MappaDTO(Mappa mappa) {
         this.id = mappa.getId();
         this.nome = mappa.getNome();
         this.descrizione = mappa.getDescrizione();
         this.numMaxGiocatori = mappa.getNumMaxGiocatori();
         this.numMinGiocatori = mappa.getNumMinGiocatori();
-        this.numContinenti = mappa.getContinenti().size();
+        this.continenti = mappa.getContinenti().stream().map(ContinenteDTO::new)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -39,7 +43,7 @@ public final class CompactMappaDTO {
         return numMaxGiocatori;
     }
 
-    public int getNumContinenti() {
-        return numContinenti;
+    public List<ContinenteDTO> getContinenti() {
+        return continenti;
     }
 }

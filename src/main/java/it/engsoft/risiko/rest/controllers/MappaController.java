@@ -1,8 +1,8 @@
 package it.engsoft.risiko.rest.controllers;
 
-import it.engsoft.risiko.rest.DTO.CompactMappaDTO;
-import it.engsoft.risiko.rest.DTO.MappaDTO;
-import it.engsoft.risiko.rest.DTO.NuovaMappaDTO;
+import it.engsoft.risiko.rest.dto.CompactMappaDTO;
+import it.engsoft.risiko.rest.dto.MappaDTO;
+import it.engsoft.risiko.rest.dto.NuovaMappaDTO;
 import it.engsoft.risiko.service.MappaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

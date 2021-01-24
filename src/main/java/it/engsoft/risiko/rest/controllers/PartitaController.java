@@ -2,7 +2,7 @@ package it.engsoft.risiko.rest.controllers;
 
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.service.PartitaService;
-import it.engsoft.risiko.rest.DTO.*;
+import it.engsoft.risiko.rest.dto.*;
 import it.engsoft.risiko.data.model.Partita;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package it.engsoft.risiko.rest.DTO;
+package it.engsoft.risiko.rest.dto;
 
 import it.engsoft.risiko.data.model.Partita;
 

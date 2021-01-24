@@ -1,7 +1,7 @@
 package it.engsoft.risiko.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.engsoft.risiko.rest.DTO.*;
+import it.engsoft.risiko.rest.dto.*;
 import it.engsoft.risiko.data.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

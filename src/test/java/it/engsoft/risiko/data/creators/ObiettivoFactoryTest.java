@@ -32,6 +32,7 @@ class ObiettivoFactoryTest {
             assertNotNull(giocatore.getObiettivo());
 
         // test obiettivo uguale
+        partita = utils.initPartita();
         ObiettivoFactory obiettivoFactory2 = new ObiettivoFactory(partita.getMappa(), partita.getGiocatori(), true);
         partita.getGiocatori().forEach(g -> g.setObiettivo(obiettivoFactory2.getNuovoObiettivo()));
 
