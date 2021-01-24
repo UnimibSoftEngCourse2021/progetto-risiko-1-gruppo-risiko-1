@@ -23,7 +23,7 @@ public final class GiocatoreDTO {
                 .collect(Collectors.toList());
         this.obiettivo = giocatore.getObiettivo().getDescrizione();
         this.uccisore = giocatore.getUccisore() == null ? null : giocatore.getUccisore().getNome();
-        this.truppeDisponibili = giocatore.getTruppeDisponibili();
+        this.truppeDisponibili = giocatore.getArmateDisponibili();
     }
 
     public List<Long> getIdStati() {

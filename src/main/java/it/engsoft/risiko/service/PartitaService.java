@@ -43,7 +43,7 @@ public class PartitaService {
         // scegliamo casualmente un ordine di giocatori
         Collections.shuffle(giocatori);
 
-        Partita partita = new Partita(mappa, giocatori, modalita);
+        Partita partita = new Partita(mappa, giocatori);
 
         // distribuisci le carte territorio, comprende assegnazione degli stati
         partita.getMazzo().distribuisciCarte(giocatori);
@@ -83,7 +83,7 @@ public class PartitaService {
             throw new MossaIllegaleException("Mossa illegale: rinforzo non chiamato dal giocatore attivo");
 
         if (partita.isFasePreparazione()) {
-            int armateDaPiazzare = Math.min(3, giocatore.getTruppeDisponibili());
+            int armateDaPiazzare = Math.min(3, giocatore.getArmateDisponibili());
             eseguiRinforzo(rinforzoRequest, armateDaPiazzare, partita);
 
             partita.setNuovoGiocatoreAttivoPreparazione();
@@ -92,10 +92,10 @@ public class PartitaService {
             if (!partita.getFaseTurno().equals(Partita.FaseTurno.RINFORZI))
                 throw new MossaIllegaleException("Mossa illegale: rinforzo illegale se non in fase di rinforzi");
 
-            if (giocatore.getTruppeDisponibili() == 0)
+            if (giocatore.getArmateDisponibili() == 0)
                 throw new MossaIllegaleException("Mossa illegale: non ci sono altre armate da piazzare");
 
-            eseguiRinforzo(rinforzoRequest, partita.getGiocatoreAttivo().getTruppeDisponibili(), partita);
+            eseguiRinforzo(rinforzoRequest, partita.getGiocatoreAttivo().getArmateDisponibili(), partita);
         }
 
         return new RinforzoResponse(
@@ -160,7 +160,7 @@ public class PartitaService {
 
         Giocatore giocatoreAtt = partita.getGiocatoreAttivo();
 
-        if (giocatoreAtt.getTruppeDisponibili() != 0)
+        if (giocatoreAtt.getArmateDisponibili() != 0)
             throw new MossaIllegaleException("Mossa illegale: impossibile attaccare prima di aver completato i rinforzi");
 
         if (!giocatoreAtt.getNome().equals(attaccoDTO.getGiocatore()))
@@ -192,7 +192,7 @@ public class PartitaService {
         combattimento.esegui(difesaRequest.getArmate());
 
         if (combattimento.getConquista()) {
-            partita.setConquista(); // setta true conquista avvenuta in turno
+            partita.registraConquista(); // setta true conquista avvenuta in turno
 
             // gestione difensore eliminato
             if (giocatoreDif.isEliminato()) {
@@ -251,7 +251,7 @@ public class PartitaService {
         if (partita.getCombattimento() != null)
             throw new MossaIllegaleException("Mossa illegale: c'e' ancora un combattimento in corso");
 
-        if (partita.getGiocatoreAttivo().getTruppeDisponibili() != 0)
+        if (partita.getGiocatoreAttivo().getArmateDisponibili() != 0)
             throw new MossaIllegaleException("Mossa illegale: il giocatore attivo ha ancora truppe da posizionare");
 
         // pesca una carta territorio se conquistato

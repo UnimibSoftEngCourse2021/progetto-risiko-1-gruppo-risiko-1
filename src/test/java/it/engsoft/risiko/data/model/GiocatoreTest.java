@@ -87,27 +87,27 @@ class GiocatoreTest {
 
         assertNotEquals(gioc2, gioc1);
 
-        gioc1.setTruppeDisponibili(2);
-        gioc3.setTruppeDisponibili(1);
+        gioc1.setArmateDisponibili(2);
+        gioc3.setArmateDisponibili(1);
         assertEquals(gioc1, gioc3);
     }
 
     @Test
     void testGestioneArmate() {
         Giocatore g = new Giocatore("Pippo");
-        g.setTruppeDisponibili(10);
-        assertEquals(10, g.getTruppeDisponibili());
+        g.setArmateDisponibili(10);
+        assertEquals(10, g.getArmateDisponibili());
 
         try {
-            g.setTruppeDisponibili(-10);
+            g.setArmateDisponibili(-10);
             fail();
         } catch (ModelDataException ignored) { }
 
         g.modificaTruppeDisponibili(10);
-        assertEquals(20, g.getTruppeDisponibili());
+        assertEquals(20, g.getArmateDisponibili());
 
         g.modificaTruppeDisponibili(-5);
-        assertEquals(15, g.getTruppeDisponibili());
+        assertEquals(15, g.getArmateDisponibili());
 
         try {
             g.modificaTruppeDisponibili(-16);

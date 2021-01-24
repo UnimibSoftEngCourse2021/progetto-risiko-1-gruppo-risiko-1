@@ -26,24 +26,17 @@ class PartitaTest {
         }
 
         // Creazione corretta
-        Partita partita = new Partita(mappa, giocatori, modalita);
+        Partita partita = new Partita(mappa, giocatori);
 
         // mappa null
         try {
-            partita = new Partita(null, giocatori, modalita);
+            partita = new Partita(null, giocatori);
             fail();
         } catch (ModelDataException ignored) { }
 
         // giocatori null
         try {
-            partita = new Partita(mappa, null, modalita);
-            fail();
-        } catch (ModelDataException ignored) { }
-
-
-        // modalita null
-        try {
-            partita = new Partita(mappa, giocatori, null);
+            partita = new Partita(mappa, null);
             fail();
         } catch (ModelDataException ignored) { }
     }
@@ -57,7 +50,7 @@ class PartitaTest {
             giocatori.add(new Giocatore("Giocatore" + i));
         }
 
-        Partita partita = new Partita(mappa, giocatori, modalita);
+        Partita partita = new Partita(mappa, giocatori);
 
         // prova ad occupare i territori senza aver prima distribuito le carte territorio
         try {
@@ -89,12 +82,6 @@ class PartitaTest {
             partita.nuovoTurno();
             fail();
         } catch (ModelDataException ignored) { }
-
-        // prova a terminare la fase di preparazione prima del dovuto
-        try {
-            partita.setFasePreparazione(false);
-            fail();
-        } catch (ModelDataException ignored) { }
     }
 
     @Test
@@ -106,11 +93,11 @@ class PartitaTest {
             giocatori.add(new Giocatore("Giocatore" + i));
         }
 
-        Partita partita = new Partita(mappa, giocatori, modalita);
-        int armateIniziali = giocatori.get(0).getTruppeDisponibili();
+        Partita partita = new Partita(mappa, giocatori);
+        int armateIniziali = giocatori.get(0).getArmateDisponibili();
         // controlla che tutti abbiano lo stesso n di truppe iniziali
         assertFalse(
-                giocatori.stream().anyMatch(g -> g.getTruppeDisponibili() != armateIniziali)
+                giocatori.stream().anyMatch(g -> g.getArmateDisponibili() != armateIniziali)
         );
 
         partita.getMazzo().distribuisciCarte(partita.getGiocatori());
@@ -123,7 +110,7 @@ class PartitaTest {
 
         // controlla che le truppe dei giocatori siano state correttamente aggiornate
         assertFalse(
-                partita.getGiocatori().stream().anyMatch(g -> (g.getStati().size() + g.getTruppeDisponibili()) != armateIniziali)
+                partita.getGiocatori().stream().anyMatch(g -> (g.getStati().size() + g.getArmateDisponibili()) != armateIniziali)
         );
     }
 
@@ -136,7 +123,7 @@ class PartitaTest {
             giocatori.add(new Giocatore("Giocatore" + i));
         }
 
-        Partita partita = new Partita(mappa, giocatori, modalita);
+        Partita partita = new Partita(mappa, giocatori);
         partita.getMazzo().distribuisciCarte(partita.getGiocatori());
         partita.occupazioneInizialeTerritori();
 
@@ -164,14 +151,14 @@ class PartitaTest {
         for(int i = 0; i < 3; i++) {
             giocatori.add(new Giocatore("Giocatore" + i));
         }
-        Partita partita = new Partita(mappa, giocatori, modalita);
+        Partita partita = new Partita(mappa, giocatori);
         partita.getMazzo().distribuisciCarte(partita.getGiocatori());
         partita.occupazioneInizialeTerritori();
 
         // prima assegniamo arbitrariamente i rinforzi
         for (Giocatore g: giocatori) {
-            g.getStati().get(0).aggiungiArmate(g.getTruppeDisponibili());
-            g.setTruppeDisponibili(0);
+            g.getStati().get(0).aggiungiArmate(g.getArmateDisponibili());
+            g.setArmateDisponibili(0);
         }
 
         partita.setNuovoGiocatoreAttivoPreparazione();

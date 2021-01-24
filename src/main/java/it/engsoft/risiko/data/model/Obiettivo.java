@@ -1,8 +1,7 @@
 package it.engsoft.risiko.data.model;
 
 /**
- * Un'istanza di questa classe rappresenta un generico obiettivo che un giocatore deve raggiungere per vincere la
- * partita.
+ * Rrappresenta un generico obiettivo che un giocatore deve raggiungere per vincere la partita.
  */
 public interface Obiettivo {
     /**

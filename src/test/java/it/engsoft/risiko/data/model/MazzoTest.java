@@ -61,7 +61,7 @@ class MazzoTest {
 
         assertEquals(44, partita.getMazzo().getCarte().size());
         assertEquals(0, giocatore.getCarteTerritorio().size());
-        assertTrue(giocatore.getTruppeDisponibili() >= 12);
+        assertTrue(giocatore.getArmateDisponibili() >= 12);
     }
 
     @Test

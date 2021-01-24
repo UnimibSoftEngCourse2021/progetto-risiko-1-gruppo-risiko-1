@@ -6,6 +6,9 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Rappresenta una mappa del Risiko.
+ */
 @Entity(name = "mappe")
 public class Mappa {
     @Id
@@ -19,6 +22,14 @@ public class Mappa {
     @OneToMany(mappedBy = "mappa", cascade = CascadeType.PERSIST)
     private List<Continente> continenti;
 
+    /**
+     * Crea la mappa fornendone tutti gli attributi essenziali.
+     * @param nome il nome della mappa
+     * @param descrizione la descrizione della mappa
+     * @param numMinGiocatori il numero minimo di giocatori con cui si può giocare con questa mappa
+     * @param numMaxGiocatori il numero massimo di giocatori con cui si può giocare con questa mappa
+     * @param continenti i continenti di questa mappa
+     */
     public Mappa(String nome, String descrizione, int numMinGiocatori, int numMaxGiocatori, List<Continente> continenti) {
         this.nome = nome;
         this.descrizione = descrizione;
@@ -28,37 +39,65 @@ public class Mappa {
         this.continenti.forEach(c -> c.setMappa(this));
     }
 
+    /**
+     * Costruttore vuoto. Usato da Hibernate per salvare nuovi record.
+     */
     public Mappa() {}
 
+    /**
+     * Ritorna l'id della mappa.
+     * @return l'id della mappa
+     */
     public Long getId() {
         return id;
     }
 
-    // nome
+    /**
+     * Ritorna il nome della mappa.
+     * @return il nome della mappa
+     */
     public String getNome() {
         return nome;
     }
 
-    // descrizione
+    /**
+     * Ritorna la descrizione della mappa.
+     * @return la descrizione della mappa
+     */
     public String getDescrizione() {
         return descrizione;
     }
 
-    // numero minimo giocatori
+    /**
+     * Ritorna il numero minimo di giocatori che possono giocare con questa mappa.
+     * @return il numero minimo di giocatori che possono giocare con questa mappa
+     */
     public int getNumMinGiocatori() {
         return numMinGiocatori;
     }
 
-    // numero massimo giocatore
+    /**
+     * Ritorna il numero massimo di giocatori che possono giocare con questa mappa.
+     * @return il numero massimo di giocatori che possono giocare con questa mappa
+     */
     public int getNumMaxGiocatori() {
         return numMaxGiocatori;
     }
 
-    // continenti
+    /**
+     * Ritorna l'elenco dei continenti di cui questa mappa è composta.
+     * @return l'elenco dei continenti
+     */
     public List<Continente> getContinenti() {
         return Collections.unmodifiableList(continenti);
     }
 
+    /**
+     * Compatta la mappa accorpando stati tra loro vicini e secondo la modalità specificata. Se la modalità è completa,
+     * nessun accorpamento viene effettuato; se è ridotta, la mappa risultate ha circa 2/3 degli stati di partenza;
+     * se è veloce, la mappa risultante ha circa 1/2 degli stati di partenza.
+     * @param modalita la modalità di accorpamento
+     */
     public void compatta(Modalita modalita) {
         if (modalita.equals(Modalita.COMPLETA))
             return;
@@ -73,7 +112,7 @@ public class Mappa {
             for (int i = 0; i < numStatiDaRimuovere; i++) {
                 Stato daRimuovere = continente.getStati().get(0);
                 Stato statoCompattato = daRimuovere.getConfinanti().get(0);
-                statoCompattato.merge(daRimuovere);
+                statoCompattato.trasferisciConfini(daRimuovere);
                 continente.getStati().remove(daRimuovere);
             }
 
@@ -102,6 +141,11 @@ public class Mappa {
         return stato.get();
     }
 
+    /**
+     * Confronta questo oggetto con uno fornito come parametro e ritorna true se questi rappresentano la stessa mappa.
+     * @param o l'oggetto da confrontare
+     * @return true se questo oggetto e quello fornito rappresentano la stessa mappa
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,6 +154,10 @@ public class Mappa {
         return Objects.equals(id, mappa.id);
     }
 
+    /**
+     * Ritorna l'hashcode della mappa.
+     * @return l'hashcode
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);

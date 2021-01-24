@@ -7,15 +7,19 @@ import it.engsoft.risiko.exceptions.DatiErratiException;
 
 import java.util.*;
 
+/**
+ * Questa classe si occupa della costruzione di un oggetto Mappa, verificando la correttezza di tutti i parametri
+ * inseriti.
+ */
 public class MappaBuilder {
-    private static final int NUM_MIN_GIOCATORI = 2;
-    private static final int NUM_MAX_GIOCATORI = 8;
-    private static final int MIN_ARMATE_BONUS = 2;
-    private static final int MAX_ARMATE_BONUS = 7;
-    private static final int MIN_CONTINENTI = 4;
-    private static final int MAX_CONTINENTI = 8;
-    private static final int MIN_STATI_CONTINENTE = 4;
-    private static final int MAX_STATI_CONTINENTE = 12;
+    private static final int NUM_MIN_GIOCATORI = 2; // numero minimo di giocatori per una mappa
+    private static final int NUM_MAX_GIOCATORI = 8; // numero max di giocatori per un mappa
+    private static final int MIN_ARMATE_BONUS = 2; // num minimo di armate bonus di un continente
+    private static final int MAX_ARMATE_BONUS = 7; // num max di armate bonus di un continente
+    private static final int MIN_CONTINENTI = 4; // num min di continenti in una mappa
+    private static final int MAX_CONTINENTI = 8; // num max di continenti in una mappa
+    private static final int MIN_STATI_CONTINENTE = 4; // num min di stati in un continente
+    private static final int MAX_STATI_CONTINENTE = 12; // num max di stati in un continente
 
     private final String nome;
     private final String descrizione;
@@ -24,6 +28,13 @@ public class MappaBuilder {
     private final List<Continente> continenti = new ArrayList<>();
     private final List<Stato> stati = new ArrayList<>();
 
+    /**
+     * Istanzia un nuovo MappaBuilder ricevendo come parametri le informazioni generali della mappa da creare.
+     * @param nome il nome della mappa da creare
+     * @param descrizione la descrizione della mappa da creare
+     * @param numMinGiocatori il numero minimo di giocatori che la mappa può avere
+     * @param numMaxGiocatori il numero massimo di giocatori che la mappa può avere
+     */
     public MappaBuilder(String nome, String descrizione, int numMinGiocatori, int numMaxGiocatori) {
         if (nome.trim().isEmpty() || descrizione.trim().isEmpty() || numMinGiocatori < NUM_MIN_GIOCATORI ||
                 numMaxGiocatori > NUM_MAX_GIOCATORI)
@@ -34,6 +45,11 @@ public class MappaBuilder {
         this.numMaxGiocatori = numMaxGiocatori;
     }
 
+    /**
+     * Aggiunge un continente alla mappa in fase di creazione.
+     * @param nome il nome del continente da aggiungere
+     * @param armateBonus il numero di armate bonus che si riceve se si conquista il continente aggiunto
+     */
     public void addContinente(String nome, int armateBonus) {
         if (nome.trim().isEmpty() || armateBonus < MIN_ARMATE_BONUS || armateBonus > MAX_ARMATE_BONUS)
             throw new DatiErratiException("Dati continente non validi");
@@ -45,6 +61,11 @@ public class MappaBuilder {
         continenti.add(new Continente(nome, armateBonus));
     }
 
+    /**
+     * Aggiunge uno stato alla mappa in fase di creazione.
+     * @param nome il nome dello stato da aggiungere
+     * @param nomeContinente il nome del continente di cui questo nuovo stato fa parte
+     */
     public void addStato(String nome, String nomeContinente) {
         if (stati.stream().anyMatch(s -> s.getNome().equals(nome)) ||
                 continenti.stream().anyMatch(c -> c.getNome().equals(nome)))
@@ -64,6 +85,11 @@ public class MappaBuilder {
         cont.getStati().add(s);
     }
 
+    /**
+     * Aggiunge un confine tra due stati alla mappa in fase di creazione, se esso non è già presente.
+     * @param nomeStato1 il nome del primo stato
+     * @param nomeStato2 il nome del secondo stato
+     */
     public void addConfine(String nomeStato1, String nomeStato2) {
         Optional<Stato> optStato1 = stati.stream().filter(s -> s.getNome().equals(nomeStato1)).findFirst();
         Optional<Stato> optStato2 = stati.stream().filter(s -> s.getNome().equals(nomeStato2)).findFirst();
@@ -102,6 +128,11 @@ public class MappaBuilder {
         return (visitati.size() == stati.size());
     }
 
+    /**
+     * Costruisce una mappa sfruttando le informazioni (stati, confini, continenti) inserite fino a questo momento, e
+     * verificando che la mappa così ottenuta sia valida.
+     * @return la mappa costruita
+     */
     public Mappa build() {
         if (continenti.size() < MIN_CONTINENTI || continenti.size() > MAX_CONTINENTI)
             throw new DatiErratiException("Numero di continenti non valido");

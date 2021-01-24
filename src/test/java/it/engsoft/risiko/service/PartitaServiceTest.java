@@ -46,7 +46,6 @@ class PartitaServiceTest {
         NuovoGiocoRequest nuovoGiocoRequest = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
         Partita partita = partitaService.nuovoGioco(nuovoGiocoRequest);
 
-        assertEquals("COMPLETA", partita.getModalita().toString());
         assertEquals(1L, partita.getMappa().getId());
 
         // test sulla creazione dei giocatori
@@ -56,7 +55,7 @@ class PartitaServiceTest {
             assertNotNull(partita.getGiocatori().get(i).getObiettivo());
             assertNotNull(partita.getGiocatori().get(i).getCarteTerritorio());
             assertNotNull(partita.getGiocatori().get(i).getStati());
-            assertNotEquals(0, partita.getGiocatori().get(i).getTruppeDisponibili());
+            assertNotEquals(0, partita.getGiocatori().get(i).getArmateDisponibili());
         }
 
         // test numero giocatori > massimo consentito
@@ -79,7 +78,7 @@ class PartitaServiceTest {
         NuovoGiocoRequest nuovoGiocoRequest = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
         Partita partita = partitaService.nuovoGioco(nuovoGiocoRequest);
         for(int i = 0; i < partita.getGiocatori().size(); i++) {
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         }
 
         // test fase preparazione
@@ -99,7 +98,7 @@ class PartitaServiceTest {
 
         partita.setFaseTurno(Partita.FaseTurno.INIZIALIZZAZIONE);
         partitaService.iniziaTurno(partita);
-        assertNotEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
+        assertNotEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
         assertEquals(Partita.FaseTurno.RINFORZI, partita.getFaseTurno());
     }
 

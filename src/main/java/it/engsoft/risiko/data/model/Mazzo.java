@@ -7,17 +7,30 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Rappresenta il mazzo di carte territorio di una partita. Si occupa della creazione e distribuzione delle carte
+ * territorio e di tutte le operazioni ad esse connesse.
+ */
 public class Mazzo {
     private final List<CartaTerritorio> carte = new ArrayList<>();
 
+    /**
+     * Crea il mazzo a partire dalla lista degli stati da rappresentare nelle carte territorio.
+     * @param stati la lista degli stati da rappresentare
+     */
     public Mazzo(List<Stato> stati) {
         generaMazzo(stati);
     }
 
+    /**
+     * Ritorna l'elenco delle carte nel mazzo.
+     * @return l'elenco delle carte nel mazzo
+     */
     public List<CartaTerritorio> getCarte() { return carte; }
 
     /**
      * Genera il mazzo e distribuisce le carte ai giocatori.
+     * @param giocatori l'elenco dei giocatori a cui distribuire le carte
      */
     public void distribuisciCarte(List<Giocatore> giocatori) {
 
@@ -69,6 +82,12 @@ public class Mazzo {
         }
     }
 
+    /**
+     * Pesca una carta dal mazzo e la assegna al giocatore specificato. La carta viene rimossa dal mazzo dopo questa
+     * operazione.
+     * @param giocatore il giocatore cui assegnare la carta pescata
+     * @return la carta pescata
+     */
     public CartaTerritorio pescaCarta(Giocatore giocatore) {
         if(this.carte.isEmpty())
             return null;

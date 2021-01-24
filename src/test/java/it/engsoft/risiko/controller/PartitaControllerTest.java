@@ -80,7 +80,7 @@ class PartitaControllerTest {
         // rinforzo iniziale
         HashMap<String, Integer> rinforzo = new HashMap<>();
         rinforzo.put(partita.getGiocatoreAttivo().getStati().get(0).getId().toString(),
-                Math.min(partita.getGiocatoreAttivo().getTruppeDisponibili(), 3));
+                Math.min(partita.getGiocatoreAttivo().getArmateDisponibili(), 3));
         RinforzoRequest rinforzoRequest = new RinforzoRequest(
                 partita.getGiocatoreAttivo().getNome(),
                 rinforzo
@@ -105,11 +105,11 @@ class PartitaControllerTest {
 
         assertTrue(partita.isFasePreparazione());
         assertNotEquals(partita.getGiocatoreAttivo().getNome(), rinforzoRequest.getGiocatore());
-        assertNotEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
+        assertNotEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
 
         // rinforzo normale
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
 
 
@@ -119,7 +119,7 @@ class PartitaControllerTest {
                 .andExpect(status().isOk());
 
         rinforzo.put(partita.getGiocatoreAttivo().getStati().get(0).getId().toString(),
-                partita.getGiocatoreAttivo().getTruppeDisponibili());
+                partita.getGiocatoreAttivo().getArmateDisponibili());
         RinforzoRequest rinforzoRequest1 = new RinforzoRequest(
                 partita.getGiocatoreAttivo().getNome(),
                 rinforzo
@@ -134,7 +134,7 @@ class PartitaControllerTest {
 
         assertFalse(partita.isFasePreparazione());
         assertEquals(partita.getGiocatoreAttivo().getNome(), rinforzoRequest.getGiocatore());
-        assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
+        assertEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
     }
 
     @Test
@@ -145,7 +145,7 @@ class PartitaControllerTest {
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
 
         // partita null
@@ -165,7 +165,7 @@ class PartitaControllerTest {
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
 
@@ -216,14 +216,14 @@ class PartitaControllerTest {
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
         partita.setCombattimento(null);
 
         assertFalse(partita.isFasePreparazione());
         assertNotEquals(Partita.FaseTurno.SPOSTAMENTO, partita.getFaseTurno());
-        assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
+        assertEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
         assertNull(partita.getCombattimento());
 
         Stato attaccante = new Stato();
@@ -272,7 +272,7 @@ class PartitaControllerTest {
 
         // attaccante e difensore hanno lo stesso proprietario
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.nuovoTurno();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
         partita.setCombattimento(null);
@@ -313,14 +313,14 @@ class PartitaControllerTest {
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
         partita.setCombattimento(null);
 
         assertFalse(partita.isFasePreparazione());
         assertNotEquals(Partita.FaseTurno.SPOSTAMENTO, partita.getFaseTurno());
-        assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
+        assertEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
         assertNull(partita.getCombattimento());
 
         Stato attaccante = new Stato();
@@ -389,7 +389,7 @@ class PartitaControllerTest {
 
         // attaccante e difensore hanno lo stesso proprietario
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.nuovoTurno();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
         partita.setCombattimento(null);
@@ -442,7 +442,7 @@ class PartitaControllerTest {
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
 
@@ -487,7 +487,7 @@ class PartitaControllerTest {
 
         // partenza e arrivo non appartengono allo stesso giocatore
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.nuovoTurno();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
 
@@ -524,7 +524,7 @@ class PartitaControllerTest {
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
         partita.setCombattimento(null);
@@ -596,13 +596,13 @@ class PartitaControllerTest {
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
         for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setTruppeDisponibili(0);
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
         partita.setNuovoGiocatoreAttivoPreparazione();
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
-        partita.setConquista();
+        partita.registraConquista();
 
         assertNull(partita.getCombattimento());
-        assertEquals(0, partita.getGiocatoreAttivo().getTruppeDisponibili());
+        assertEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
 
         Giocatore giocatoreAttivo = partita.getGiocatoreAttivo();
 

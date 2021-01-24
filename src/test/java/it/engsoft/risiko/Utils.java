@@ -56,6 +56,6 @@ public class Utils {
             giocatori.add(new Giocatore("Giocatore" + i));
         }
 
-        return new Partita(mappa, giocatori, modalita);
+        return new Partita(mappa, giocatori);
     }
 }
