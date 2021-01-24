@@ -10,7 +10,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ObiettiviTest {
+class ObiettiviTest {
     @Autowired
     MappaRepository mappaRepository;
 
