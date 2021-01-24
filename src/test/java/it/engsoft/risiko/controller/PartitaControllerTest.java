@@ -215,17 +215,6 @@ class PartitaControllerTest {
         assertNotNull(httpSession.getAttribute("partita"));
         Partita partita = (Partita) httpSession.getAttribute("partita");
 
-        for (int i = 0; i < partita.getGiocatori().size(); i++)
-            partita.getGiocatori().get(i).setArmateDisponibili(0);
-        partita.setNuovoGiocatoreAttivoPreparazione();
-        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
-        partita.setCombattimento(null);
-
-        assertFalse(partita.isFasePreparazione());
-        assertNotEquals(Partita.FaseTurno.SPOSTAMENTO, partita.getFaseTurno());
-        assertEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
-        assertNull(partita.getCombattimento());
-
         Stato attaccante = new Stato();
         Stato difensore = new Stato();
         for (int j=0; j< partita.getGiocatoreAttivo().getStati().size(); j++){
@@ -251,6 +240,30 @@ class PartitaControllerTest {
 
         String attaccoJson = (new ObjectMapper()).writeValueAsString(attaccoDTO);
 
+        // armate disponibili giocatore attivo diverse da zero
+        this.mockMvc.perform(post("/api/attacco")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(attaccoJson))
+                .andExpect(status().isForbidden());
+
+        for (int i = 0; i < partita.getGiocatori().size(); i++)
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
+
+        // partita in fase preparazione
+        this.mockMvc.perform(post("/api/attacco")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(attaccoJson))
+                .andExpect(status().isForbidden());
+
+        partita.setNuovoGiocatoreAttivoPreparazione();
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+        partita.setCombattimento(null);
+
+        assertFalse(partita.isFasePreparazione());
+        assertNotEquals(Partita.FaseTurno.SPOSTAMENTO, partita.getFaseTurno());
+        assertEquals(0, partita.getGiocatoreAttivo().getArmateDisponibili());
+        assertNull(partita.getCombattimento());
+
         // partita null
         this.mockMvc.perform(post("/api/attacco")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -269,6 +282,12 @@ class PartitaControllerTest {
         assertTrue(partita.getCombattimento().getStatoAttaccante().getArmate() >
                 attaccoDTO.getArmate());
         assertEquals(Partita.FaseTurno.COMBATTIMENTI, partita.getFaseTurno());
+
+        // attacco gia' in corso
+        this.mockMvc.perform(post("/api/attacco")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(attaccoJson))
+                .andExpect(status().isForbidden());
 
         // attaccante e difensore hanno lo stesso proprietario
         for (int i = 0; i < partita.getGiocatori().size(); i++)
@@ -303,6 +322,7 @@ class PartitaControllerTest {
                 .content(attaccoJson1))
                 .andExpect(status().isForbidden());
         assertNull(partita.getCombattimento());
+
     }
 
     @Test

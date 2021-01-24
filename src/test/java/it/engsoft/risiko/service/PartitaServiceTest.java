@@ -1,27 +1,26 @@
 package it.engsoft.risiko.service;
 
-import it.engsoft.risiko.Utils;
+import it.engsoft.risiko.data.model.*;
 import it.engsoft.risiko.rest.dto.NuovoGiocoRequest;
 import it.engsoft.risiko.exceptions.DatiErratiException;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
-import it.engsoft.risiko.data.model.Partita;
+import it.engsoft.risiko.rest.dto.TrisDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class PartitaServiceTest {
     private final PartitaService partitaService;
-    private final Utils utils;
 
     @Autowired
-    public PartitaServiceTest(PartitaService partitaService, Utils utils) {
+    public PartitaServiceTest(PartitaService partitaService) {
         this.partitaService = partitaService;
-        this.utils = utils;
     }
 
     @Test
@@ -102,4 +101,116 @@ class PartitaServiceTest {
         assertEquals(Partita.FaseTurno.RINFORZI, partita.getFaseTurno());
     }
 
+    @Test
+    void testGiocaTris() {
+        ArrayList<String> giocatori = new ArrayList<>();
+        giocatori.add("uno");
+        giocatori.add("due");
+        giocatori.add("tre");
+
+        NuovoGiocoRequest nuovoGiocoRequest = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
+        Partita partita = partitaService.nuovoGioco(nuovoGiocoRequest);
+        for (int i = 0; i < partita.getGiocatori().size(); i++) {
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
+        }
+
+        CartaTerritorio carta1 = new CartaTerritorio(
+                1,
+                partita.getMappa().getStati().get(0),
+                CartaTerritorio.Figura.CAVALLO);
+        CartaTerritorio carta2 = new CartaTerritorio(
+                2,
+                partita.getMappa().getStati().get(1),
+                CartaTerritorio.Figura.CAVALLO);
+        CartaTerritorio carta3 = new CartaTerritorio(
+                3,
+                partita.getMappa().getStati().get(2),
+                CartaTerritorio.Figura.CAVALLO);
+        CartaTerritorio carta4 = new CartaTerritorio(
+                4,
+                partita.getMappa().getStati().get(3),
+                CartaTerritorio.Figura.FANTE);
+
+        List<Integer> carte = new ArrayList<>();
+        carte.add(carta1.getId());
+        carte.add(carta2.getId());
+        carte.add(carta3.getId());
+
+        TrisDTO trisDTO = new TrisDTO(
+                partita.getGiocatoreAttivo().getNome(),
+                carte);
+
+        assertTrue(partita.isFasePreparazione());
+        // test fase preparazione
+        try {
+            partitaService.giocaTris(trisDTO, partita);
+            fail();
+        } catch (MossaIllegaleException ignore) { }
+
+        partita.setNuovoGiocatoreAttivoPreparazione();
+        partita.setFaseTurno(Partita.FaseTurno.COMBATTIMENTI);
+
+        assertFalse(partita.isFasePreparazione());
+
+        // test non si e' in fase di rinforzo
+        try {
+            partitaService.giocaTris(trisDTO, partita);
+            fail();
+        } catch (MossaIllegaleException ignore) { }
+
+        partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
+
+        Giocatore giocatore = null;
+        for (int i = 0; i < partita.getGiocatori().size(); i++) {
+            if (!partita.getGiocatori().get(i).equals(partita.getGiocatoreAttivo()))
+                giocatore = partita.getGiocatori().get(i);
+        }
+        assertNotNull(giocatore);
+        TrisDTO trisDTO1 = new TrisDTO(
+                giocatore.getNome(),
+                carte);
+        try {
+            partitaService.giocaTris(trisDTO1, partita);
+            fail();
+        } catch (MossaIllegaleException ignore) { }
+
+        carte.add(carta4.getId());
+
+        // test numero carte diverso da 3
+        try {
+            partitaService.giocaTris(trisDTO, partita);
+            fail();
+        } catch (DatiErratiException ignore) { }
+    }
+
+    @Test
+    void testFineTurno() {
+        ArrayList<String> giocatori = new ArrayList<>();
+        giocatori.add("uno");
+        giocatori.add("due");
+        giocatori.add("tre");
+
+        NuovoGiocoRequest nuovoGiocoRequest = new NuovoGiocoRequest(giocatori, 1L, "COMPLETA", false);
+        Partita partita = partitaService.nuovoGioco(nuovoGiocoRequest);
+        for (int i = 0; i < partita.getGiocatori().size(); i++) {
+            partita.getGiocatori().get(i).setArmateDisponibili(0);
+        }
+
+        assertTrue(partita.isFasePreparazione());
+        // test fase preparazione
+        try {
+            partitaService.fineTurno(partita);
+            fail();
+        } catch (MossaIllegaleException ignore) { }
+
+        partita.setNuovoGiocatoreAttivoPreparazione();
+        assertFalse(partita.isFasePreparazione());
+
+        partita.getGiocatoreAttivo().setArmateDisponibili(1);
+        // test armate diverse da zero
+        try {
+            partitaService.fineTurno(partita);
+            fail();
+        } catch (MossaIllegaleException ignore) { }
+    }
 }

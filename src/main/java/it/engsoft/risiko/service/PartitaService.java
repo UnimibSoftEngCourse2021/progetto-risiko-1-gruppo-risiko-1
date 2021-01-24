@@ -10,15 +10,25 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Questo service gestisce la partita.
+ */
 @Service
 public class PartitaService {
     private final MappaService mappaService;
 
+    /**
+     * Crea un istanza di mappaService.
+     * @param mappaService il service che si vuole istanziare.
+     */
     @Autowired
-    public PartitaService( MappaService mappaService) {
-        this.mappaService = mappaService;
-    }
+    public PartitaService(MappaService mappaService) { this.mappaService = mappaService; }
 
+    /**
+     * Crea una nuova partita.
+     * @param nuovoGiocoRequest un data transfer object contenente le informazioni necessarie per crearla.
+     * @return l'oggetto partita.
+     */
     public Partita nuovoGioco(NuovoGiocoRequest nuovoGiocoRequest) {
         Modalita modalita = Modalita.valutaModalita(nuovoGiocoRequest.getMod());
 
@@ -53,6 +63,11 @@ public class PartitaService {
         return partita;
     }
 
+    /**
+     * Prepara il nuovo turno in modo che possa essere usato dagli altri metodi.
+     * @param partita l'oggetto partita al quale si riferisce iniziaTurno.
+     * @return un data access object contenente le informazioni calcolate dal metodo.
+     */
     public IniziaTurnoDTO iniziaTurno(Partita partita) {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: impossibile iniziare il turno in fase di preparazione");
@@ -77,6 +92,13 @@ public class PartitaService {
         return new IniziaTurnoDTO(giocatore.getNome(), armateStati, armateContinenti);
     }
 
+    /**
+     * Esegue il rinforzo iniziale e il rinforzo normale.
+     * @param rinforzoRequest un data transfer object contenente i dati necessari per effettuare
+     *                        la richiesta di rinforzo.
+     * @param partita l'oggetto partita al quale si riferisce il rinforzo.
+     * @return un data access object contenente l'esito del rinforzo
+     */
     public RinforzoResponse rinforzo(RinforzoRequest rinforzoRequest, Partita partita) {
         Giocatore giocatore = partita.getGiocatoreAttivo();
         if (!giocatore.getNome().equals(rinforzoRequest.getGiocatore()))
@@ -130,6 +152,12 @@ public class PartitaService {
         giocAttivo.modificaTruppeDisponibili(-armateDaPiazzare);
     }
 
+    /**
+     * Incrementa le truppe disponibili del giocatore che utilizza un tris di carte territorio valido.
+     * @param trisDTO un data transfer object contenente le informazioni necessarie per eseguire giocaTris.
+     * @param partita l'oggetto partita al quale si riferisce il rinforzo.
+     * @return il valore del tris di carte in numero di armate
+     */
     public int giocaTris(TrisDTO trisDTO, Partita partita) {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: impossibile giocare un tris in fase di preparazione");
@@ -151,6 +179,11 @@ public class PartitaService {
         return nArmateBonus;
     }
 
+    /**
+     * Crea un oggetto combattimento e lo inizializza.
+     * @param attaccoDTO un data transfer object contenente le informazioni necessarie per eseguire l' attacco.
+     * @param partita l'oggetto partita al quale si riferisce l'attacco.
+     */
     public void attacco(AttaccoDTO attaccoDTO, Partita partita) {
         if (partita.isFasePreparazione() || partita.getFaseTurno().equals(Partita.FaseTurno.SPOSTAMENTO))
             throw new MossaIllegaleException("Mossa illegale: impossibile attaccare in questa fase di gioco");
@@ -178,6 +211,13 @@ public class PartitaService {
         partita.setCombattimento(combattimento);
     }
 
+    /**
+     * Termina un combattimento calcolandone il risultato grazie alle informazioni sul difensore
+     * che riceve in ingresso.
+     * @param difesaRequest un data transfer object contenente le informazioni necessarie per eseguire la difesa.
+     * @param partita l'oggetto partita al quale si riferisce la difesa.
+     * @return un data access object contenente le informazioni riguardo l'esito del combattimento.
+     */
     public DifesaResponse difesa(DifesaRequest difesaRequest, Partita partita) {
         Combattimento combattimento = partita.getCombattimento();
         if (combattimento == null || combattimento.isEseguito())
@@ -211,6 +251,12 @@ public class PartitaService {
                 giocatoreDif.isEliminato());
     }
 
+    /**
+     * Esegue lo spostamento di turppe obbligatorio successivo ad un attacco o un normale spostamento.
+     * @param spostamentoDTO un data transfer object contenente le informazioni necessarie per eseguire lo spostamento.
+     * @param partita l'oggetto partita al quale si riferisce lo spostamento.
+     * @return true se il giocatore ha raggiunto il suo obiettivo e vinto la partita.
+     */
     public boolean spostamentoStrategico(SpostamentoDTO spostamentoDTO, Partita partita) {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: si e' ancora in fase di preparazione");
@@ -244,6 +290,12 @@ public class PartitaService {
         return giocatore.obRaggiunto();
     }
 
+    /**
+     * Un metodo che restituisce una carta territorio al giocatore di quel turno se ha conuquistato almeno uno stato
+     * e che crea il nuovo turno.
+     * @param partita l'oggetto partita al quale si riferisce fineTurno.
+     * @return la carta territorio destinata al giocatore.
+     */
     public CartaTerritorioDTO fineTurno(Partita partita) {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: si e' ancora in fase di preparazione");
