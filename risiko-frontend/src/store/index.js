@@ -68,7 +68,7 @@ export default new Vuex.Store({
         setStatoDifensore(state, stato) {
             state.gioco.combattimento.difensore = stato.id;
         },
-        setEsitoCombattimento(state, { dadoAtt, dadoDif, vittimeAtt, vittimeDif, vittoriaAtt, obiettivoRaggiuntoAtt }) {
+        setEsitoCombattimento(state, { dadoAtt, dadoDif, vittimeAtt, vittimeDif, vittoriaAtt, obiettivoRaggiuntoAtt, eliminato }) {
             state.gioco.turno.fase = "combattimento";
             state.gioco.combattimento = { ...state.gioco.combattimento, dadoAtt, dadoDif, vittimeAtt, vittimeDif, vittoriaAtt };
             const statoAttaccante = state.gioco.mappa.trovaStatoId(state.gioco.combattimento.attaccante);
@@ -81,6 +81,12 @@ export default new Vuex.Store({
                 state.gioco.winner = state.gioco.giocatori[state.gioco.activePlayerIndex];
                 state.gioco.combattimento.inCorso = false;
             } else if (vittoriaAtt) {
+                if (eliminato) {
+                    const giocatoreAttaccante = state.gioco.getGiocatoreAttivo();
+                    const giocatoreDifensore = state.gioco.giocatori.find(g => g.nome === statoDifensore.proprietario);
+                    giocatoreAttaccante.carteTerritorio.push(...giocatoreDifensore.carteTerritorio)
+                    giocatoreDifensore.carteTerritorio = []
+                }
                 Vue.set(statoDifensore, "proprietario", statoAttaccante.proprietario);
             } else {
                 state.gioco.combattimento.inCorso = false;

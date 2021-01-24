@@ -112,6 +112,14 @@ public class Giocatore {
         return obiettivo.raggiunto(this);
     }
 
+    public void consegnaCarteTerritorio(Giocatore giocatore) {
+        if (giocatore == null)
+            throw new ModelDataException("Giocatore null");
+
+        giocatore.getCarteTerritorio().addAll(carteTerritorio);
+        carteTerritorio.clear();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

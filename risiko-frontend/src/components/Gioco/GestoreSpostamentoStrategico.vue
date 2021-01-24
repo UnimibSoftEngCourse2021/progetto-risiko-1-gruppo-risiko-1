@@ -63,7 +63,7 @@ export default {
         armateSpostabili() {
             if (!this.statoPartenza.armate)
               return [];
-            return [...Array(this.statoPartenza.armate).keys()].map(i => i + 1)
+            return [...Array(this.statoPartenza.armate - 1).keys()].map(i => i + 1)
         }
     },
     methods: {

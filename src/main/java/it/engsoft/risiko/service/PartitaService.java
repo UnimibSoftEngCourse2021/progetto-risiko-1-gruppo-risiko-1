@@ -196,8 +196,10 @@ public class PartitaService {
             partita.setConquista(); // setta true conquista avvenuta in turno
 
             // gestione difensore eliminato
-            if (giocatoreDif.isEliminato())
+            if (giocatoreDif.isEliminato()) {
                 giocatoreDif.setUccisore(giocatoreAtt);
+                giocatoreDif.consegnaCarteTerritorio(giocatoreAtt);
+            }
         }
 
         // se l'attaccante non ha conquistato il territorio, il combattimento è terminato
@@ -222,6 +224,9 @@ public class PartitaService {
             throw new MossaIllegaleException("Mossa illegale: spostamento non chiamato dal giocatore attivo");
 
         Combattimento combattimento = partita.getCombattimento();
+
+        if (combattimento != null && !combattimento.isEseguito())
+            throw new MossaIllegaleException("Mossa illegale! Devi prima concludere il combattimento");
 
         int minimoArmate = 1;
         if (combattimento != null) {

@@ -46,13 +46,11 @@
             </v-list>
 
             <v-subheader>CARTE TERRITORIO</v-subheader>
-            <v-slide-group v-if="giocatore.carteTerritorio.length > 0" show-arrows>
-              <v-slide-item v-for="carta in giocatore.carteTerritorio" :key="carta.id">
-                <v-chip color="primary" dark>
+            <v-row v-if="giocatore.carteTerritorio.length > 0">
+                <v-chip color="primary" dark v-for="carta in giocatore.carteTerritorio" :key="carta.id" class="ma-1">
                   {{ carta.figura + (carta.statoRappresentato ? (": " + carta.statoRappresentato) : "") }}
                 </v-chip>
-              </v-slide-item>
-            </v-slide-group>
+            </v-row>
             <span v-else class="d-block text-body-2">Non possiedi nessuna carta territorio</span>
 
           </v-expansion-panel-content>
