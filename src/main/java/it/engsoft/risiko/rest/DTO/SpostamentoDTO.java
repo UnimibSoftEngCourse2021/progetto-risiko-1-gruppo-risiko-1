@@ -1,4 +1,4 @@
-package it.engsoft.risiko.rest.dto;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.exceptions.DatiErratiException;
 

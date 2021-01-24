@@ -1,25 +1,25 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.Mappa;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MappaDAO {
-    private Long id;
-    private String nome;
-    private String descrizione;
-    private int numMinGiocatori;
-    private int numMaxGiocatori;
-    private List<ContinenteDAO> continenti;
+public final class MappaDTO {
+    private final Long id;
+    private final String nome;
+    private final String descrizione;
+    private final int numMinGiocatori;
+    private final int numMaxGiocatori;
+    private final List<ContinenteDTO> continenti;
 
-    public MappaDAO(Mappa mappa) {
+    public MappaDTO(Mappa mappa) {
         this.id = mappa.getId();
         this.nome = mappa.getNome();
         this.descrizione = mappa.getDescrizione();
         this.numMaxGiocatori = mappa.getNumMaxGiocatori();
         this.numMinGiocatori = mappa.getNumMinGiocatori();
-        this.continenti = mappa.getContinenti().stream().map(ContinenteDAO::new)
+        this.continenti = mappa.getContinenti().stream().map(ContinenteDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +43,7 @@ public class MappaDAO {
         return numMaxGiocatori;
     }
 
-    public List<ContinenteDAO> getContinenti() {
+    public List<ContinenteDTO> getContinenti() {
         return continenti;
     }
 }

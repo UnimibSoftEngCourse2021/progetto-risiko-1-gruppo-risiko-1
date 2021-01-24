@@ -1,8 +1,7 @@
 package it.engsoft.risiko.service;
 
-import it.engsoft.risiko.rest.dao.*;
 import it.engsoft.risiko.data.creators.ObiettivoFactory;
-import it.engsoft.risiko.rest.dto.*;
+import it.engsoft.risiko.rest.DTO.*;
 import it.engsoft.risiko.exceptions.*;
 import it.engsoft.risiko.data.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,25 +19,25 @@ public class PartitaService {
         this.mappaService = mappaService;
     }
 
-    public Partita nuovoGioco(NuovoGiocoDTO nuovoGiocoDTO) {
-        Modalita modalita = Modalita.valutaModalita(nuovoGiocoDTO.getMod());
+    public Partita nuovoGioco(NuovoGiocoRequest nuovoGiocoRequest) {
+        Modalita modalita = Modalita.valutaModalita(nuovoGiocoRequest.getMod());
 
         // istanzia la mappa
-        Mappa mappa = mappaService.getMappa(nuovoGiocoDTO.getMappaId(), modalita);
+        Mappa mappa = mappaService.getMappa(nuovoGiocoRequest.getMappaId(), modalita);
 
         // controllo sul valore minimo e massimo di giocatori ammessi dalla mappa
-        if (mappa.getNumMaxGiocatori() < nuovoGiocoDTO.getGiocatori().size() ||
-                mappa.getNumMinGiocatori() > nuovoGiocoDTO.getGiocatori().size())
+        if (mappa.getNumMaxGiocatori() < nuovoGiocoRequest.getGiocatori().size() ||
+                mappa.getNumMinGiocatori() > nuovoGiocoRequest.getGiocatori().size())
             throw new DatiErratiException("Dati errati: valore minimo/massimo di giocatori non ammesso");
 
         // creazione dei nuovi giocatori
-        List<Giocatore> giocatori = nuovoGiocoDTO.getGiocatori()
+        List<Giocatore> giocatori = nuovoGiocoRequest.getGiocatori()
                 .stream()
                 .map(Giocatore::new)
                 .collect(Collectors.toList());
 
         // assegna gli obiettivi ai giocatori
-        ObiettivoFactory obFactory = new ObiettivoFactory(mappa, giocatori, nuovoGiocoDTO.isUnicoObiettivo());
+        ObiettivoFactory obFactory = new ObiettivoFactory(mappa, giocatori, nuovoGiocoRequest.isUnicoObiettivo());
         giocatori.forEach(g -> g.setObiettivo(obFactory.getNuovoObiettivo()));
 
         // scegliamo casualmente un ordine di giocatori
@@ -54,7 +53,7 @@ public class PartitaService {
         return partita;
     }
 
-    public IniziaTurnoDAO iniziaTurno(Partita partita) {
+    public IniziaTurnoDTO iniziaTurno(Partita partita) {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: impossibile iniziare il turno in fase di preparazione");
 
@@ -75,17 +74,17 @@ public class PartitaService {
 
         giocatore.modificaTruppeDisponibili(armateContinenti + armateStati);
         partita.setFaseTurno(Partita.FaseTurno.RINFORZI);
-        return new IniziaTurnoDAO(giocatore.getNome(), armateStati, armateContinenti);
+        return new IniziaTurnoDTO(giocatore.getNome(), armateStati, armateContinenti);
     }
 
-    public RinforzoDAO rinforzo(RinforzoDTO rinforzoDTO, Partita partita) {
+    public RinforzoResponse rinforzo(RinforzoRequest rinforzoRequest, Partita partita) {
         Giocatore giocatore = partita.getGiocatoreAttivo();
-        if (!giocatore.getNome().equals(rinforzoDTO.getGiocatore()))
+        if (!giocatore.getNome().equals(rinforzoRequest.getGiocatore()))
             throw new MossaIllegaleException("Mossa illegale: rinforzo non chiamato dal giocatore attivo");
 
         if (partita.isFasePreparazione()) {
             int armateDaPiazzare = Math.min(3, giocatore.getTruppeDisponibili());
-            eseguiRinforzo(rinforzoDTO, armateDaPiazzare, partita);
+            eseguiRinforzo(rinforzoRequest, armateDaPiazzare, partita);
 
             partita.setNuovoGiocatoreAttivoPreparazione();
 
@@ -96,23 +95,23 @@ public class PartitaService {
             if (giocatore.getTruppeDisponibili() == 0)
                 throw new MossaIllegaleException("Mossa illegale: non ci sono altre armate da piazzare");
 
-            eseguiRinforzo(rinforzoDTO, partita.getGiocatoreAttivo().getTruppeDisponibili(), partita);
+            eseguiRinforzo(rinforzoRequest, partita.getGiocatoreAttivo().getTruppeDisponibili(), partita);
         }
 
-        return new RinforzoDAO(
+        return new RinforzoResponse(
                 partita.getGiocatoreAttivo().getNome(),
                 partita.isFasePreparazione(),
                 partita.getGiocatoreAttivo().obRaggiunto()
         );
     }
 
-    private void eseguiRinforzo(RinforzoDTO rinforzoDTO, int armateDaPiazzare, Partita partita) {
+    private void eseguiRinforzo(RinforzoRequest rinforzoRequest, int armateDaPiazzare, Partita partita) {
         Giocatore giocAttivo = partita.getGiocatoreAttivo();
         Mappa mappa = partita.getMappa();
         int totale = 0;
         // controlla che i rinforzi totali siano quanto richiesto
-        for (Long key : rinforzoDTO.getRinforzi().keySet()) {
-            totale = totale + rinforzoDTO.getRinforzi().get(key);
+        for (Long key : rinforzoRequest.getRinforzi().keySet()) {
+            totale = totale + rinforzoRequest.getRinforzi().get(key);
 
             // controlla che ogni stato sia del giocatore attivo
             if (!mappa.getStatoById(key).getProprietario().equals(giocAttivo))
@@ -123,9 +122,9 @@ public class PartitaService {
             throw new DatiErratiException("Dati errati: numero armate da piazzare non valido");
 
         // crea ed esegue un nuovo rinforzo per ogni coppia idStato-numeroArmate della mappa in ingresso
-        for (Long key : rinforzoDTO.getRinforzi().keySet()) {
+        for (Long key : rinforzoRequest.getRinforzi().keySet()) {
             Stato stato = mappa.getStatoById(key);
-            stato.aggiungiArmate(rinforzoDTO.getRinforzi().get(key));
+            stato.aggiungiArmate(rinforzoRequest.getRinforzi().get(key));
         }
 
         giocAttivo.modificaTruppeDisponibili(-armateDaPiazzare);
@@ -179,7 +178,7 @@ public class PartitaService {
         partita.setCombattimento(combattimento);
     }
 
-    public DifesaDAO difesa(DifesaDTO difesaDTO, Partita partita) {
+    public DifesaResponse difesa(DifesaRequest difesaRequest, Partita partita) {
         Combattimento combattimento = partita.getCombattimento();
         if (combattimento == null || combattimento.isEseguito())
             throw new MossaIllegaleException("Mossa illegale: non c'e' un combattimento in corso");
@@ -187,10 +186,10 @@ public class PartitaService {
         Giocatore giocatoreDif = combattimento.getStatoDifensore().getProprietario();
         Giocatore giocatoreAtt = combattimento.getStatoAttaccante().getProprietario();
 
-        if (!giocatoreDif.getNome().equals(difesaDTO.getGiocatore()))
+        if (!giocatoreDif.getNome().equals(difesaRequest.getGiocatore()))
             throw new MossaIllegaleException("Mossa illegale: giocatore difensore non valido");
 
-        combattimento.esegui(difesaDTO.getArmate());
+        combattimento.esegui(difesaRequest.getArmate());
 
         if (combattimento.getConquista()) {
             partita.setConquista(); // setta true conquista avvenuta in turno
@@ -204,7 +203,7 @@ public class PartitaService {
         if (!combattimento.getConquista())
             partita.setCombattimento(null);
 
-        return new DifesaDAO(
+        return new DifesaResponse(
                 combattimento,
                 giocatoreAtt.obRaggiunto(),
                 giocatoreDif.isEliminato());
@@ -240,7 +239,7 @@ public class PartitaService {
         return giocatore.obRaggiunto();
     }
 
-    public CartaTerritorioDAO fineTurno(Partita partita) {
+    public CartaTerritorioDTO fineTurno(Partita partita) {
         if (partita.isFasePreparazione())
             throw new MossaIllegaleException("Mossa illegale: si e' ancora in fase di preparazione");
 
@@ -258,6 +257,6 @@ public class PartitaService {
 
         partita.nuovoTurno();
 
-        return cartaTerritorio != null ? new CartaTerritorioDAO(cartaTerritorio) : null;
+        return cartaTerritorio != null ? new CartaTerritorioDTO(cartaTerritorio) : null;
     }
 }

@@ -1,4 +1,4 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.Giocatore;
 
@@ -6,20 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GiocatoreDAO {
-    private List<Long> idStati = new ArrayList<>();
-    private String nome;
-    private List<CartaTerritorioDAO> carteTerritorio;
-    private String obiettivo;
-    private String uccisore;
-    private int truppeDisponibili;
+public final class GiocatoreDTO {
+    private final List<Long> idStati = new ArrayList<>();
+    private final String nome;
+    private final List<CartaTerritorioDTO> carteTerritorio;
+    private final String obiettivo;
+    private final String uccisore;
+    private final int truppeDisponibili;
 
-    public GiocatoreDAO(Giocatore giocatore) {
+    public GiocatoreDTO(Giocatore giocatore) {
         giocatore.getStati().forEach(stato ->
                 this.idStati.add(stato.getId()));
         this.nome = giocatore.getNome();
         this.carteTerritorio = giocatore.getCarteTerritorio().stream()
-                .map(CartaTerritorioDAO::new)
+                .map(CartaTerritorioDTO::new)
                 .collect(Collectors.toList());
         this.obiettivo = giocatore.getObiettivo().getDescrizione();
         this.uccisore = giocatore.getUccisore() == null ? null : giocatore.getUccisore().getNome();
@@ -34,7 +34,7 @@ public class GiocatoreDAO {
         return nome;
     }
 
-    public List<CartaTerritorioDAO> getCarteTerritorio() {
+    public List<CartaTerritorioDTO> getCarteTerritorio() {
         return carteTerritorio;
     }
 

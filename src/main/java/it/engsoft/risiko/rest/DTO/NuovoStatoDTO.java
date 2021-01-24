@@ -1,10 +1,10 @@
-package it.engsoft.risiko.rest.dto;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.exceptions.DatiErratiException;
 
 import java.util.List;
 
-public class NuovoStatoDTO {
+public final class NuovoStatoDTO {
     private final String nome;
     private final List<String> confinanti;
 

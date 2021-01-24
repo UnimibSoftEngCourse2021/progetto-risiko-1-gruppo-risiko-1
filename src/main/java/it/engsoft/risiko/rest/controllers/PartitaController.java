@@ -2,8 +2,7 @@ package it.engsoft.risiko.rest.controllers;
 
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
 import it.engsoft.risiko.service.PartitaService;
-import it.engsoft.risiko.rest.dto.*;
-import it.engsoft.risiko.rest.dao.*;
+import it.engsoft.risiko.rest.DTO.*;
 import it.engsoft.risiko.data.model.Partita;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +23,19 @@ public class PartitaController {
     }
 
     @PostMapping(path = "/gioco")
-    public NuovoGiocoDAO nuovoGioco(@RequestBody NuovoGiocoDTO nuovoGiocoDTO, HttpSession httpSession) {
-        Partita partita = partitaService.nuovoGioco(nuovoGiocoDTO);
+    public NuovoGiocoResponse nuovoGioco(@RequestBody NuovoGiocoRequest nuovoGiocoRequest, HttpSession httpSession) {
+        Partita partita = partitaService.nuovoGioco(nuovoGiocoRequest);
         httpSession.setAttribute(partitaKey, partita);
 
-        return new NuovoGiocoDAO(partita);
+        return new NuovoGiocoResponse(partita);
     }
 
     @PostMapping(path = "/rinforzi")
-    public RinforzoDAO rinforzi(@RequestBody RinforzoDTO rinforzoDTO, HttpSession httpSession) {
+    public RinforzoResponse rinforzi(@RequestBody RinforzoRequest rinforzoRequest, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
             throw new MossaIllegaleException(exMessage);
-        RinforzoDAO response = partitaService.rinforzo(rinforzoDTO, partita);
+        RinforzoResponse response = partitaService.rinforzo(rinforzoRequest, partita);
         if (response.isVittoria())  {
             httpSession.setAttribute(partitaKey, null);
         }
@@ -44,7 +43,7 @@ public class PartitaController {
     }
 
     @PostMapping(path = "/inizia-turno")
-    public IniziaTurnoDAO iniziaTurno(HttpSession httpSession) {
+    public IniziaTurnoDTO iniziaTurno(HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
             throw new MossaIllegaleException(exMessage);
@@ -68,11 +67,11 @@ public class PartitaController {
     }
 
     @PostMapping(path = "/difesa")
-    public DifesaDAO difesa(@RequestBody DifesaDTO difesaDTO, HttpSession httpSession) {
+    public DifesaResponse difesa(@RequestBody DifesaRequest difesaRequest, HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
             throw new MossaIllegaleException(exMessage);
-        DifesaDAO difesa = partitaService.difesa(difesaDTO, partita);
+        DifesaResponse difesa = partitaService.difesa(difesaRequest, partita);
         if(difesa.isObiettivoRaggiuntoAtt())
             httpSession.setAttribute(partitaKey, null);
 
@@ -91,7 +90,7 @@ public class PartitaController {
     }
 
     @PostMapping(path = "/fine-turno")
-    public CartaTerritorioDAO fineTurno(HttpSession httpSession) {
+    public CartaTerritorioDTO fineTurno(HttpSession httpSession) {
         Partita partita = (Partita)httpSession.getAttribute(partitaKey);
         if (partita == null)
             throw new MossaIllegaleException(exMessage);

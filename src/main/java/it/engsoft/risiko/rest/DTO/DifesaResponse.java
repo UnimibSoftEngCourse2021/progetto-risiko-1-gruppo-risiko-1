@@ -1,10 +1,10 @@
-package it.engsoft.risiko.rest.dao;
+package it.engsoft.risiko.rest.DTO;
 
 import it.engsoft.risiko.data.model.Combattimento;
 
 import java.util.List;
 
-public class DifesaDAO {
+public final class DifesaResponse {
     private final List<Integer> dadoAtt;
     private final List<Integer> dadoDif;
     private final int vittimeAtt;
@@ -13,7 +13,7 @@ public class DifesaDAO {
     private final boolean vittoriaAtt;
     private final boolean eliminato;
 
-    public DifesaDAO(Combattimento combattimento, boolean obiettivoRaggiuntoAtt, boolean difensoreEliminato) {
+    public DifesaResponse(Combattimento combattimento, boolean obiettivoRaggiuntoAtt, boolean difensoreEliminato) {
         this.dadoAtt = combattimento.getTiriAttaccante();
         this.dadoDif = combattimento.getTiriDifensore();
         this.vittimeAtt = combattimento.getVittimeAttaccante();
