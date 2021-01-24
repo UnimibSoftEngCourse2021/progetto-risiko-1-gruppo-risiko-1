@@ -26,14 +26,6 @@ public class ConqGiocatore implements Obiettivo {
                 " è già stato sconfitto da altri: " + obSecondario.getDescrizione();
     }
 
-    /**
-     * Ritorna il giocatore da sconfiggere.
-     * @return il giocatore
-     */
-    public Giocatore getTarget() {
-        return target;
-    }
-
     @Override
     public boolean raggiunto(Giocatore giocatore) {
         if(giocatore == null)

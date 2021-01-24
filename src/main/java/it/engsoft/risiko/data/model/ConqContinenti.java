@@ -36,14 +36,6 @@ public class ConqContinenti implements Obiettivo {
     }
 
     /**
-     * Ritorna l'elenco di continenti da conquistare.
-     * @return l'elenco dei continenti
-     */
-    public List<Continente> getTargetContinenti() {
-        return targetContinenti;
-    }
-
-    /**
      * Ritorna il numero di continenti extra da conquistare.
      * @return il numero di continenti extra
      */

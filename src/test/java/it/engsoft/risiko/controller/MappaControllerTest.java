@@ -23,12 +23,6 @@ class MappaControllerTest {
     }
 
     @Test
-    void testGetMappaSingola() throws Exception{
-        this.mockMvc.perform(get("/api/mappe/1")).andExpect(status().isOk())
-                .andExpect(content().string(containsString("Risiko Test")));
-    }
-
-    @Test
     void testGetMappaSingolaNonEsistente() throws Exception{
         this.mockMvc.perform(get("/api/mappe/2")).andExpect(status().isNotFound());
     }
