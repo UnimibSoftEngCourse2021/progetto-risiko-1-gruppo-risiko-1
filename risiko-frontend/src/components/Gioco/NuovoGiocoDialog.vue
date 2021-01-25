@@ -33,7 +33,8 @@
 
             <v-col cols="12">
               <v-alert v-if="selected" color="primary" dark type="info">
-                {{ selected.descrizione }}
+                <span class="d-block">{{ selected.descrizione }}</span>
+                <span class="d-block">{{selected.numContinenti}} continenti, {{selected.numStati}} stati</span>
               </v-alert>
             </v-col>
 

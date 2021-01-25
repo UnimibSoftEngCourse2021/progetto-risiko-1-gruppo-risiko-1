@@ -5,7 +5,7 @@ import it.engsoft.risiko.data.model.Combattimento;
 import java.util.List;
 
 /**
- * Classe utilizzata per gestire i dati in entrata relativi ai continenti.
+ * Classe utilizzata per gestire i dati in uscita relativi alla difesa di un territorio.
  */
 public final class DifesaResponse {
     private final List<Integer> dadoAtt;

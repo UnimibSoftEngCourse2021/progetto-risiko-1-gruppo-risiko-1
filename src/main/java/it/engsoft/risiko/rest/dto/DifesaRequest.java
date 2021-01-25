@@ -3,7 +3,7 @@ package it.engsoft.risiko.rest.dto;
 import it.engsoft.risiko.exceptions.DatiErratiException;
 
 /**
- * Classe utilizzata per gestire i dati in entrata relativi ai continenti.
+ * Classe utilizzata per gestire i dati in entrata relativi alla difesa di un territorio.
  */
 public final class DifesaRequest {
     private final String giocatore;
