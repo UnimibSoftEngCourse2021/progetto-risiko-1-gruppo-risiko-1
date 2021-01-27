@@ -1,4 +1,4 @@
-package it.engsoft.risiko.rest.dto;
+package it.engsoft.risiko.http.dto;
 
 /**
  * Classe utilizzata per gestire i dati in uscita relativi ad un rinforzo.

@@ -1,32 +1,34 @@
-package it.engsoft.risiko.rest.dto;
+package it.engsoft.risiko.http.dto;
 
 import it.engsoft.risiko.data.model.Mappa;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Classe utilizzata per gestire i dati in uscita relativi alle mappe.
- * Fornisce dati sintetici.
+ * Fornisce dati completi.
  */
-public final class CompactMappaDTO {
+public final class MappaDTO {
     private final Long id;
     private final String nome;
     private final String descrizione;
     private final int numMinGiocatori;
     private final int numMaxGiocatori;
-    private final int numContinenti;
-    private final int numStati;
+    private final List<ContinenteDTO> continenti;
 
     /**
-     * Crea un oggetto contenente i dati più significativi di una mappa.
+     * Crea un oggetto contenente i dati relativi ad una mappa.
      * @param mappa La mappa da cui prendere i dati
      */
-    public CompactMappaDTO(Mappa mappa) {
+    public MappaDTO(Mappa mappa) {
         this.id = mappa.getId();
         this.nome = mappa.getNome();
         this.descrizione = mappa.getDescrizione();
         this.numMaxGiocatori = mappa.getNumMaxGiocatori();
         this.numMinGiocatori = mappa.getNumMinGiocatori();
-        this.numContinenti = mappa.getContinenti().size();
-        this.numStati = mappa.getStati().size();
+        this.continenti = mappa.getContinenti().stream().map(ContinenteDTO::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -70,18 +72,10 @@ public final class CompactMappaDTO {
     }
 
     /**
-     * Restituisce il numero di continenti della mappa.
-     * @return il numero di continenti della mappa
+     * Restituisce la lista di continenti presenti nella mappa.
+     * @return lista di continenti in formato ContinenteDTO
      */
-    public int getNumContinenti() {
-        return numContinenti;
-    }
-
-    /**
-     * Restituisce il numero di stati della mappa.
-     * @return il numero di stati della mappa.
-     */
-    public int getNumStati() {
-        return numStati;
+    public List<ContinenteDTO> getContinenti() {
+        return continenti;
     }
 }

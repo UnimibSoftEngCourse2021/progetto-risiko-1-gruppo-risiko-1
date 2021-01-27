@@ -1,10 +1,10 @@
 package it.engsoft.risiko.service;
 
 import it.engsoft.risiko.data.model.*;
-import it.engsoft.risiko.rest.dto.NuovoGiocoRequest;
+import it.engsoft.risiko.http.dto.NuovoGiocoRequest;
 import it.engsoft.risiko.exceptions.DatiErratiException;
 import it.engsoft.risiko.exceptions.MossaIllegaleException;
-import it.engsoft.risiko.rest.dto.TrisDTO;
+import it.engsoft.risiko.http.dto.TrisDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

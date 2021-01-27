@@ -1,7 +1,7 @@
-package it.engsoft.risiko.rest.controllers;
+package it.engsoft.risiko.http.controllers;
 
-import it.engsoft.risiko.rest.dto.CompactMappaDTO;
-import it.engsoft.risiko.rest.dto.NuovaMappaDTO;
+import it.engsoft.risiko.http.dto.CompactMappaDTO;
+import it.engsoft.risiko.http.dto.NuovaMappaDTO;
 import it.engsoft.risiko.service.MappaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
