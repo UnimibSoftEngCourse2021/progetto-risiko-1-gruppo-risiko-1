@@ -66,7 +66,7 @@ public class PartitaService {
     /**
      * Prepara il nuovo turno in modo che possa essere usato dagli altri metodi.
      * @param partita l'oggetto partita al quale si riferisce iniziaTurno.
-     * @return un data access object contenente le informazioni calcolate dal metodo.
+     * @return un data transfer object contenente le informazioni calcolate dal metodo.
      */
     public IniziaTurnoDTO iniziaTurno(Partita partita) {
         if (partita.isFasePreparazione())
@@ -97,7 +97,7 @@ public class PartitaService {
      * @param rinforzoRequest un data transfer object contenente i dati necessari per effettuare
      *                        la richiesta di rinforzo.
      * @param partita l'oggetto partita al quale si riferisce il rinforzo.
-     * @return un data access object contenente l'esito del rinforzo
+     * @return un data transfer object contenente l'esito del rinforzo
      */
     public RinforzoResponse rinforzo(RinforzoRequest rinforzoRequest, Partita partita) {
         Giocatore giocatore = partita.getGiocatoreAttivo();
@@ -216,7 +216,7 @@ public class PartitaService {
      * che riceve in ingresso.
      * @param difesaRequest un data transfer object contenente le informazioni necessarie per eseguire la difesa.
      * @param partita l'oggetto partita al quale si riferisce la difesa.
-     * @return un data access object contenente le informazioni riguardo l'esito del combattimento.
+     * @return un data transfer object contenente le informazioni riguardo l'esito del combattimento.
      */
     public DifesaResponse difesa(DifesaRequest difesaRequest, Partita partita) {
         Combattimento combattimento = partita.getCombattimento();
