@@ -37,6 +37,11 @@
             </v-col>
           </v-row>
 
+          <span class="text-body-2">
+            Devi inserire un numero di continenti compreso fra 4 e 8. Inoltre, ogni continente può contenere da 4 a
+            12 stati e tutti gli stati della mappa devono essere fra loro collegati.
+          </span>
+
           <continenti-table />
           <stati-table />
           <confini-table />

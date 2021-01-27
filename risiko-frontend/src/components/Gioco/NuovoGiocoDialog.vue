@@ -5,7 +5,7 @@
         <v-icon class="mr-3" @click="showDialog = false">mdi-close</v-icon>
         <v-app-bar-title>Nuovo gioco</v-app-bar-title>
         <v-spacer/>
-        <v-btn :disabled="!formValid || !coloriValidi" text @click="nuovoGioco">
+        <v-btn :disabled="!formValid || !coloriValidi || !giocatoriValidi" text @click="nuovoGioco">
           Gioca
         </v-btn>
       </v-app-bar>
@@ -44,7 +44,6 @@
                           :items="giocatoriDefault"
                           :label="'Scrivi i nomi dei giocatori' + (this.selected ? ' (da ' + selected.numMinGiocatori +
                                   ' a ' + selected.numMaxGiocatori + ')' : '' )"
-                          :rules="[validaGiocatori]"
                           color="primary"
                           deletable-chips
                           multiple
@@ -123,7 +122,19 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["mappe"])
+    ...mapGetters(["mappe"]),
+    giocatoriValidi(){
+      if (!this.selected) {
+        return false;
+      }
+
+      if (this.elencoGiocatori.filter(g => g.trim() === "").length > 0)
+        return false;
+
+      return !(this.elencoGiocatori.length < this.selected.numMinGiocatori ||
+          this.elencoGiocatori.length > this.selected.numMaxGiocatori);
+
+    }
   },
   watch: {
     elencoGiocatori() {
@@ -134,16 +145,6 @@ export default {
     ...mapActions(["startGame"]),
     show() {
       this.showDialog = true
-    },
-    validaGiocatori(elenco) {
-      if (!this.selected) {
-        return false;
-      }
-
-      if (elenco.filter(g => g.trim() === "").length > 0)
-        return "Almeno uno fra i nomi inseriti non è valido"
-
-      return !(elenco.length < this.selected.numMinGiocatori || elenco.length > this.selected.numMaxGiocatori);
     },
     async nuovoGioco() {
       const config = {
