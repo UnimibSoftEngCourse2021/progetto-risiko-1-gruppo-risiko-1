@@ -15,7 +15,7 @@ export class Gioco {
         }));
 
         this.preparazione = true;
-        this.turno = { num: 0 };
+        this.turno = { };
         this.activePlayerIndex = this.giocatori.findIndex(g => g.nome === giocatoreAttivo);
         this.primoGiocatoreIndex = this.activePlayerIndex;
         this.combattimento = { inCorso: false, attaccante: null, difensore: null, armateAttaccante: null, armateDifensore: null };

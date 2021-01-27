@@ -42,7 +42,6 @@ export default new Vuex.Store({
         setTurno(state, { turno, pescato }) {
             state.gioco.activePlayerIndex = state.gioco.giocatori.findIndex(g => g.nome === turno.giocatore);
             state.gioco.turno = {
-                num: turno.numeroTurno,
                 giocatore: turno.giocatore,
                 armateStati: turno.armateStati,
                 armateContinenti: turno.armateContinenti,

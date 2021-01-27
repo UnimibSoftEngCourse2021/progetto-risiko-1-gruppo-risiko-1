@@ -83,7 +83,7 @@ export default {
             if (this.fasePreparazione) {
                 ris = "Fase di preparazione - ";
             } else {
-                ris = `Turno ${this.turno.num} - `;
+                ris = `Turno di `;
             }
             return ris + this.giocatoreAttivo;
         }
