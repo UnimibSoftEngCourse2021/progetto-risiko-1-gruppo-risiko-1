@@ -140,6 +140,9 @@ export default {
         return false;
       }
 
+      if (elenco.filter(g => g.trim() === "").length > 0)
+        return "Almeno uno fra i nomi inseriti non è valido"
+
       return !(elenco.length < this.selected.numMinGiocatori || elenco.length > this.selected.numMaxGiocatori);
     },
     async nuovoGioco() {

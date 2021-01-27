@@ -98,12 +98,12 @@ export default {
     },
     methods: {
         aggiungiStato() {
-            this.mappaInCostruzione.addStato(this.nuovoStato.nome, this.nuovoStato.continente);
+            this.mappaInCostruzione.addStato(this.nuovoStato.nome.trim(), this.nuovoStato.continente);
             this.nuovoStato = { nome: "", continente: "" };
             this.showDialogStati = false;
         },
         nomeValido(nome) {
-            if (!nome) {
+            if (!nome.trim()) {
                 return "Oggetto obbligatorio";
             }
             if (this.mappaInCostruzione.contieneStati(nome)) {

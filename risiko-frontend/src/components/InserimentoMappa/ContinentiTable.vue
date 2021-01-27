@@ -97,7 +97,7 @@ export default {
     },
     methods: {
         nomeValido(nome) {
-            if (!nome) {
+            if (!nome.trim()) {
                 return "Oggetto obbligatorio";
             }
             if (this.mappaInCostruzione.continentePresente(nome)) {
@@ -106,7 +106,7 @@ export default {
             return true;
         },
         aggiungiContinente() {
-            this.mappaInCostruzione.addContinente(this.nuovoContinente.nome, this.nuovoContinente.armateBonus);
+            this.mappaInCostruzione.addContinente(this.nuovoContinente.nome.trim(), this.nuovoContinente.armateBonus);
             this.nuovoContinente = { nome: "", armateBonus: 3 };
             this.showDialogContinenti = false;
         }

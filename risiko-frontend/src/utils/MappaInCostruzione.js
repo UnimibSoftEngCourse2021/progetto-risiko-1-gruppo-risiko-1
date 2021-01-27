@@ -115,7 +115,8 @@ export class MappaInCostruzione {
         const numMinStatiPerContinente = 4;
         const numMaxStatiPerContinente = 12;
 
-        if (!this.nome || !this.descrizione || !this.numMinGiocatori || !this.numMaxGiocatori || this.numMinGiocatori < 2 ||
+        if (!this.nome.trim() || !this.descrizione.trim() || !this.numMinGiocatori ||
+            !this.numMaxGiocatori || this.numMinGiocatori < 2 ||
             this.numMaxGiocatori > 8 || this.numMinGiocatori > this.numMaxGiocatori) {
             return false;
         }
@@ -158,7 +159,13 @@ export class MappaInCostruzione {
 
     asHierarchy() {
         const { nome, descrizione, numMinGiocatori, numMaxGiocatori } = this;
-        const mappa = { nome, descrizione, numMinGiocatori, numMaxGiocatori, continenti: [] };
+        const mappa = {
+            nome: nome.trim(),
+            descrizione: descrizione.trim(),
+            numMinGiocatori,
+            numMaxGiocatori,
+            continenti: [] 
+        };
 
         this.continenti.forEach(continente => {
             const stati = this.stati.filter(s => s.continente === continente.nome)
