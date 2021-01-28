@@ -75,6 +75,6 @@ Per sviluppare il Frontend è dunque preferibile eseguire i due moduli software 
   genere la 8081, ma non necessariamente)
   
 In `risiko-frontend/vue.config.js` è stata predisposta una proxy (attiva solo in fase di sviluppo) che indirizza tutte
-le chiamate a indirizzi non noti del frontend (ossia le REST api) alla porta 8080 dove dovrebbe essere attivo il backend.
+le chiamate a indirizzi non noti del frontend (ossia le `**/api/**`) alla porta 8080 dove dovrebbe essere attivo il backend.
 Chiaramente, il frontend sarà testabile alla porta comunicata da npm dopo aver eseguito il comando `npm run serve`.
 
